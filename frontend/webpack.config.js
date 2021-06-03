@@ -6,9 +6,6 @@ module.exports = {
     mode: 'development',
     devtool: 'source-map',
     entry: ["babel-polyfill", './src/js/index.tsx'],
-    node: {
-        fs: 'empty'
-    },
     output: {
         filename: 'js/[name].[hash].bundle.js',
         path: path.resolve(__dirname, 'static'),
@@ -23,6 +20,9 @@ module.exports = {
             exclude: /node_modules/,
             use: {
                 loader: 'babel-loader',
+                options: {
+                    presets: ['@babel/preset-react'],
+                },
             }
         },{
             test: /\.css$/,
@@ -40,11 +40,11 @@ module.exports = {
             inject: 'body',
             template: path.join(__dirname, "src/html/index.html")
         }),
-        new CopyWebpackPlugin({
-            patterns: [
-                { from: "source", to: "dest" },
-                { from: "source", to: "dest" },
-            ],
-        })
+        //new CopyWebpackPlugin({
+            //patterns: [
+                //{ from: "source", to: "dest" },
+                //{ from: "source", to: "dest" },
+            //],
+        //})
     ],
 };
