@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 module.exports = {
     mode: 'development',
     devtool: 'source-map',
-    entry: ["babel-polyfill", './src/js/index.tsx'],
+    entry: './src/js/index.tsx',
     output: {
         filename: 'js/[name].[hash].bundle.js',
         path: path.resolve(__dirname, 'static'),
@@ -18,12 +18,7 @@ module.exports = {
         rules: [{
             test: /\.(ts|js)x?$/,
             exclude: /node_modules/,
-            use: {
-                loader: 'babel-loader',
-                options: {
-                    presets: ['@babel/preset-react'],
-                },
-            }
+            use: 'ts-loader',
         },{
             test: /\.css$/,
             use: [ 'style-loader', 'css-loader' ]

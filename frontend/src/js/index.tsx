@@ -5,17 +5,21 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 
+import store from './state/store'
+import { Provider } from 'react-redux'
+
+import Main from './main'
+
 /*
 * Load main screen
 */
 ReactDOM.render(
-    (<React.Fragment>
+    (<Provider store={store}>
         <CssBaseline />
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <h1>Hello World</h1>
+            <Main />
         </MuiPickersUtilsProvider>
-    </React.Fragment>)
-    ,
+    </Provider>),
     document.getElementById('container')
 );
 

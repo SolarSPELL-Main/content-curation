@@ -121,5 +121,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS=[
+    BASE_DIR + "frontend/static"
+]
+
 # Needed so the frontend can properly display images
 X_FRAME_OPTIONS = 'SAMEORIGIN'
