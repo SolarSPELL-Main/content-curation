@@ -8,7 +8,8 @@
     "build-bash": "npm run-script clean; webpack --mode=development",
     "build-win": "npm run-script winclean & webpack --mode=development",
     "clean": "rm -R ./static",
-    "winclean": "rd /s /q static"
+    "winclean": "rd /s /q static",
+    "update-lib": "npm i SolarSPELL-Main/solarspell-react-lib#main"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",
@@ -45,6 +46,7 @@
     "html-loader": "^2.1.2",
     "react-redux": "^7.2.4",
     "redux-observable": "^1.2.0",
-    "rxjs": "^6.6.7"
+    "rxjs": "^6.6.7",
+    "solarspell-react-lib": "github:SolarSPELL-Main/solarspell-react-lib#main"
   }
 }

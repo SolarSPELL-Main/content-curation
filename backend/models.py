@@ -6,7 +6,7 @@ from django.dispatch import receiver
 
 import logging
 
-from validators import validate_unique_filename,validate_unique_file
+from backend.validators import validate_unique_filename,validate_unique_file
 
 
 from django.utils.text import get_valid_filename

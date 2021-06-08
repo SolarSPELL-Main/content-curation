@@ -3,7 +3,7 @@ import filecmp
 from django.core.exceptions import ValidationError
 from django.utils.text import get_valid_filename
 
-import settings
+from content_curation import settings
 
 def validate_unique_filename(value):
     filepath = os.path.join(settings.CONTENTS_ROOT, get_valid_filename(value.name))

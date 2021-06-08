@@ -1,10 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { Metadata } from "../types"
+
+
+type MetadataByType = Record<string, Metadata[]>
 
 export const metadataSlice = createSlice({
     name: 'metadata',
     initialState: {
         metadata_types: [] as string[],
-        metadata: {} as Record<string, { name: string }>,
+        metadata: {} as MetadataByType,
         btc: {} as any,
     },
     reducers: {
@@ -14,12 +18,20 @@ export const metadataSlice = createSlice({
         remove_metadata: (state) => {
             state.metadata_types.pop()
         },
-        fetch_metadata: () => {},
+        fetch_btc: () => {},
         update_btc: (state, action: PayloadAction<any>) => {
             state.btc = action.payload
+        },
+        fetch_metadata: () => {},
+        update_metadata: (state, action: PayloadAction<MetadataByType>) => {
+            state.metadata = action.payload
         }
     },
 })
 
-export const { add_metadata, remove_metadata, fetch_metadata } = metadataSlice.actions
+
+export const {
+    add_metadata, remove_metadata, fetch_metadata, update_metadata, fetch_btc,
+    update_btc
+} = metadataSlice.actions
 export default metadataSlice.reducer
