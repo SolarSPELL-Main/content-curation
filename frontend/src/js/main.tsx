@@ -2,7 +2,7 @@ import React from "react"
 import { useCCSelector, useCCDispatch } from './hooks'
 import { fetch_btc, add_metadata } from "./state/metadata"
 import Button from "@material-ui/core/Button"
-import MetadataDisplay from "solarspell-react-lib/src/components/MetadataDisplay"
+import { MetadataDisplay } from "solarspell-react-lib"
 
 
 /*
