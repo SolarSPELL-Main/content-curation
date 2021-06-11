@@ -1,36 +1,36 @@
 import React from 'react';
-import { MetadataDisplay } from 'solarspell-react-lib';
+import { GridSelectionModelChangeParams } from '@material-ui/data-grid';
+import { MetadataDisplay, BaseMetadata, BaseMetadataType } from 'solarspell-react-lib';
 import { Metadata, MetadataType } from '../types';
 
 import MetadataKebabMenu, { MetadataKebabMenuActionProps } from './MetadataKebabMenu';
-import MetadataActionPanel, { MetadataActionPanelActionProps } from './MetadataActionPanel';
 
 type MetadataSelectorProps = {
     metadata: Record<number, Metadata[]>
     metadataTypes: MetadataType[]
     kebabMenuActions: MetadataKebabMenuActionProps
-    actionPanelActions: MetadataActionPanelActionProps
+    onSelectChange: (metadata: BaseMetadata[], metadataType: BaseMetadataType, rows: GridSelectionModelChangeParams) => void
 }
 
 function MetadataSelector({
     metadata,
     metadataTypes,
     kebabMenuActions,
-    actionPanelActions,
+    onSelectChange,
 }: MetadataSelectorProps): React.ReactElement {
     return (
         <MetadataDisplay
             metadata={metadata}
             metadataTypes={metadataTypes}
-            tableActionProps={{
+            tableProps={{
                 components: {
                     KebabMenu: MetadataKebabMenu,
-                    ActionPanel: MetadataActionPanel,
                 },
                 componentProps: {
                     KebabMenu: kebabMenuActions,
-                    ActionPanel: actionPanelActions,
                 },
+                selectable: true,
+                onSelectChange: onSelectChange,
             }}
         />
     );

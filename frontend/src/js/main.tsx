@@ -2,7 +2,7 @@ import React from "react"
 import { useCCSelector, useCCDispatch } from './hooks'
 import { fetch_btc, add_metadata } from "./state/metadata"
 import Button from "@material-ui/core/Button"
-import { MetadataDisplay } from "solarspell-react-lib"
+import MetadataSelector from "./components/MetadataSelector"
 import { Metadata, MetadataType } from "./types"
 
 const mockMetadataTypes: MetadataType[] = [
@@ -89,8 +89,15 @@ export default () => {
         <Button onClick={() => dispatch(add_metadata("New Metadata"))}>Add</Button>
         <h1>BTC Price {btc?.bpi?.USD?.rate}</h1>
         <Button onClick={() => dispatch(fetch_btc())}>Check BTC</Button>
-        <MetadataDisplay
+        <MetadataSelector
             metadata={mockMetadata}
-            metadataTypes={mockMetadataTypes} />
+            metadataTypes={mockMetadataTypes}
+            kebabMenuActions={{
+                onAdd: (type, val) => console.log(type, val),
+                onEditType: (type, val) => console.log(type, val),
+                onDeleteType: (type) => console.log(type),
+            }}
+            onSelectChange={(data, type, rows) => console.log(data, type, rows)}
+        />
     </>
 }
