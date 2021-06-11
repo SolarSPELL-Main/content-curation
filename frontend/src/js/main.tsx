@@ -2,10 +2,10 @@ import React from "react"
 import { useCCSelector, useCCDispatch } from './hooks'
 import { fetch_btc, add_metadata } from "./state/metadata"
 import Button from "@material-ui/core/Button"
-import { MetadataDisplay, BaseMetadataType } from "solarspell-react-lib"
-import { Metadata } from "./types"
+import { MetadataDisplay } from "solarspell-react-lib"
+import { Metadata, MetadataType } from "./types"
 
-const mockMetadataTypes: BaseMetadataType[] = [
+const mockMetadataTypes: MetadataType[] = [
     {
         name: 'Language',
         id: 0,
