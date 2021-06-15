@@ -1,3 +1,5 @@
+[![Test build](https://github.com/Jonathanzhao02/content-curation/actions/workflows/frontend_build.yml/badge.svg)](https://github.com/Jonathanzhao02/content-curation/actions/workflows/frontend_build.yml)
+
 # Content Curation
 
 SolarSPELL Content Curation service (CC). The Content Curation service provides functionality for library curators to submit new content and its associated metadata for approval in multiple languages. A Content Curation Admin has all the abilities of a library  curator, and can also approve, modify, or reject outright content submitted for approval. A Content Curation Admin can also add new language categories, create/remove users, and modify their roles to create other admins or content curators.
