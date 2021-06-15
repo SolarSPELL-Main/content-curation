@@ -1,10 +1,11 @@
-import React from "react"
-import { useCCSelector, useCCDispatch } from './hooks'
-import { fetch_btc, add_metadata } from "./state/metadata"
-import Button from "@material-ui/core/Button"
+import React from "react";
+import { useCCSelector, useCCDispatch } from './hooks';
+import { fetch_btc, add_metadata } from "./state/metadata";
+import Button from "@material-ui/core/Button";
 import { Modal as ContentModal } from './tabs/content';
 import { Modal as MetadataModal } from './tabs/metadata';
-import { Metadata, MetadataType } from "./types"
+import { Metadata, MetadataType } from "./types";
+import Divider from '@material-ui/core/Divider';
 
 const mockMetadataTypes: MetadataType[] = [
     {
@@ -95,9 +96,11 @@ export default () => {
             metadataTypes={mockMetadataTypes}
             onClick={(v) => console.log(v)}
         />
+        <Divider />
         <MetadataModal
             metadata={mockMetadata}
             metadataTypes={mockMetadataTypes}
+            onAddType={(name) => console.log(name)}
             actions={{
                 KebabMenu: {
                     onAdd: (metadataType, name) => console.log(`${name} added to ${metadataType}`),

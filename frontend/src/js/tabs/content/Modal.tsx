@@ -1,6 +1,7 @@
 import React from 'react';
 import MetadataSelector from './MetadataSelector';
 import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Box';
 
 import { Metadata, MetadataType } from '../../types';
 
@@ -35,14 +36,16 @@ function Modal({
     const onClick_ = React.useCallback(() => onClick(selectedMetadataState), [onClick, selectedMetadataState]);
 
     return (
-        <>
+        <Box p={2}>
             <MetadataSelector
                 metadata={metadata}
                 metadataTypes={metadataTypes}
                 onSelectChange={onSelectChange}
             />
-            <Button onClick={onClick_} color={'primary'} variant={'contained'} >Submit</Button>
-        </>
+            <Box mt={1}>
+                <Button onClick={onClick_} color={'primary'} variant={'contained'} >Submit</Button>
+            </Box>
+        </Box>
     );
 }
 
