@@ -85,7 +85,7 @@ export default () => {
         <h1>{myState}</h1>
         <Button onClick={() => setState(1)} />
         <h1>{metadata_types.join(", ")}</h1>
-        <Button onClick={() => dispatch(add_metadata("New Metadata"))}>Add</Button>
+        <Button onClick={() => dispatch(add_metadata(["Sample_Metadata",0]))}>Add</Button>
         <h1>BTC Price {btc?.bpi?.USD?.rate}</h1>
         <Button onClick={() => dispatch(fetch_btc())}>Check BTC</Button>
         <Switch>
