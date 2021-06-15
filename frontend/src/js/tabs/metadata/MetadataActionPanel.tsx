@@ -14,6 +14,12 @@ type MetadataActionPanelProps = {
     metadataType: MetadataType
 } & MetadataActionPanelActionProps
 
+/**
+ * The 'Actions' column in the MetadataEditor component.
+ * This component displays the icons for editing/deleting metadata.
+ * @param props The context and action callbacks.
+ * @returns An action panel containing the Edit and Delete options for metadata.
+ */
 function MetadataActionPanel({
     onEdit,
     onDelete,
