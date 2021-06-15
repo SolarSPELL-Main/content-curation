@@ -12,6 +12,13 @@ type MetadataKebabMenuProps = {
     metadataType: MetadataType
 } & MetadataKebabMenuActionProps
 
+/**
+ * The kebab menu for the metadata editor.
+ * This displays a menu for editing metadata types.
+ * All dialogs are integrated as part of the menu items.
+ * @param props The context and callbacks for the menu items.
+ * @returns A clickable kebab menu icon.
+ */
 function MetadataKebabMenu({
     onAdd,
     onEditType,

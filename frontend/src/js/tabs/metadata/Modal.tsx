@@ -12,6 +12,12 @@ type ModalProps = {
     onAddType: (typeName: string) => void
 } & MetadataEditorActionProps
 
+/**
+ * This component is the main modal for the metadata tab of the web app.
+ * It allows metadata and metadata types to be added/edited/deleted.
+ * @param props The context and callback for the modal.
+ * @returns A form through which metadata and metadata types can be edited.
+ */
 function Modal({
     onAddType,
     ...props

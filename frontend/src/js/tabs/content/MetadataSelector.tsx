@@ -9,6 +9,12 @@ type MetadataSelectorProps = {
     onSelectChange: (metadata: BaseMetadata[], metadataType: BaseMetadataType, rows: GridSelectionModelChangeParams) => void
 }
 
+/**
+ * Displays all metadata with checkable boxes.
+ * This component allows curators to select relevant metadata.
+ * @param props The data to pass in and the selection callback.
+ * @returns An accordion to display all metadata with checkable boxes.
+ */
 function MetadataSelector({
     metadata,
     metadataTypes,

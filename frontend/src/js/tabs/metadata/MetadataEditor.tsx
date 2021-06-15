@@ -17,6 +17,11 @@ type MetadataEditorProps = {
     metadataTypes: MetadataType[]
 } & MetadataEditorActionProps
 
+/**
+ * This component handles the editing of metadata types and metadata (excluding adding metadata types).
+ * @param props The context and various actions for the menus.
+ * @returns An accordion containing all metadata types and metadata with additional menus.
+ */
 function MetadataEditor({
     metadata,
     metadataTypes,
