@@ -40,6 +40,6 @@ export const metadataSlice = createSlice({
 
 export const {
     add_metadata, remove_metadata, fetch_metadata, update_metadata, fetch_btc,
-    update_btc
+    update_btc, edit_metadata, delete_metadata
 } = metadataSlice.actions
 export default metadataSlice.reducer

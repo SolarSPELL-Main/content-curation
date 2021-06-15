@@ -24,7 +24,7 @@ const addMetaEpic: MyEpic = action$ =>
     action$.pipe(
         filter(add_metadata.match),
         mergeMap(action =>
-            from(api.post("/api/metadata/",{
+            from(api.post(`/api/metadata/`,{
                 name: action.payload[0],
                 typeID : action.payload[1]
             })).pipe(
@@ -37,7 +37,7 @@ const editMetaEpic: MyEpic = action$ =>
     action$.pipe(
         filter(edit_metadata.match),
         mergeMap(action =>
-            from(api.post("/api/metadata/",{
+            from(api.post(`/api/metadata/${id}/`,{
                 name: action.payload[0],
                 typeID : action.payload[1]
             })).pipe(
@@ -50,9 +50,7 @@ const deleteMetaEpic: MyEpic = action$ =>
     action$.pipe(
         filter(delete_metadata.match),
         mergeMap(action =>
-            from(api.delete("/api/metadata/{id}",{
-                typeID : action.payload[1]
-            })).pipe(
+            from(api.delete(`/api/metadata/${id}/`)).pipe(
                 map(_res => fetch_metadata())
             ),
         ),
