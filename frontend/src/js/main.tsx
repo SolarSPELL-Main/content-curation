@@ -5,7 +5,9 @@ import Button from "@material-ui/core/Button";
 import { Modal as ContentModal } from './tabs/content';
 import { Modal as MetadataModal } from './tabs/metadata';
 import { Metadata, MetadataType } from "./types";
-import Divider from '@material-ui/core/Divider';
+
+import Grid from '@material-ui/core/Grid';
+import { Switch, Route, Link } from 'react-router-dom';
 
 const mockMetadataTypes: MetadataType[] = [
     {
@@ -79,33 +81,46 @@ export default () => {
     const [myState, setState] = React.useState(0)
 
     return <>
+        <Grid container>
+            <Grid item xs={1}>
+                <Link to={'/content'}>Content</Link>
+            </Grid>
+            <Grid item xs={1}>
+                <Link to={'/metadata'}>Metadata</Link>
+            </Grid>
+        </Grid>
         <h1>{myState}</h1>
         <Button onClick={() => setState(1)} />
         <h1>{metadata_types.join(", ")}</h1>
         <Button onClick={() => dispatch(add_metadata("New Metadata"))}>Add</Button>
         <h1>BTC Price {btc?.bpi?.USD?.rate}</h1>
         <Button onClick={() => dispatch(fetch_btc())}>Check BTC</Button>
-        <ContentModal
-            metadata={mockMetadata}
-            metadataTypes={mockMetadataTypes}
-            onClick={(v) => console.log(v)}
-        />
-        <Divider />
-        <MetadataModal
-            metadata={mockMetadata}
-            metadataTypes={mockMetadataTypes}
-            onAddType={(name) => console.log(name)}
-            actions={{
-                KebabMenu: {
-                    onAdd: (metadataType, name) => console.log(`${name} added to ${metadataType}`),
-                    onEditType: (metadataType, name) => console.log(`${metadataType} named to ${name}`),
-                    onDeleteType: (metadataType) => console.log(`${metadataType} deleted`),
-                },
-                ActionPanel: {
-                    onEdit: (metadata, name) => console.log(`${metadata} named to ${name}`),
-                    onDelete: (metadata) => console.log(`${metadata} deleted`),
-                },
-            }}
-        />
+        <Switch>
+            <Route path={'/content'}>
+                <ContentModal
+                    metadata={mockMetadata}
+                    metadataTypes={mockMetadataTypes}
+                    onClick={(v) => console.log(v)}
+                />
+            </Route>
+            <Route path={'/metadata'}>
+                <MetadataModal
+                    metadata={mockMetadata}
+                    metadataTypes={mockMetadataTypes}
+                    onAddType={(name) => console.log(name)}
+                    actions={{
+                        KebabMenu: {
+                            onAdd: (metadataType, name) => console.log(`${name} added to ${metadataType}`),
+                            onEditType: (metadataType, name) => console.log(`${metadataType} named to ${name}`),
+                            onDeleteType: (metadataType) => console.log(`${metadataType} deleted`),
+                        },
+                        ActionPanel: {
+                            onEdit: (metadata, name) => console.log(`${metadata} named to ${name}`),
+                            onDelete: (metadata) => console.log(`${metadata} deleted`),
+                        },
+                    }}
+                />
+            </Route>
+        </Switch>
     </>
 }
