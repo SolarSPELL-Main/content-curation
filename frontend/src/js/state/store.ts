@@ -8,7 +8,7 @@ import { fetch_btc, update_btc, fetch_metadata, update_metadata, add_metadata } 
 import { combineEpics } from "redux-observable"
 
 import { from } from 'rxjs'
-import { filter, map, mergeMap, delay, mapTo } from 'rxjs/operators'
+import { filter, map, mergeMap } from 'rxjs/operators'
 
 import APP_URLS from '../urls'
 const reducer = combineReducers({
@@ -23,11 +23,42 @@ export const epicMiddleware = createEpicMiddleware<AnyAction, AnyAction, MyState
 const addMetaEpic: MyEpic = action$ =>
     action$.pipe(
         filter(add_metadata.match),
-        delay(1000),
-        mapTo(add_metadata("after")),
+        mergeMap(action =>
+            from(api.post("/api/metadata/",{
+                name: action.payload[0],
+                typeID : action.payload[1]
+            })).pipe(
+                map(_res => fetch_metadata())
+            ),
+        ),
     )
 
-const btcEpic: MyEpic = action$ =>
+const editMetaEpic: MyEpic = action$ =>
+    action$.pipe(
+        filter(edit_metadata.match),
+        mergeMap(action =>
+            from(api.post("/api/metadata/",{
+                name: action.payload[0],
+                typeID : action.payload[1]
+            })).pipe(
+                map(_res => fetch_metadata())
+            ),
+        ),
+    )
+
+const deleteMetaEpic: MyEpic = action$ =>
+    action$.pipe(
+        filter(delete_metadata.match),
+        mergeMap(action =>
+            from(api.delete("/api/metadata/{id}",{
+                typeID : action.payload[1]
+            })).pipe(
+                map(_res => fetch_metadata())
+            ),
+        ),
+    )
+
+    const btcEpic: MyEpic = action$ =>
     action$.pipe(
         filter(fetch_btc.match),
         mergeMap(_ =>
@@ -36,6 +67,7 @@ const btcEpic: MyEpic = action$ =>
             ),
         ),
     )
+
 
 
 const metadataEpic: MyEpic = action$ =>
@@ -51,7 +83,9 @@ const metadataEpic: MyEpic = action$ =>
 const epics = combineEpics(
     addMetaEpic,
     btcEpic,
-    metadataEpic
+    metadataEpic,
+    editMetaEpic,
+    deleteMetaEpic
 )
 
 const store = configureStore({
