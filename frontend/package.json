@@ -10,7 +10,7 @@
     "watch": "npm run-script clean && webpack --watch --mode=development",
     "clean": "rm -Rf ./static",
     "winclean": "rd /s /q static",
-    "update-lib": "npm i SolarSPELL-Main/solarspell-react-lib#main"
+    "update-lib": "npm i Jonathanzhao02/solarspell-react-lib#dev"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",
@@ -48,6 +48,6 @@
     "react-redux": "^7.2.4",
     "redux-observable": "^1.2.0",
     "rxjs": "^6.6.7",
-    "solarspell-react-lib": "github:SolarSPELL-Main/solarspell-react-lib#main"
+    "solarspell-react-lib": "github:Jonathanzhao02/solarspell-react-lib#dev"
   }
 }

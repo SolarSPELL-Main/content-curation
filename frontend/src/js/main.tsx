@@ -2,6 +2,7 @@ import React from "react"
 import { useCCSelector, useCCDispatch } from './hooks'
 import { fetch_btc, add_metadata } from "./state/metadata"
 import Button from "@material-ui/core/Button"
+import { Modal as ContentModal } from './tabs/content';
 import { Modal as MetadataModal } from './tabs/metadata';
 import { Metadata, MetadataType } from "./types"
 
@@ -89,10 +90,25 @@ export default () => {
         <Button onClick={() => dispatch(add_metadata("New Metadata"))}>Add</Button>
         <h1>BTC Price {btc?.bpi?.USD?.rate}</h1>
         <Button onClick={() => dispatch(fetch_btc())}>Check BTC</Button>
-        <MetadataModal
+        <ContentModal
             metadata={mockMetadata}
             metadataTypes={mockMetadataTypes}
             onClick={(v) => console.log(v)}
+        />
+        <MetadataModal
+            metadata={mockMetadata}
+            metadataTypes={mockMetadataTypes}
+            actions={{
+                KebabMenu: {
+                    onAdd: (metadataType, name) => console.log(`${name} added to ${metadataType}`),
+                    onEditType: (metadataType, name) => console.log(`${metadataType} named to ${name}`),
+                    onDeleteType: (metadataType) => console.log(`${metadataType} deleted`),
+                },
+                ActionPanel: {
+                    onEdit: (metadata, name) => console.log(`${metadata} named to ${name}`),
+                    onDelete: (metadata) => console.log(`${metadata} deleted`),
+                },
+            }}
         />
     </>
 }
