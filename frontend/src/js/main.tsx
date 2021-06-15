@@ -2,12 +2,12 @@ import React from "react";
 import { useCCSelector, useCCDispatch } from './hooks';
 import { fetch_btc, add_metadata } from "./state/metadata";
 import Button from "@material-ui/core/Button";
+import { Switch, Route } from 'react-router-dom';
 import { Modal as ContentModal } from './tabs/content';
 import { Modal as MetadataModal } from './tabs/metadata';
-import { Metadata, MetadataType } from "./types";
+import { NavBar } from "./tabs";
 
-import Grid from '@material-ui/core/Grid';
-import { Switch, Route, Link } from 'react-router-dom';
+import { Metadata, MetadataType } from "./types";
 
 const mockMetadataTypes: MetadataType[] = [
     {
@@ -81,14 +81,7 @@ export default () => {
     const [myState, setState] = React.useState(0)
 
     return <>
-        <Grid container>
-            <Grid item xs={1}>
-                <Link to={'/content'}>Content</Link>
-            </Grid>
-            <Grid item xs={1}>
-                <Link to={'/metadata'}>Metadata</Link>
-            </Grid>
-        </Grid>
+        <NavBar />
         <h1>{myState}</h1>
         <Button onClick={() => setState(1)} />
         <h1>{metadata_types.join(", ")}</h1>
