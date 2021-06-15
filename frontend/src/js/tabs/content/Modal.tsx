@@ -22,7 +22,14 @@ function Modal({
     metadataTypes,
     onClick,
 }: ModalProps): React.ReactElement {
-    const [selectedMetadataState, setSelectedMetadataState] = React.useState<Record<number, Metadata[]>>({});
+    const [selectedMetadataState, setSelectedMetadataState] = React.useState<Record<number, Metadata[]>>(() => {
+        // Initialize state with all metadataTypes ID keys
+        const initialMetadata: Record<number, Metadata[]> = {};
+        for (const metadataType of metadataTypes) {
+            initialMetadata[metadataType.id] = [];
+        }
+        return initialMetadata;
+    });
     const onSelectChange = React.useCallback((metadata_, metadataType_, rows) => {
         const metadata: Metadata[] = metadata_ as Metadata[];
         const metadataType: MetadataType = metadataType_ as MetadataType;
