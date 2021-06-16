@@ -1,4 +1,6 @@
-[![Test build](https://github.com/Jonathanzhao02/content-curation/actions/workflows/frontend_build.yml/badge.svg)](https://github.com/Jonathanzhao02/content-curation/actions/workflows/frontend_build.yml)
+[![Test frontend build](https://github.com/SolarSPELL-Main/content-curation/actions/workflows/frontend_build.yml/badge.svg)](https://github.com/SolarSPELL-Main/content-curation/actions/workflows/frontend_build.yml)
+
+[![Test django build](https://github.com/SolarSPELL-Main/content-curation/actions/workflows/django_build.yml/badge.svg)](https://github.com/SolarSPELL-Main/content-curation/actions/workflows/django_build.yml)
 
 # Content Curation
 
