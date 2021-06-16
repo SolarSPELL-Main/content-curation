@@ -84,7 +84,7 @@ export default () => {
         <h1>{myState}</h1>
         <Button onClick={() => setState(1)} />
         <h1>{metadata_types.join(", ")}</h1>
-        <Button onClick={() => dispatch(add_metadata(["Sample_Metadata",0]))}>Add</Button>
+        <Button onClick={() => dispatch(add_metadata({name: "Sample_Metadata", type_id: 0}))}>Add</Button>
         <Switch>
             <Route path={'/content'}>
                 <ContentModal
