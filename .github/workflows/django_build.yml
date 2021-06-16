@@ -1,11 +1,25 @@
 name: django build
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+    - 'manage.py'
+    - 'content_curation/**'
+    - 'backend/**'
+    - 'requirements.txt'
+  pull_request:
+    paths:
+    - 'manage.py'
+    - 'content_curation/**'
+    - 'backend/**'
+    - 'requirements.txt'
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
+    
+    timeout-minutes: 10
     
     name: Test django build
 
