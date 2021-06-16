@@ -21,6 +21,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Create .env file
+      run: |
+        cd content_curation
+        cp env.example .env
+        sed -i 's/^DATABASE_URL=.*$/DATABASE_URL=postgres\:\/\/postgres\:postgres\@127.0.0.1:5432\/github_actions/g' .env
+        cd ..
     - name: Set up Python 3.7
       uses: actions/setup-python@v2
       with:
