@@ -26,14 +26,14 @@ export const metadataSlice = createSlice({
         },
         */
         fetch_metadata: () => {},
-        delete_metadata: (_state, _action:PayloadAction<number>) => {
+        delete_metadata: (_state, _action:PayloadAction<{type_id: number}>) => {
         },
         update_metadata: (state, action: PayloadAction<MetadataByType>) => {
             state.metadata = action.payload
         },
-        add_metadata: (_state, _action:PayloadAction<[string, number]>) => {
+        add_metadata: (_state, _action:PayloadAction<{name: string, type_id:number}>) => {
         },
-        edit_metadata: (_state, _action:PayloadAction<[string, number]>) =>{
+        edit_metadata: (_state, _action:PayloadAction<{name: string, type_id: number}>) =>{
         }
         
     },
