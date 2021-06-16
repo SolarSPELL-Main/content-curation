@@ -1,6 +1,6 @@
 import React from "react";
 import { useCCSelector, useCCDispatch } from './hooks';
-import { fetch_btc, add_metadata } from "./state/metadata";
+import { add_metadata } from "./state/metadata";
 import Button from "@material-ui/core/Button";
 import { Switch, Route } from 'react-router-dom';
 import { Modal as ContentModal } from './tabs/content';
@@ -75,7 +75,6 @@ const mockMetadata: Record<number, Metadata[]> = {
  */
 export default () => {
     const metadata_types = useCCSelector(state => state.metadata.metadata_types)
-    const btc = useCCSelector(state => state.metadata.btc)
     // const metadata_by_type = useCCSelector(state => state.metadata.metadata_types)
     const dispatch = useCCDispatch()
     const [myState, setState] = React.useState(0)
@@ -86,8 +85,6 @@ export default () => {
         <Button onClick={() => setState(1)} />
         <h1>{metadata_types.join(", ")}</h1>
         <Button onClick={() => dispatch(add_metadata(["Sample_Metadata",0]))}>Add</Button>
-        <h1>BTC Price {btc?.bpi?.USD?.rate}</h1>
-        <Button onClick={() => dispatch(fetch_btc())}>Check BTC</Button>
         <Switch>
             <Route path={'/content'}>
                 <ContentModal
