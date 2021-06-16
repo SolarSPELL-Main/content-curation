@@ -12,7 +12,8 @@ export const metadataSlice = createSlice({
         btc: {} as any,
     },
     reducers: {
-        /*add_metadata: (state, action: PayloadAction<string>) => {
+        /*Example code for reference
+        add_metadata: (state, action: PayloadAction<string>) => {
             state.metadata_types.push(action.payload)
         },
     
@@ -25,21 +26,21 @@ export const metadataSlice = createSlice({
         },
         */
         fetch_metadata: () => {},
+        delete_metadata: (_state, _action:PayloadAction<number>) => {
+        },
         update_metadata: (state, action: PayloadAction<MetadataByType>) => {
             state.metadata = action.payload
         },
         add_metadata: (_state, _action:PayloadAction<[string, number]>) => {
         },
         edit_metadata: (_state, _action:PayloadAction<[string, number]>) =>{
-        },
-        delete_metadata: (_state, _action:PayloadAction<number>) => {
         }
+        
     },
 })
 
 
 export const {
-    add_metadata, remove_metadata, fetch_metadata, update_metadata, fetch_btc,
-    update_btc, edit_metadata, delete_metadata
+    delete_metadata, add_metadata, fetch_metadata, update_metadata, edit_metadata
 } = metadataSlice.actions
 export default metadataSlice.reducer

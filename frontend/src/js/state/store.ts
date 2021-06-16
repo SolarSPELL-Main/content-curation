@@ -4,7 +4,7 @@ import metadataReducer from './metadata'
 import { createEpicMiddleware, Epic } from 'redux-observable'
 
 import { api } from '../utils'
-import { fetch_btc, update_btc, fetch_metadata, update_metadata, add_metadata } from './metadata'
+import { fetch_metadata, update_metadata, add_metadata, delete_metadata, edit_metadata } from './metadata'
 import { combineEpics } from "redux-observable"
 
 import { from } from 'rxjs'
@@ -37,7 +37,7 @@ const editMetaEpic: MyEpic = action$ =>
     action$.pipe(
         filter(edit_metadata.match),
         mergeMap(action =>
-            from(api.post(`/api/metadata/${id}/`,{
+            from(api.post("/api/metadata/${id}/",{
                 name: action.payload[0],
                 typeID : action.payload[1]
             })).pipe(
@@ -49,13 +49,14 @@ const editMetaEpic: MyEpic = action$ =>
 const deleteMetaEpic: MyEpic = action$ =>
     action$.pipe(
         filter(delete_metadata.match),
-        mergeMap(action =>
-            from(api.delete(`/api/metadata/${id}/`)).pipe(
+        mergeMap(_action =>
+            from(api.delete("/api/metadata/${id}/")).pipe(
                 map(_res => fetch_metadata())
             ),
         ),
     )
 
+    /*Example code for reference
     const btcEpic: MyEpic = action$ =>
     action$.pipe(
         filter(fetch_btc.match),
@@ -65,6 +66,7 @@ const deleteMetaEpic: MyEpic = action$ =>
             ),
         ),
     )
+    */
 
 
 
@@ -80,7 +82,6 @@ const metadataEpic: MyEpic = action$ =>
 
 const epics = combineEpics(
     addMetaEpic,
-    btcEpic,
     metadataEpic,
     editMetaEpic,
     deleteMetaEpic
