@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     
     # Job name
-    name: Test if project frontend builds
+    name: Test frontend build
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
