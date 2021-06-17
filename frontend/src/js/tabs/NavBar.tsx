@@ -6,57 +6,53 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useCCSelector, useCCDispatch } from '../hooks';
 import { update_current_tab } from '../state/global';
 
-import Logo from '../../assets/logo.png';
+type TabProps = React.ComponentProps<typeof RouterLink> & React.ComponentProps<typeof Tab>
 
 type NavBarProps = {
-
+    tabs: TabProps[],
+    tabMap: Record<string, string>,
 }
 
-const logoStyle: React.CSSProperties = {
-    height: '75px',
-    width: '300px',
-    margin: '10px',
+const tabIndicatorStyle: React.CSSProperties = {
+    backgroundColor: 'var(--bright-blue)',
+    height: '5px',
+    borderRadius: '5px',
 };
 
-const logoTabStyle: React.CSSProperties = {
-    width: '320px',
-    maxWidth: '320px',
-    backgroundColor: 'var(--ocean-blue)',
-};
-
-const linkMap: Record<string, number> = {
-    '/': 0,
-    '/home': 0,
-    '/metadata': 1,
-    '/content': 2,
-};
-
-function NavBar(_: NavBarProps): React.ReactElement {
-    const path = useLocation().pathname;
-    const currentTab = useCCSelector(state => state.global.current_tab);
+/**
+ * The nav bar displayed to users at the top of the page.
+ * This component is integrated with the Redux state.
+ * @param props The tabs to display in the nav bar.
+ * @returns The nav bar.
+ */
+function NavBar({
+    tabs,
+    tabMap,
+}: NavBarProps): React.ReactElement {
+    const currentTab = useLocation().pathname;
+    const stateTab = useCCSelector(state => state.global.current_tab);
     const dispatch = useCCDispatch();
 
-    const updateTab = React.useCallback((tab: number) => {
+    const updateTab = React.useCallback((tab: string) => {
         dispatch(update_current_tab(tab));
     }, [dispatch]);
 
     React.useEffect(() => {
-        if (linkMap[path] !== currentTab) {
-            updateTab(linkMap[path]);
+        if (tabMap[currentTab] !== stateTab) {
+            updateTab(tabMap[currentTab]);
         }
-    }, [updateTab, currentTab, path]);
+    }, [updateTab, stateTab, currentTab, tabMap]);
 
     return (
         <Tabs
-            value={currentTab}
-            TabIndicatorProps={{style: {backgroundColor: '#75B2DD', height: '5px', borderRadius: '5px'}}}
-            indicatorColor={'primary'}
+            value={stateTab}
+            TabIndicatorProps={{style: tabIndicatorStyle}}
             variant={'scrollable'}
             onChange={(_, v) => updateTab(v)}
         >
-            <Tab component={RouterLink} style={logoTabStyle} to={'/home'} label={<img src={Logo} style={logoStyle} />} />
-            <Tab component={RouterLink} to={'/metadata'} label={'Metadata'} />
-            <Tab component={RouterLink} to={'/content'} label={'Content'} />
+            {tabs.map(props => (
+                <Tab component={RouterLink} {...props} />
+            ))}
         </Tabs>
     );
 }
