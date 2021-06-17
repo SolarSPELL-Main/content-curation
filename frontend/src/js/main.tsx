@@ -1,7 +1,4 @@
 import React from "react";
-import { useCCSelector, useCCDispatch } from './hooks';
-import { add_metadata } from "./state/metadata";
-import Button from "@material-ui/core/Button";
 import { Switch, Route } from 'react-router-dom';
 import { Modal as ContentModal } from './tabs/content';
 import { Modal as MetadataModal } from './tabs/metadata';
@@ -74,17 +71,8 @@ const mockMetadata: Record<number, Metadata[]> = {
  * Component to test adding metadata to the global store
  */
 export default () => {
-    const metadata_types = useCCSelector(state => state.metadata.metadata_types)
-    // const metadata_by_type = useCCSelector(state => state.metadata.metadata_types)
-    const dispatch = useCCDispatch()
-    const [myState, setState] = React.useState(0)
-
     return <>
         <NavBar />
-        <h1>{myState}</h1>
-        <Button onClick={() => setState(1)} />
-        <h1>{metadata_types.join(", ")}</h1>
-        <Button onClick={() => dispatch(add_metadata({name: "Sample_Metadata", type_id: 0}))}>Add</Button>
         <Switch>
             <Route path={'/content'}>
                 <ContentModal
