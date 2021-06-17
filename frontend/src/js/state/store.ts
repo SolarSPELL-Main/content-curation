@@ -1,24 +1,37 @@
 import { configureStore, getDefaultMiddleware, AnyAction, combineReducers } from '@reduxjs/toolkit'
-import metadataReducer from './metadata'
-
-import { createEpicMiddleware, Epic } from 'redux-observable'
-
-import { api } from '../utils'
-import { fetch_metadata, update_metadata, add_metadata, delete_metadata, edit_metadata } from './metadata'
-import { combineEpics } from "redux-observable"
-
+import { combineEpics, createEpicMiddleware, Epic } from "redux-observable"
 import { from } from 'rxjs'
 import { filter, map, mergeMap } from 'rxjs/operators'
 
+import globalReducer from './global'
+import metadataReducer from './metadata'
+
+import { fetch_metadata, update_metadata, add_metadata, delete_metadata, edit_metadata } from './metadata'
+
+import { api } from '../utils'
+
 import APP_URLS from '../urls'
 const reducer = combineReducers({
-    metadata: metadataReducer
+    metadata: metadataReducer,
+    global: globalReducer,
 });
 
 export type MyState = ReturnType<typeof reducer>
 export type MyEpic = Epic<AnyAction, AnyAction, MyState>
 
 export const epicMiddleware = createEpicMiddleware<AnyAction, AnyAction, MyState>();
+
+/*Example code for reference
+const btcEpic: MyEpic = action$ =>
+action$.pipe(
+    filter(fetch_btc.match),
+    mergeMap(_ =>
+        from(api.get("https://api.coindesk.com/v1/bpi/currentprice.json")).pipe(
+            map(res => update_btc(res.data))
+        ),
+    ),
+)
+*/
 
 const addMetaEpic: MyEpic = action$ =>
     action$.pipe(
@@ -55,18 +68,6 @@ const deleteMetaEpic: MyEpic = action$ =>
             ),
         ),
     )
-
-    /*Example code for reference
-    const btcEpic: MyEpic = action$ =>
-    action$.pipe(
-        filter(fetch_btc.match),
-        mergeMap(_ =>
-            from(api.get("https://api.coindesk.com/v1/bpi/currentprice.json")).pipe(
-                map(res => update_btc(res.data))
-            ),
-        ),
-    )
-    */
 
 const metadataEpic: MyEpic = action$ =>
     action$.pipe(
