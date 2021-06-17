@@ -67,57 +67,12 @@ const mockMetadata: Record<number, Metadata[]> = {
     ],
 }
 
-import Logo from '../assets/logo.png';
-
-const logoStyle: React.CSSProperties = {
-    height: '75px',
-    width: '300px',
-    margin: '10px',
-};
-
-const logoTabStyle: React.CSSProperties = {
-    width: '320px',
-    maxWidth: '320px',
-    backgroundColor: 'var(--ocean-blue)',
-};
-
-const tabDescriptors = [
-    {
-        style: logoTabStyle,
-        to: '/home',
-        label: (
-            <img src={Logo} style={logoStyle} />
-        ),
-        value: 'home',
-    },
-    {
-        to: '/metadata',
-        label: 'Metadata',
-        value: 'metadata',
-    },
-    {
-        to: '/content',
-        label: 'Content',
-        value: 'content',
-    },
-];
-
-const tabMap: Record<string, string> = {
-    '/': 'home',
-    '/home': 'home',
-    '/metadata': 'metadata',
-    '/content': 'content',
-};
-
 /*
  * Component to test adding metadata to the global store
  */
 export default () => {
     return <>
-        <NavBar
-            tabs={tabDescriptors}
-            tabMap={tabMap}
-        />
+        <NavBar />
         <Switch>
             <Route path={'/content'}>
                 <ContentModal

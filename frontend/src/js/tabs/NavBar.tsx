@@ -1,34 +1,65 @@
 import React from 'react';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
+import Tabs from './Tabs';
 
 import { useCCSelector, useCCDispatch } from '../hooks';
 import { update_current_tab } from '../state/global';
 
-type TabProps = React.ComponentProps<typeof RouterLink> & React.ComponentProps<typeof Tab>
+import Logo from '../../assets/logo.png';
+
+const logoStyle: React.CSSProperties = {
+    height: '75px',
+    width: '300px',
+    margin: '10px',
+};
+
+const logoTabStyle: React.CSSProperties = {
+    width: '320px',
+    maxWidth: '320px',
+    backgroundColor: 'var(--ocean-blue)',
+};
+
+const tabDescriptors = [
+    {
+        component: RouterLink,
+        style: logoTabStyle,
+        to: '/home',
+        label: (
+            <img src={Logo} style={logoStyle} />
+        ),
+        value: 'home',
+    },
+    {
+        component: RouterLink,
+        to: '/metadata',
+        label: 'Metadata',
+        value: 'metadata',
+    },
+    {
+        component: RouterLink,
+        to: '/content',
+        label: 'Content',
+        value: 'content',
+    },
+];
 
 type NavBarProps = {
-    tabs: TabProps[],
-    tabMap: Record<string, string>,
+
 }
 
-const tabIndicatorStyle: React.CSSProperties = {
-    backgroundColor: 'var(--bright-blue)',
-    height: '5px',
-    borderRadius: '5px',
+const tabMap: Record<string, string> = {
+    '/': 'home',
+    '/home': 'home',
+    '/metadata': 'metadata',
+    '/content': 'content',
 };
 
 /**
- * The nav bar displayed to users at the top of the page.
- * This component is integrated with the Redux state.
- * @param props The tabs to display in the nav bar.
+ * This component is the full nav bar integrated with Redux global state.
+ * @param props The properties of the nav bar.
  * @returns The nav bar.
  */
-function NavBar({
-    tabs,
-    tabMap,
-}: NavBarProps): React.ReactElement {
+function NavBar(_: NavBarProps): React.ReactElement {
     const currentTab = useLocation().pathname;
     const stateTab = useCCSelector(state => state.global.current_tab);
     const dispatch = useCCDispatch();
@@ -45,15 +76,10 @@ function NavBar({
 
     return (
         <Tabs
-            value={stateTab}
-            TabIndicatorProps={{style: tabIndicatorStyle}}
-            variant={'scrollable'}
-            onChange={(_, v) => updateTab(v)}
-        >
-            {tabs.map(props => (
-                <Tab component={RouterLink} {...props} />
-            ))}
-        </Tabs>
+            tabs={tabDescriptors}
+            currentTab={stateTab}
+            updateTab={updateTab}
+        />
     );
 }
 
