@@ -44,4 +44,3 @@ function Tabs<T>({
 }
 
 export default Tabs;
-
