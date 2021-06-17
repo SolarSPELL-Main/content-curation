@@ -11,6 +11,8 @@ import { Provider } from 'react-redux'
 
 import Main from './main'
 
+import './styles.css';
+
 /*
 * Load main screen
 */

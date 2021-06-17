@@ -3,9 +3,17 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 
+import Logo from '../../assets/logo.png';
+
 type NavBarProps = {
 
 }
+
+const logoStyle: React.CSSProperties = {
+    height: '75px',
+    width: '300px',
+    margin: '10px',
+};
 
 const linkMap: Record<string, number> = {
     '/': 0,
@@ -30,7 +38,7 @@ function NavBar(_: NavBarProps): React.ReactElement {
             variant={'scrollable'}
             onChange={(_, v) => setCurrentTab(v)}
         >
-            <Tab component={RouterLink} to={'/home'} label={'Home'} />
+            <Tab component={RouterLink} style={{ width: '320px', maxWidth: '320px', backgroundColor: 'var(--ocean-blue)' }} to={'/home'} label={<img src={Logo} style={logoStyle} />} />
             <Tab component={RouterLink} to={'/metadata'} label={'Metadata'} />
             <Tab component={RouterLink} to={'/content'} label={'Content'} />
         </Tabs>
