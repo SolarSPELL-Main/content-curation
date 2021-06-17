@@ -78,7 +78,6 @@ function Page(_: PageProps): React.ReactElement {
         <Modal
             metadata={mockMetadata}
             metadataTypes={mockMetadataTypes}
-            onAddType={(name) => console.log(name)}
             actions={{
                 KebabMenu: {
                     onAdd: (metadataType, name) => console.log(`${name} added to ${metadataType}`),
@@ -88,6 +87,9 @@ function Page(_: PageProps): React.ReactElement {
                 ActionPanel: {
                     onEdit: (metadata, name) => console.log(`${metadata} named to ${name}`),
                     onDelete: (metadata) => console.log(`${metadata} deleted`),
+                },
+                AddType: {
+                    onAddType: (name) => console.log(name),
                 },
             }}
         />
