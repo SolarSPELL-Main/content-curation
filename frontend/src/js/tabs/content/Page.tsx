@@ -78,7 +78,7 @@ function Page(_: PageProps): React.ReactElement {
         <Modal
             metadata={mockMetadata}
             metadataTypes={mockMetadataTypes}
-            onClick={(v) => console.log(v)}
+            onSubmit={(v) => console.log(v)}
         />
     );
 }
