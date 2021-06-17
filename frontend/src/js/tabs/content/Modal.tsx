@@ -1,14 +1,14 @@
 import React from 'react';
-import MetadataSelector from './MetadataSelector';
-import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
+import Selector from './Selector';
+import Submitter from './Submitter';
 
 import { Metadata, MetadataType } from '../../types';
 
 type ModalProps = {
     metadata: Record<number, Metadata[]>
     metadataTypes: MetadataType[]
-    onClick: (metadata: Record<number, Metadata[]>) => void
+    onSubmit: (metadata: Record<number, Metadata[]>) => void
 }
 
 /**
@@ -20,8 +20,9 @@ type ModalProps = {
 function Modal({
     metadata,
     metadataTypes,
-    onClick,
+    onSubmit,
 }: ModalProps): React.ReactElement {
+    // State hook for metadata
     const [selectedMetadataState, setSelectedMetadataState] = React.useState<Record<number, Metadata[]>>(() => {
         // Initialize state with all metadataTypes ID keys
         const initialMetadata: Record<number, Metadata[]> = {};
@@ -30,6 +31,8 @@ function Modal({
         }
         return initialMetadata;
     });
+
+    // Callback for selection changes in selector
     const onSelectChange = React.useCallback((metadata_, metadataType_, rows) => {
         const metadata: Metadata[] = metadata_ as Metadata[];
         const metadataType: MetadataType = metadataType_ as MetadataType;
@@ -40,18 +43,20 @@ function Modal({
             return oldState;
         });
     }, [setSelectedMetadataState]);
-    const onClick_ = React.useCallback(() => onClick(selectedMetadataState), [onClick, selectedMetadataState]);
+
+    // Callback for submission
+    const onSubmit_ = React.useCallback(() => onSubmit(selectedMetadataState), [onSubmit, selectedMetadataState]);
 
     return (
         <Box p={2}>
-            <MetadataSelector
+            <Selector
                 metadata={metadata}
                 metadataTypes={metadataTypes}
                 onSelectChange={onSelectChange}
             />
-            <Box mt={1}>
-                <Button onClick={onClick_} color={'primary'} variant={'contained'} >Submit</Button>
-            </Box>
+            <Submitter
+                onSubmit={onSubmit_}
+            />
         </Box>
     );
 }
