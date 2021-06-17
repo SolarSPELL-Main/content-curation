@@ -7,7 +7,7 @@ module.exports = {
     devtool: 'source-map',
     entry: './src/js/index.tsx',
     output: {
-        filename: 'js/[name].[hash].bundle.js',
+        filename: 'js/[name].[fullhash].bundle.js',
         path: path.resolve(__dirname, 'static'),
         publicPath: "/static/"
     },
