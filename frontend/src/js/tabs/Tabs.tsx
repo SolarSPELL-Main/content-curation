@@ -36,8 +36,8 @@ function Tabs<T>({
             variant={'scrollable'}
             onChange={updateTab_}
         >
-            {tabs.map(props => (
-                <Tab {...props} />
+            {tabs.map((props, idx) => (
+                <Tab {...props} key={idx} />
             ))}
         </MUITabs>
     );
