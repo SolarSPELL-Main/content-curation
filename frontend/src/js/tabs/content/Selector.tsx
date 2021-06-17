@@ -3,7 +3,7 @@ import { GridSelectionModelChangeParams } from '@material-ui/data-grid';
 import { MetadataDisplay, BaseMetadata, BaseMetadataType } from 'solarspell-react-lib';
 import { Metadata, MetadataType } from '../../types';
 
-type MetadataSelectorProps = {
+type SelectorProps = {
     metadata: Record<number, Metadata[]>
     metadataTypes: MetadataType[]
     onSelectChange: (metadata: BaseMetadata[], metadataType: BaseMetadataType, rows: GridSelectionModelChangeParams) => void
@@ -15,11 +15,11 @@ type MetadataSelectorProps = {
  * @param props The data to pass in and the selection callback.
  * @returns An accordion to display all metadata with checkable boxes.
  */
-function MetadataSelector({
+function Selector({
     metadata,
     metadataTypes,
     onSelectChange,
-}: MetadataSelectorProps): React.ReactElement {
+}: SelectorProps): React.ReactElement {
     return (
         <MetadataDisplay
             metadata={metadata}
@@ -32,4 +32,4 @@ function MetadataSelector({
     );
 }
 
-export default MetadataSelector;
+export default Selector;

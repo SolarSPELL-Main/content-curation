@@ -3,20 +3,20 @@ import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import { TextInputDialog } from 'solarspell-react-lib';
 
-type MetadataTypeAdderActionProps = {
+type TypeAdderActionProps = {
     onAddType: (typeName: string) => void
 }
 
-type MetadataTypeAdderProps = MetadataTypeAdderActionProps
+type TypeAdderProps = TypeAdderActionProps
 
 /**
- * This component handles the adding of new metadata types and its dialogs.
+ * This component handles the adding of new metadata types and its dialog.
  * @param props The callback on adding a new type.
  * @returns A button with an accompanying dialog.
  */
-function MetadataTypeAdder({
+function TypeAdder({
     onAddType,
-}: MetadataTypeAdderProps): React.ReactElement {
+}: TypeAdderProps): React.ReactElement {
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const open = React.useCallback(() => setDialogOpen(true), [setDialogOpen]);
     const close = React.useCallback((val: string) => {
@@ -41,5 +41,5 @@ function MetadataTypeAdder({
     );
 }
 
-export type { MetadataTypeAdderActionProps };
-export default MetadataTypeAdder;
+export type { TypeAdderActionProps };
+export default TypeAdder;

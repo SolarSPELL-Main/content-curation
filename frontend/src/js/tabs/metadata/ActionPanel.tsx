@@ -1,18 +1,18 @@
 import React from 'react';
-import { ActionPanel, ActionPanelItem } from 'solarspell-react-lib';
+import { ActionPanel as SolarSPELLActionPanel, ActionPanelItem } from 'solarspell-react-lib';
 import { Edit, Delete } from '@material-ui/icons';
 
 import { Metadata, MetadataType } from '../../types';
 
-type MetadataActionPanelActionProps = {
+type ActionPanelActionProps = {
     onEdit: (item: Metadata, val: string) => void
     onDelete: (item: Metadata) => void
 }
 
-type MetadataActionPanelProps = {
+type ActionPanelProps = {
     metadata: Metadata
     metadataType: MetadataType
-} & MetadataActionPanelActionProps
+} & ActionPanelActionProps
 
 /**
  * The 'Actions' column in the MetadataEditor component.
@@ -20,17 +20,17 @@ type MetadataActionPanelProps = {
  * @param props The context and action callbacks.
  * @returns An action panel containing the Edit and Delete options for metadata.
  */
-function MetadataActionPanel({
+function ActionPanel({
     onEdit,
     onDelete,
     metadata,
     metadataType,
-}: MetadataActionPanelProps): React.ReactElement {
+}: ActionPanelProps): React.ReactElement {
     const onAction = React.useCallback((val: string) => onEdit(metadata, val), [onEdit, metadata]);
     const onDelete_ = React.useCallback(() => onDelete(metadata), [onDelete, metadata]);
 
     return (
-        <ActionPanel>
+        <SolarSPELLActionPanel>
             <ActionPanelItem
                 type={'text_input'}
                 tooltip={'Edit'}
@@ -47,9 +47,9 @@ function MetadataActionPanel({
                 confirmationTitle={`Delete Metadata item ${metadata.name} of type ${metadataType.name}?`}
                 confirmationDescription={'WARNING: Deleting a metadata will also delete each of that metadata on every content and is irreversible.'}
             />
-        </ActionPanel>
+        </SolarSPELLActionPanel>
     );
 }
 
-export type { MetadataActionPanelActionProps };
-export default MetadataActionPanel;
+export type { ActionPanelActionProps };
+export default ActionPanel;

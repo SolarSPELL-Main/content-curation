@@ -1,7 +1,7 @@
 import React from 'react';
 import Box from '@material-ui/core/Box';
-import MetadataSelector from './MetadataSelector';
-import MetadataSubmitter from './MetadataSubmitter';
+import Selector from './Selector';
+import Submitter from './Submitter';
 
 import { Metadata, MetadataType } from '../../types';
 
@@ -49,12 +49,12 @@ function Modal({
 
     return (
         <Box p={2}>
-            <MetadataSelector
+            <Selector
                 metadata={metadata}
                 metadataTypes={metadataTypes}
                 onSelectChange={onSelectChange}
             />
-            <MetadataSubmitter
+            <Submitter
                 onSubmit={onSubmit_}
             />
         </Box>

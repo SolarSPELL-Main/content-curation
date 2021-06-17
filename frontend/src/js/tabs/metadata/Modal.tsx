@@ -1,17 +1,17 @@
 import React from 'react';
 import Box from '@material-ui/core/Box';
 import { MetadataDisplay } from 'solarspell-react-lib';
-import MetadataKebabMenu, { MetadataKebabMenuActionProps } from './MetadataKebabMenu';
-import MetadataActionPanel, { MetadataActionPanelActionProps } from './MetadataActionPanel';
-import MetadataTypeAdder, { MetadataTypeAdderActionProps } from './MetadataTypeAdder';
+import KebabMenu, { KebabMenuActionProps } from './KebabMenu';
+import ActionPanel, { ActionPanelActionProps } from './ActionPanel';
+import TypeAdder, { TypeAdderActionProps } from './TypeAdder';
 
 import { Metadata, MetadataType } from '../../types';
 
 type ModalActionProps = {
     actions: {
-        KebabMenu: MetadataKebabMenuActionProps
-        ActionPanel: MetadataActionPanelActionProps
-        AddType: MetadataTypeAdderActionProps
+        KebabMenu: KebabMenuActionProps
+        ActionPanel: ActionPanelActionProps
+        AddType: TypeAdderActionProps
     }
 }
 
@@ -33,7 +33,7 @@ function Modal({
 }: ModalProps): React.ReactElement {
     return (
         <Box p={2}>
-            <MetadataTypeAdder
+            <TypeAdder
                 {...actions.AddType}
             />
             <MetadataDisplay
@@ -41,8 +41,8 @@ function Modal({
                 metadataTypes={metadataTypes}
                 tableProps={{
                     components: {
-                        KebabMenu: MetadataKebabMenu,
-                        ActionPanel: MetadataActionPanel,
+                        KebabMenu: KebabMenu,
+                        ActionPanel: ActionPanel,
                     },
                     componentProps: {
                         KebabMenu: actions.KebabMenu,

@@ -1,16 +1,16 @@
 import React from 'react';
-import { KebabMenu, KebabMenuItem } from 'solarspell-react-lib';
+import { KebabMenu as SolarSPELLKebabMenu, KebabMenuItem } from 'solarspell-react-lib';
 import { MetadataType } from '../../types';
 
-type MetadataKebabMenuActionProps = {
+type KebabMenuActionProps = {
     onAdd: (type: MetadataType, val: string) => void
     onEditType: (type: MetadataType, val: string) => void
     onDeleteType: (type: MetadataType) => void
 }
 
-type MetadataKebabMenuProps = {
+type KebabMenuProps = {
     metadataType: MetadataType
-} & MetadataKebabMenuActionProps
+} & KebabMenuActionProps
 
 /**
  * The kebab menu for the metadata editor.
@@ -19,12 +19,12 @@ type MetadataKebabMenuProps = {
  * @param props The context and callbacks for the menu items.
  * @returns A clickable kebab menu icon.
  */
-function MetadataKebabMenu({
+function KebabMenu({
     onAdd,
     onEditType,
     onDeleteType,
     metadataType,
-}: MetadataKebabMenuProps): React.ReactElement {
+}: KebabMenuProps): React.ReactElement {
     const onAdd_ = React.useCallback((val: string) => onAdd(metadataType, val), [onAdd, metadataType]);
     const onEditType_ = React.useCallback((val: string) => onEditType(metadataType, val), [onEditType, metadataType]);
     const onDeleteType_ = React.useCallback((confirmation: string) => {
@@ -34,7 +34,7 @@ function MetadataKebabMenu({
     }, [onDeleteType, metadataType]);
 
     return (
-        <KebabMenu>
+        <SolarSPELLKebabMenu>
             <KebabMenuItem
                 type={'text_input'}
                 label={'Add Metadata'}
@@ -62,9 +62,9 @@ function MetadataKebabMenu({
                 cancelButtonColor={'primary'}
                 textInputSize={'md'}
             />
-        </KebabMenu>
+        </SolarSPELLKebabMenu>
     );
 }
 
-export type { MetadataKebabMenuActionProps };
-export default MetadataKebabMenu;
+export type { KebabMenuActionProps };
+export default KebabMenu;

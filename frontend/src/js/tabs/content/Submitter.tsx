@@ -3,7 +3,7 @@ import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import { ConfirmationDialog } from 'solarspell-react-lib';
 
-type MetadataSubmitterProps = {
+type SubmitterProps = {
     onSubmit: () => void
 }
 
@@ -12,9 +12,9 @@ type MetadataSubmitterProps = {
  * @param props The callback on submitting.
  * @returns A button with an accompanying dialog.
  */
-function MetadataSubmitter({
+function Submitter({
     onSubmit,
-}: MetadataSubmitterProps): React.ReactElement {
+}: SubmitterProps): React.ReactElement {
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const open = React.useCallback(() => setDialogOpen(true), [setDialogOpen]);
     const close = React.useCallback((val: boolean) => {
@@ -41,4 +41,4 @@ function MetadataSubmitter({
     );
 }
 
-export default MetadataSubmitter;
+export default Submitter;
