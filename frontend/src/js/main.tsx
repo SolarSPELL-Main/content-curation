@@ -1,7 +1,8 @@
 import React from "react";
 import { Switch, Route } from 'react-router-dom';
-import ContentPage from './tabs/content';
+import HomePage from './tabs/home';
 import MetadataPage from './tabs/metadata';
+import ContentPage from './tabs/content';
 import { NavBar } from "./tabs";
 
 /*
@@ -16,6 +17,9 @@ export default () => {
             </Route>
             <Route path={'/metadata'}>
                 <MetadataPage />
+            </Route>
+            <Route path={['/home', '/']}>
+                <HomePage />
             </Route>
         </Switch>
     </>

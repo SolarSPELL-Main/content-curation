@@ -16,6 +16,7 @@ type ModalProps = {
  * It allows certain metadata tags to be selected from dropdowns.
  * @param props The context and callback for the modal.
  * @returns A form through which metadata tags can be selected and submitted.
+ * @deprecated Does not fit the requirements for the content modal.
  */
 function Modal({
     metadata,
