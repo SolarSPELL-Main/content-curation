@@ -29,7 +29,7 @@ const addMetaEpic: MyEpic = action$ =>
                 name: action.payload.name,
                 type_id : action.payload.type_id
             })).pipe(
-                map(_res => fetch_metadata())
+                map(_res => fetch_metadata(_res.data))
             ),
         ),
     )
@@ -42,7 +42,7 @@ const editMetaEpic: MyEpic = action$ =>
                 name: action.payload.name,
                 type_id : action.payload.type_id
             })).pipe(
-                map(_res => fetch_metadata())
+                map(_res => fetch_metadata(_res.data))
             ),
         ),
     )
@@ -52,7 +52,7 @@ const deleteMetaEpic: MyEpic = action$ =>
         filter(delete_metadata.match),
         mergeMap(action =>
             from(api.delete(`/api/metadata/${action.payload.type_id}/`)).pipe(
-                map(_res => fetch_metadata())
+                map(_res => fetch_metadata(_res.data))
             ),
         ),
     )
