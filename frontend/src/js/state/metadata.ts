@@ -25,7 +25,7 @@ export const metadataSlice = createSlice({
             state.btc = action.payload
         },
         */
-        fetch_metadata: () => {},
+        fetch_metadata: (_state, _action?: PayloadAction<{metadata_type?: string | undefined, string_filter?: number|undefined}>) => {},
         delete_metadata: (_state, _action:PayloadAction<{type_id: number}>) => {
         },
         update_metadata: (state, action: PayloadAction<MetadataByType>) => {
@@ -36,7 +36,7 @@ export const metadataSlice = createSlice({
         edit_metadata: (_state, _action:PayloadAction<{name: string, type_id: number}>) =>{
         },
         fetch_metadatatype: () => {},
-        delete_metadatatype: (_state, _action:PayloadAction<{type_id: number}>) => {
+        delete_metadatatype: (_state: any, _action:PayloadAction<{type_id: number}>) => {
         },
         update_metadatatype: (state, action: PayloadAction<MetadataByType>) => {
             state.metadata = action.payload
