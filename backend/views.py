@@ -1,4 +1,4 @@
-from django.db.utils import IntegrityError
+from django.db.utils import IntegrityError, Error
 from django.shortcuts import render
 from django.http.response import JsonResponse
 from rest_framework import viewsets, status
@@ -39,12 +39,6 @@ class StandardDataView:
             serializer = self.get_serializer(data=request.data)
             print("request.data ",request.data)
             #print("serializer valid ",serializer.is_valid)
-            if(serializer.is_valid):
-                print("valid serializer")
-            else:
-                print("invalid serializer")
-            #print(" serializer" ,serializer)
-
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)
@@ -61,6 +55,7 @@ class StandardDataView:
         return build_response(serializer.data)
 
     def list(self, request, *args, **kwargs):
+        print("list")
         queryset = self.filter_queryset(self.get_queryset())
         #print("list ",queryset)
         page = self.paginate_queryset(queryset)
@@ -91,25 +86,6 @@ class MetadataViewSet(StandardDataView, viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return build_response(serializer.data)
-
-
-    def patch(self,request,pk):
-        print("Metadataview patch service")
-        metadata_model = self.get_object(pk)
-        serializer = MetadataSerializer(metadata_model,data=request.data,partial=True)
-        try:
-            if(serializer.is_valid()):
-                serializer.save()
-                headers = self.get_success_headers(serializer.data)
-                return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-        except IntegrityError as e:
-            return build_response(status=status.HTTP_400_BAD_REQUEST, success=False, error="Already Exists in Database")
-
-
-    def create(self, request, *args, **kwargs):
-        print("Metadataviewset create function")
-        serializer = MetadataSerializer(request.data)
-
 
 class MetadataTypeViewSet(StandardDataView, viewsets.ModelViewSet):
     print("Metadatatypeset")
