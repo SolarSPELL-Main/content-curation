@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Modal from './Modal';
 import * as Actions from '../../state/metadata';
 import { useCCDispatch, useCCSelector } from '../../hooks';
@@ -76,22 +76,22 @@ type PageProps = {
  * @returns The full page.
  */
 function Page(_: PageProps): React.ReactElement {
-    const dispatch = useCCDispatch();
-    const metadata = useCCSelector(state => state.metadata.metadata);
-    const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
+    const dispatch = useCCDispatch()
+    const metadata = useCCSelector(state => state.metadata.metadata)
+    const metadataTypes = useCCSelector(state => state.metadata.metadata_types)
+
+    useEffect(() => {
+        dispatch(Actions.fetch_metadatatype())
+    }, [])
+
+    if (metadataTypes.map(type => type.id in metadata).includes(false)) {
+        return <></>
+    }
 
     return (
         <Modal
             metadata={metadata}
-            metadataTypes={metadataTypes.map((name, idx) => {
-                // TODO:
-                // This is just a temporary fix for converting strings to metadata types
-                // Need to determine whether in the end, the application will use metadata types or strings in its state
-                return {
-                    name: name,
-                    id: idx,
-                };
-            })}
+            metadataTypes={metadataTypes}
             actions={{
                 KebabMenu: {
                     onAdd: (metadataType, name) => dispatch(Actions.add_metadata({ name: name, type_id: metadataType.id })),

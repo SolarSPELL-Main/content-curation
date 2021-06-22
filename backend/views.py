@@ -73,21 +73,13 @@ class MetadataViewSet(StandardDataView, viewsets.ModelViewSet):
     serializer_class = MetadataSerializer
     print("Metadataviewset  query ",queryset.query)
 
-    @action(methods=['get'], detail=True)
-    def get(self, request, pk=None):
-        print("Metadataviewset get function")
-        queryset = self.filter_queryset(Metadata.objects.filter(type__name=pk))
-        print("get in metadataset",queryset.query)
-        page = self.paginate_queryset(queryset)
-        if page != None:
-            print("paginated_response")
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return build_response(serializer.data)
-
 class MetadataTypeViewSet(StandardDataView, viewsets.ModelViewSet):
     print("Metadatatypeset")
     queryset = MetadataType.objects.all()
     serializer_class = MetadataTypeSerializer
+
+    @action(detail=True, methods=["GET"])
+    def metadata(self, request, pk=None):
+        return build_response(MetadataSerializer(
+            Metadata.objects.filter(type_id=pk), many=True
+        ).data)
