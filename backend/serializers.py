@@ -16,9 +16,9 @@ class MetadataSerializer(ModelSerializer):
         validators = [
             UniqueTogetherValidator(
                 queryset=Metadata.objects.all(),
-                fields=["id", "name","type"]
+                fields=["name","type"]
             )
         ]
         model = Metadata
-        fields = ('id', 'name', 'type')
+        fields = ('id', 'name', 'type','type_info')
     
