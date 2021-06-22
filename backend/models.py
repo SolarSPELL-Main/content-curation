@@ -26,8 +26,11 @@ class Metadata(models.Model):
     name = models.CharField(max_length=500)
     type = models.ForeignKey(MetadataType, on_delete=models.CASCADE)
 
-    def type_name(self):
-        return self.type.name
+    def type_info(self):
+        return {
+            "type": self.type.id,
+            "type_name": self.type.name
+        }
 
     def __str__(self):
         return f'[{self.type}]{self.name}'
