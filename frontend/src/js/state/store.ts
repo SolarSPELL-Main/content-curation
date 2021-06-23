@@ -8,6 +8,7 @@ import { filter, map, mergeMap } from 'rxjs/operators'
 import globalReducer from './global'
 import metadataReducer from './metadata'
 
+//import these from './metadata' so they can be used in this file
 import {
     fetch_metadata, update_metadata, add_metadata, delete_metadata, edit_metadata,
     fetch_metadatatype, update_metadatatype, add_metadatatype,
@@ -27,6 +28,7 @@ export type MyEpic = Epic<AnyAction, AnyAction, MyState>
 
 export const epicMiddleware = createEpicMiddleware<AnyAction, AnyAction, MyState>();
 
+//Epic to add metadata to the application state
 const addMetaEpic: MyEpic = action$ =>
     action$.pipe(
         filter(add_metadata.match),
@@ -40,6 +42,7 @@ const addMetaEpic: MyEpic = action$ =>
         ),
     )
 
+//Epic to edit metadata of the application state
 const editMetaEpic: MyEpic = action$ =>
     action$.pipe(
         filter(edit_metadata.match),
@@ -53,6 +56,7 @@ const editMetaEpic: MyEpic = action$ =>
         ),
     )
 
+//what the preload metadata epic does is take each metadata type stored in the state and updates the MetadataByType with metadata of that type
 const preloadMetadataEpic: MyEpic = (action$, state$) => action$.pipe(
         filter(preload_all_metadata.match),
         mergeMap(_ =>
@@ -64,6 +68,7 @@ const preloadMetadataEpic: MyEpic = (action$, state$) => action$.pipe(
         )
     )
 
+//Epic to delete a metadata from the application state
 const deleteMetaEpic: MyEpic = action$ =>
     action$.pipe(
         filter(delete_metadata.match),
@@ -74,6 +79,7 @@ const deleteMetaEpic: MyEpic = action$ =>
         ),
     )
 
+//Fetch metadata stored in the current application state so it can shown on the screen
 const fetchMetadataEpic: MyEpic = action$ =>
     action$.pipe(
         filter(fetch_metadata.match),
@@ -84,6 +90,7 @@ const fetchMetadataEpic: MyEpic = action$ =>
         ),
     )
 
+//add a metadata to the application state
 const addMetatypeEpic: MyEpic = action$ =>
     action$.pipe(
         filter(add_metadatatype.match),
@@ -96,6 +103,7 @@ const addMetatypeEpic: MyEpic = action$ =>
         ),
     )
 
+//Epic to edit a metadata type in the application state
 const editMetatypeEpic: MyEpic = action$ =>
     action$.pipe(
         filter(edit_metadatatype.match),
@@ -109,6 +117,7 @@ const editMetatypeEpic: MyEpic = action$ =>
         )
     )
 
+//Epic to delete a metadata type in the application state
 const deleteMetatypeEpic: MyEpic = action$ =>
     action$.pipe(
         filter(delete_metadatatype.match),
@@ -119,6 +128,7 @@ const deleteMetatypeEpic: MyEpic = action$ =>
         ),
     )
 
+//Epic to fetch metadata type from the application state so it can be displayed on the screen
 const metadatatypeEpic: MyEpic = action$ =>
     action$.pipe(
         filter(fetch_metadatatype.match),
@@ -129,6 +139,7 @@ const metadatatypeEpic: MyEpic = action$ =>
         ),
     )
 
+//Epic to update a metadata type in application state
 const updateMetadataTypeEpic: MyEpic = action$ =>
     action$.pipe(
         filter(update_metadatatype.match),
