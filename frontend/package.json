@@ -11,7 +11,7 @@
     "watch": "npm run-script clean && webpack --watch --mode=development",
     "clean": "rm -Rf ./static",
     "winclean": "rd /s /q static",
-    "update-lib": "npm i github:SolarSPELL-Main/solarspell-react-lib#main"
+    "update-lib": "npm r solarspell-react-lib && npm i github:SolarSPELL-Main/solarspell-react-lib#main"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",
