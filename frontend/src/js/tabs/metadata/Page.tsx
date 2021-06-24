@@ -76,17 +76,13 @@ type PageProps = {
  * @returns The full page.
  */
 function Page(_: PageProps): React.ReactElement {
-    const dispatch = useCCDispatch()
-    const metadata = useCCSelector(state => state.metadata.metadata)
-    const metadataTypes = useCCSelector(state => state.metadata.metadata_types)
+    const dispatch = useCCDispatch();
+    const metadata = useCCSelector(state => state.metadata.metadata);
+    const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
 
     useEffect(() => {
-        dispatch(Actions.fetch_metadatatype())
-    }, [])
-
-    if (metadataTypes.map(type => type.id in metadata).includes(false)) {
-        return <></>
-    }
+        dispatch(Actions.fetch_metadatatype());
+    }, []);
 
     return (
         <Modal
