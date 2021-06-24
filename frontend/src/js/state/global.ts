@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
+//Importing these to enable use of snackbar(toasts) (https://material-ui.com/components/snackbars/)
+import _React from 'react'
+import _Button from '@material-ui/core/Button'
+import _Snackbar from '@material-ui/core/Snackbar'
+
 export const globalSlice = createSlice({
     name: 'global',
     initialState: {
