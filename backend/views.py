@@ -11,6 +11,7 @@ from backend.serializers import MetadataTypeSerializer, MetadataSerializer
 from backend.standardize_format import build_response
 
 from django.middleware.csrf import get_token
+from django.views.generic import TemplateView
 
 @api_view(('GET',))
 @renderer_classes((JSONRenderer,))
@@ -83,3 +84,6 @@ class MetadataTypeViewSet(StandardDataView, viewsets.ModelViewSet):
         return build_response(MetadataSerializer(
             Metadata.objects.filter(type_id=pk), many=True
         ).data)
+    
+class Welcome(TemplateView):
+    template_name = 'welcome.html'
