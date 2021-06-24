@@ -26,10 +26,10 @@ class Metadata(models.Model):
     name = models.CharField(max_length=500)
     type = models.ForeignKey(MetadataType, on_delete=models.CASCADE)
 
-    def type_info(self):
+    def metadataType(self):
         return {
-            "type": self.type.id,
-            "type_name": self.type.name
+            "id": self.type.id,
+            "name": self.type.name
         }
 
     def __str__(self):

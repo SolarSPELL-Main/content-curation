@@ -33,7 +33,7 @@ const addMetaEpic: MyEpic = action$ =>
     action$.pipe(
         filter(add_metadata.match),
         mergeMap(action =>
-            from(api.post(`/api/metadata/`, {
+            from(api.post(APP_URLS.METADATA_LIST, {
                 name: action.payload.name,
                 type: action.payload.type_id
             })).pipe(
@@ -47,11 +47,11 @@ const editMetaEpic: MyEpic = action$ =>
     action$.pipe(
         filter(edit_metadata.match),
         mergeMap(action =>
-            from(api.patch(`/api/metadata/${action.payload.type_id}/`, {
+            from(api.patch(APP_URLS.METADATA(action.payload.id), {
                 name: action.payload.name,
                 type: action.payload.new_type_id
             })).pipe(
-                map(_res => fetch_metadata({ type_id: action.payload.type_id}))
+                map(({ data }) => fetch_metadata({ type_id: data.metadataType.id }))
             ),
         ),
     )
@@ -61,7 +61,7 @@ const preloadMetadataEpic: MyEpic = (action$, state$) => action$.pipe(
         filter(preload_all_metadata.match),
         mergeMap(_ =>
             from(state$.value.metadata.metadata_types).pipe(
-                mergeMap(type => from(api.get(`/api/metadata_types/${type.id}/metadata/`)).pipe(
+                mergeMap(type => from(api.get(APP_URLS.METADATA_BY_TYPE(type.id))).pipe(
                     map(({ data }) => update_metadata({ [type.id]: data.data }))
                 ))
             )
@@ -73,7 +73,7 @@ const deleteMetaEpic: MyEpic = action$ =>
     action$.pipe(
         filter(delete_metadata.match),
         mergeMap(action =>
-            from(api.delete(`/api/metadata/${action.payload.type_id}/`)).pipe(
+            from(api.delete(APP_URLS.METADATA(action.payload.id))).pipe(
                 map(_res => fetch_metadata({ type_id: action.payload.type_id }))
             ),
         ),
@@ -83,9 +83,11 @@ const deleteMetaEpic: MyEpic = action$ =>
 const fetchMetadataEpic: MyEpic = action$ =>
     action$.pipe(
         filter(fetch_metadata.match),
-        mergeMap(_ =>
-            from(api.get(APP_URLS.METADATA_BY_TYPE)).pipe(
-                map(({ data }) => update_metadata( data.data))
+        mergeMap(action =>
+            from(api.get(APP_URLS.METADATA_BY_TYPE(action.payload.type_id))).pipe(
+                map(({ data }) => update_metadata({
+                    [action.payload.type_id]: data.data
+                }))
             )
         ),
     )
@@ -95,7 +97,7 @@ const addMetatypeEpic: MyEpic = action$ =>
     action$.pipe(
         filter(add_metadatatype.match),
         mergeMap(action =>
-            from(api.post(`/api/metadata_types/`,{
+            from(api.post(APP_URLS.METADATA_TYPES,{
                 name: action.payload.name,
             })).pipe(
                 map(_res => fetch_metadatatype())
@@ -108,9 +110,8 @@ const editMetatypeEpic: MyEpic = action$ =>
     action$.pipe(
         filter(edit_metadatatype.match),
         mergeMap(action =>
-            from(api.post(`/api/metadata/${action.payload.type_id}/`, {
+            from(api.patch(APP_URLS.METADATA_TYPE(action.payload.type_id), {
                 name: action.payload.name,
-                type_id: action.payload.type_id
             })).pipe(
                 map(_res => fetch_metadatatype())
             ),
@@ -122,7 +123,7 @@ const deleteMetatypeEpic: MyEpic = action$ =>
     action$.pipe(
         filter(delete_metadatatype.match),
         mergeMap(action =>
-            from(api.delete(`/api/metadata/${action.payload.type_id}/`)).pipe(
+            from(api.delete(APP_URLS.METADATA_TYPE(action.payload.type_id))).pipe(
                 map(_res => fetch_metadatatype())
             ),
         ),

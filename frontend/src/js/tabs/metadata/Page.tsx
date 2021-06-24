@@ -99,8 +99,8 @@ function Page(_: PageProps): React.ReactElement {
                     onDeleteType: (metadataType) => dispatch(Actions.delete_metadatatype({ type_id: metadataType.id })),
                 },
                 ActionPanel: {
-                    onEdit: (metadata, name) => dispatch(Actions.edit_metadata({ name: name, type_id: metadata.metadataType.id })),
-                    onDelete: (metadata) => dispatch(Actions.delete_metadata({ type_id: metadata.metadataType.id })),
+                    onEdit: (metadata, name) => dispatch(Actions.edit_metadata({ name: name, id: metadata.id })),
+                    onDelete: (metadata) => dispatch(Actions.delete_metadata({ type_id: metadata.metadataType.id, id: metadata.id })),
                 },
                 AddType: {
                     onAddType: (name) => dispatch(Actions.add_metadatatype({ name: name, type_id: -1 })),

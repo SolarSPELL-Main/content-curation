@@ -20,5 +20,5 @@ class MetadataSerializer(ModelSerializer):
             )
         ]
         model = Metadata
-        fields = ('id', 'name', 'type','type_info')
+        fields = ('id', 'name', 'type','metadataType')
     
