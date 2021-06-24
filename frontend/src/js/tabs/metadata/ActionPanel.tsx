@@ -27,10 +27,14 @@ function ActionPanel({
     metadata,
     metadataType,
 }: ActionPanelProps): React.ReactElement {
-    const onAction = React.useCallback((val: string) => onEdit(metadata, val), 
-                        [onEdit, metadata]);
-    const onDelete_ = React.useCallback(() => onDelete(metadata), 
-                        [onDelete, metadata]);
+    const onAction = React.useCallback(
+        (val: string) => onEdit(metadata, val), 
+        [onEdit, metadata],
+    );
+    const onDelete_ = React.useCallback(
+        () => onDelete(metadata), 
+        [onDelete, metadata],
+    );
 
     return (
         <SolarSPELLActionPanel>
