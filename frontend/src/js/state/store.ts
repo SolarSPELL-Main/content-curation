@@ -10,8 +10,8 @@ import metadataReducer from './metadata'
 
 //import these from './metadata' so they can be used in this file
 import {
-    fetch_metadata, update_metadata, add_metadata, delete_metadata, edit_metadata,
-    fetch_metadatatype, update_metadatatype, add_metadatatype,
+    fetch_metadata, update_metadata, add_metadata, delete_metadata, 
+    edit_metadata, fetch_metadatatype, update_metadatatype, add_metadatatype,
     delete_metadatatype, edit_metadatatype, preload_all_metadata
 } from './metadata'
 
@@ -51,12 +51,13 @@ const editMetaEpic: MyEpic = action$ =>
                 name: action.payload.name,
                 type: action.payload.new_type_id
             })).pipe(
-                map(({ data }) => fetch_metadata({ type_id: data.metadataType.id }))
+                map(({data}) => fetch_metadata({ type_id: data.metadataType.id}))
             ),
         ),
     )
 
-//what the preload metadata epic does is take each metadata type stored in the state and updates the MetadataByType with metadata of that type
+//what the preload metadata epic does is take each metadata type stored in the 
+//state and updates the MetadataByType with metadata of that type
 const preloadMetadataEpic: MyEpic = (action$, state$) => action$.pipe(
         filter(preload_all_metadata.match),
         mergeMap(_ =>
@@ -79,7 +80,8 @@ const deleteMetaEpic: MyEpic = action$ =>
         ),
     )
 
-//Fetch metadata stored in the current application state so it can shown on the screen
+//Fetch metadata stored in the current application state so it can shown on the 
+//screen
 const fetchMetadataEpic: MyEpic = action$ =>
     action$.pipe(
         filter(fetch_metadata.match),
@@ -129,7 +131,8 @@ const deleteMetatypeEpic: MyEpic = action$ =>
         ),
     )
 
-//Epic to fetch metadata type from the application state so it can be displayed on the screen
+//Epic to fetch metadata type from the application state so it can be displayed
+//on the screen
 const metadatatypeEpic: MyEpic = action$ =>
     action$.pipe(
         filter(fetch_metadatatype.match),

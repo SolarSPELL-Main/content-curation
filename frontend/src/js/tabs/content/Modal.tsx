@@ -24,14 +24,16 @@ function Modal({
     onSubmit,
 }: ModalProps): React.ReactElement {
     // State hook for metadata
-    const [selectedMetadataState, setSelectedMetadataState] = React.useState<Record<number, Metadata[]>>(() => {
-        // Initialize state with all metadataTypes ID keys
-        const initialMetadata: Record<number, Metadata[]> = {};
-        for (const metadataType of metadataTypes) {
-            initialMetadata[metadataType.id] = [];
-        }
-        return initialMetadata;
-    });
+    const [selectedMetadataState, 
+            setSelectedMetadataState] = React.useState<Record<number, 
+            Metadata[]>>(() => {
+                // Initialize state with all metadataTypes ID keys
+                const initialMetadata: Record<number, Metadata[]> = {};
+                for (const metadataType of metadataTypes) {
+                    initialMetadata[metadataType.id] = [];
+                }
+                return initialMetadata;
+            });
 
     // Callback for selection changes in selector
     const onSelectChange = React.useCallback((metadata_, metadataType_, rows) => {
@@ -46,7 +48,8 @@ function Modal({
     }, [setSelectedMetadataState]);
 
     // Callback for submission
-    const onSubmit_ = React.useCallback(() => onSubmit(selectedMetadataState), [onSubmit, selectedMetadataState]);
+    const onSubmit_ = React.useCallback(() => onSubmit(selectedMetadataState), 
+            [onSubmit, selectedMetadataState]);
 
     return (
         <Box p={2}>

@@ -94,16 +94,22 @@ function Page(_: PageProps): React.ReactElement {
             metadataTypes={metadataTypes}
             actions={{
                 KebabMenu: {
-                    onAdd: (metadataType, name) => dispatch(Actions.add_metadata({ name: name, type_id: metadataType.id })),
-                    onEditType: (metadataType, name) => dispatch(Actions.edit_metadatatype({ name: name, type_id: metadataType.id })),
-                    onDeleteType: (metadataType) => dispatch(Actions.delete_metadatatype({ type_id: metadataType.id })),
+                    onAdd: (metadataType, name) => 
+                        dispatch(Actions.add_metadata({ name: name, type_id: metadataType.id })),
+                    onEditType: (metadataType, name) => 
+                        dispatch(Actions.edit_metadatatype({ name: name, type_id: metadataType.id })),
+                    onDeleteType: (metadataType) => 
+                        dispatch(Actions.delete_metadatatype({ type_id: metadataType.id })),
                 },
                 ActionPanel: {
-                    onEdit: (metadata, name) => dispatch(Actions.edit_metadata({ name: name, id: metadata.id })),
-                    onDelete: (metadata) => dispatch(Actions.delete_metadata({ type_id: metadata.metadataType.id, id: metadata.id })),
+                    onEdit: (metadata, name) => 
+                        dispatch(Actions.edit_metadata({ name: name, id: metadata.id })),
+                    onDelete: (metadata) => 
+                        dispatch(Actions.delete_metadata({ type_id: metadata.metadataType.id, id: metadata.id })),
                 },
                 AddType: {
-                    onAddType: (name) => dispatch(Actions.add_metadatatype({ name: name, type_id: -1 })),
+                    onAddType: (name) => 
+                        dispatch(Actions.add_metadatatype({ name: name, type_id: -1 })),
                 },
             }}
         />

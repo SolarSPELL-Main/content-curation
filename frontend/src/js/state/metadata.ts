@@ -17,13 +17,16 @@ export const metadataSlice = createSlice({
             string_filter?: number
         }>) => {},
 
-        //preload_all_metadata takes each metadata type stored in the state and updates the MetadataByType with metadata of that type
+        //preload_all_metadata takes each metadata type stored in the state and 
+        //updates the MetadataByType with metadata of that type
         preload_all_metadata: (_state, _action: PayloadAction) => {},
         delete_metadata: (_state, _action: PayloadAction<{
             id: number
             type_id: number
         }>) => {},
-        //What `update_metadata` does is instead of completely replacing the metadata dict it just updates it with the latest it receives from that endpoint
+        //What `update_metadata` does is instead of completely replacing the 
+        //metadata dict it just updates it with the latest it receives from that
+        // endpoint
         update_metadata: (state, action: PayloadAction<MetadataByType>) => {
             Object.assign(state.metadata, action.payload)
         },
@@ -48,7 +51,8 @@ export const metadataSlice = createSlice({
             type_id: number
         }>) => {},
 
-        //update metadata type in the application state, instead of completely replacing it
+        //update metadata type in the application state, instead of completely 
+        //replacing it
         update_metadatatype: (state, action: PayloadAction<Metadata[]>) => {
             state.metadata_types = action.payload
         },

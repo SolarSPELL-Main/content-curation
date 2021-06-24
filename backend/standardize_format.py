@@ -13,7 +13,8 @@ def standard_exception_handler(exc, context):
         }
     return response
 
-def build_response(data=None, status=status.HTTP_200_OK, success=True, error=None):
+def build_response(data=None, status=status.HTTP_200_OK, success=True, 
+                    error=None):
     return Response({
         "success": success,
         "data": data,

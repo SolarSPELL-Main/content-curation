@@ -6,7 +6,8 @@ import { Metadata, MetadataType } from '../../types';
 type SelectorProps = {
     metadata: Record<number, Metadata[]>
     metadataTypes: MetadataType[]
-    onSelectChange: (metadata: BaseMetadata[], metadataType: BaseMetadataType, rows: GridSelectionModelChangeParams) => void
+    onSelectChange: (metadata: BaseMetadata[], metadataType: BaseMetadataType, 
+                        rows: GridSelectionModelChangeParams) => void
 }
 
 /**

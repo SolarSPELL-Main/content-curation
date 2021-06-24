@@ -6,7 +6,8 @@ from .views import mock_data,MetadataTypeViewSet,MetadataViewSet
 
 router = routers.DefaultRouter()
 router.register(r'metadata', MetadataViewSet,basename='metadata')
-router.register(r'metadata_types', MetadataTypeViewSet,basename='metadata_types')
+router.register(r'metadata_types', MetadataTypeViewSet,
+                basename='metadata_types')
 
 urlpatterns = [
     #path(r'metadata', mock_data),

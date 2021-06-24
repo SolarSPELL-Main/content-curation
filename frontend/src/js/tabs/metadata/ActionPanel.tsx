@@ -1,5 +1,6 @@
 import React from 'react';
-import { ActionPanel as SolarSPELLActionPanel, ActionPanelItem } from 'solarspell-react-lib';
+import { ActionPanel as SolarSPELLActionPanel, ActionPanelItem } from 
+        'solarspell-react-lib';
 import { Edit, Delete } from '@material-ui/icons';
 
 import { Metadata, MetadataType } from '../../types';
@@ -26,8 +27,10 @@ function ActionPanel({
     metadata,
     metadataType,
 }: ActionPanelProps): React.ReactElement {
-    const onAction = React.useCallback((val: string) => onEdit(metadata, val), [onEdit, metadata]);
-    const onDelete_ = React.useCallback(() => onDelete(metadata), [onDelete, metadata]);
+    const onAction = React.useCallback((val: string) => onEdit(metadata, val), 
+                        [onEdit, metadata]);
+    const onDelete_ = React.useCallback(() => onDelete(metadata), 
+                        [onDelete, metadata]);
 
     return (
         <SolarSPELLActionPanel>

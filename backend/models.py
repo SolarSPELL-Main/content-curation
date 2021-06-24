@@ -68,7 +68,8 @@ class Content(models.Model):
     #duplicatable = models.BooleanField(default=0)
 
     def published_year(self):
-        return None if self.published_date == None else str(self.published_date.year)
+        return None if self.published_date == None 
+                    else str(self.published_date.year)
 
     def metadata_info(self):
         return [{

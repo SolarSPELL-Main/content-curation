@@ -17,23 +17,30 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MetadataType',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, 
+                serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100, unique=True)),
             ],
         ),
         migrations.CreateModel(
             name='Metadata',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, 
+                serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=500)),
-                ('type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='backend.MetadataType')),
+                ('type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, 
+                to='backend.MetadataType')),
             ],
         ),
         migrations.CreateModel(
             name='Content',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content_file', models.FileField(max_length=500, upload_to=backend.models.Content.set_file_name, validators=[backend.validators.validate_unique_filename, backend.validators.validate_unique_file], verbose_name='File')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, 
+                serialize=False, verbose_name='ID')),
+                ('content_file', models.FileField(max_length=500, 
+                upload_to=backend.models.Content.set_file_name, 
+                validators=[backend.validators.validate_unique_filename, 
+                backend.validators.validate_unique_file], verbose_name='File')),
                 ('filesize', models.FloatField(null=True)),
                 ('file_name', models.CharField(max_length=500, null=True)),
                 ('title', models.CharField(max_length=300)),
@@ -41,7 +48,8 @@ class Migration(migrations.Migration):
                 ('copyright_notes', models.TextField(null=True)),
                 ('rights_statement', models.TextField(null=True)),
                 ('published_date', models.DateField(null=True)),
-                ('metadata', models.ManyToManyField(blank=True, to='backend.Metadata')),
+                ('metadata', models.ManyToManyField(blank=True, 
+                to='backend.Metadata')),
             ],
         ),
     ]

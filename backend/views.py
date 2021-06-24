@@ -23,8 +23,10 @@ def mock_data(request):
         }
 
     return JsonResponse({
-        "Subject": [build_metadata(name, i) for i, name in enumerate(["Math", "Language Arts", "Computer Science"])],
-        "Language": [build_metadata(name, i) for i, name in enumerate(["Arabic", "English", "Spanish", "Chinese", "Hindi"])],
+        "Subject": [build_metadata(name, i) for i, name in 
+                enumerate(["Math", "Language Arts", "Computer Science"])],
+        "Language": [build_metadata(name, i) for i, name in 
+                enumerate(["Arabic", "English", "Spanish", "Chinese", "Hindi"])],
     })
 
 
@@ -44,9 +46,11 @@ class StandardDataView:
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)
             print(headers)
-            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, 
+                            headers=headers)
         except IntegrityError as e:
-            return build_response(status=status.HTTP_400_BAD_REQUEST, success=False, error="Already Exists in Database")
+            return build_response(status=status.HTTP_400_BAD_REQUEST, 
+                            success=False, error="Already Exists in Database")
 
 
     def retrieve(self, request, *args, **kwargs):
