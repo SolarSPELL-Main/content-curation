@@ -1,6 +1,8 @@
 import React from 'react';
-import { KebabMenu as SolarSPELLKebabMenu, KebabMenuItem } from 
-        'solarspell-react-lib';
+import {
+    KebabMenu as SolarSPELLKebabMenu,
+    KebabMenuItem,
+} from 'solarspell-react-lib';
 import { MetadataType } from '../../types';
 
 type KebabMenuActionProps = {
@@ -26,15 +28,22 @@ function KebabMenu({
     onDeleteType,
     metadataType,
 }: KebabMenuProps): React.ReactElement {
-    const onAdd_ = React.useCallback((val: string) => onAdd(metadataType, val), 
-                    [onAdd, metadataType]);
-    const onEditType_ = React.useCallback((val: string) => 
-                    onEditType(metadataType, val), [onEditType, metadataType]);
-    const onDeleteType_ = React.useCallback((confirmation: string) => {
-        if (confirmation === metadataType.name) {
-        onDeleteType(metadataType);
-        }
-    }, [onDeleteType, metadataType]);
+    const onAdd_ = React.useCallback(
+        (val: string) => onAdd(metadataType, val),
+        [onAdd, metadataType],
+    );
+    const onEditType_ = React.useCallback(
+        (val: string) => onEditType(metadataType, val),
+        [onEditType, metadataType],
+    );
+    const onDeleteType_ = React.useCallback(
+        (confirmation: string) => {
+            if (confirmation === metadataType.name) {
+                onDeleteType(metadataType);
+            }
+        },
+        [onDeleteType, metadataType],
+    );
 
     return (
         <SolarSPELLKebabMenu>
