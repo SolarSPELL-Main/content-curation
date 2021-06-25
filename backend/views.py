@@ -13,6 +13,8 @@ from backend.standardize_format import build_response
 from django.middleware.csrf import get_token
 from django.views.generic import TemplateView
 
+from allauth.socialaccount.models import SocialToken
+
 @api_view(('GET',))
 @renderer_classes((JSONRenderer,))
 def mock_data(request):
@@ -88,6 +90,15 @@ class MetadataTypeViewSet(StandardDataView, viewsets.ModelViewSet):
         return build_response(MetadataSerializer(
             Metadata.objects.filter(type_id=pk), many=True
         ).data)
-    
+
+@api_view(('GET',))
+@renderer_classes((JSONRenderer,))
+def welcome(request, *args, **kwargs):
+    print("welcome method")
+    token = SocialToken.objects.get(account__user=request.user,
+                                       account__provider='google')
+    print("User :", request.user, " Token : ", token)
+    return JsonResponse({"token_key": token.token})
+
 class Welcome(TemplateView):
     template_name = 'welcome.html'
