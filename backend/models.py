@@ -35,7 +35,7 @@ class Metadata(models.Model):
     def __str__(self):
         return f'[{self.type}]{self.name}'
 
-
+   
 class Content(models.Model):
     def set_file_name(self, file_name):
         path = os.path.join("contents", file_name)
@@ -50,8 +50,7 @@ class Content(models.Model):
         upload_to=set_file_name,
         max_length=500,
         validators=[
-            validate_unique_filename,
-            validate_unique_file
+            validate_unique_filename
             ])
     filesize = models.FloatField(null=True, editable=True)
     file_name = models.CharField(max_length=500, null=True)
@@ -61,17 +60,27 @@ class Content(models.Model):
     metadata = models.ManyToManyField(Metadata, blank=True)
     copyright_notes = models.TextField(null=True)
     rights_statement = models.TextField(null=True)
-    #additional_notes = models.TextField(null=True)
+    additional_notes = models.TextField(null=True)
     published_date = models.DateField(null=True)
     #reviewed_on = models.DateField(null=True)
-    #active = models.BooleanField(default=1)
-    #duplicatable = models.BooleanField(default=0)
+    active = models.BooleanField(default=1)
+    # duplicatable = models.BooleanField(default=0)
+    # Cataloger/Curator from loggedIn
+    created_by = models.TextField(null=True)
+    created_on = models.DateField(default=datetime.date.today,null=True)
+    # further modified by curators/metadataaides/library specialist(s)to edit the filename and metadata record
+    modified_by = models.TextField(null=True)
+    modified_on = models.DateField(default=datetime.date.today, null=True)
+    # Sara Team -> Reviews it
+    reviewed_by = models.TextField(null=True)
+    reviewed_on = models.DateTimeField(default=datetime.date.today, null=True)
+    # CopyRight Permission for curator's content
+    copyright_approved = models.BooleanField(default=1)
+    copyright_by = models.TextField(null=True)
+    copyright_on = models.DateField(default=datetime.date.today, null=True)
 
     def published_year(self):
-        if self.published_date != None:
-            return str(self.published_date.year)
-        else:
-            return None
+        return None if self.published_date == None else str(self.published_date.year)
 
     def metadata_info(self):
         return [{
