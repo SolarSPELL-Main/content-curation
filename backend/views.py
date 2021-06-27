@@ -6,8 +6,9 @@ from rest_framework.decorators import api_view, renderer_classes, action
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
-from backend.models import MetadataType, Metadata
-from backend.serializers import MetadataTypeSerializer, MetadataSerializer
+from backend.models import MetadataType, Metadata, Content
+from backend.serializers import MetadataTypeSerializer, MetadataSerializer, \
+    ContentSerializer
 from backend.standardize_format import build_response
 
 from django.middleware.csrf import get_token
