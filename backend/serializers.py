@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework.validators import UniqueTogetherValidator
-from backend.models import Metadata, MetadataType
+from backend.models import Metadata, MetadataType, Content
 
 
 class MetadataTypeSerializer(ModelSerializer):
