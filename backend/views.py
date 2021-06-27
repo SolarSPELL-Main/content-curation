@@ -102,3 +102,8 @@ def welcome(request, *args, **kwargs):
 
 class Welcome(TemplateView):
     template_name = 'welcome.html'
+    
+class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
+    print("contentviewset")
+    queryset = Content.objects.all()
+    serializer_class = ContentSerializer
