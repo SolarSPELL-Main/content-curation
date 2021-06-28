@@ -15,6 +15,7 @@ from django.middleware.csrf import get_token
 from django.views.generic import TemplateView
 
 from allauth.socialaccount.models import SocialToken
+from django.contrib.auth.models import Group
 
 @api_view(('GET',))
 @renderer_classes((JSONRenderer,))
