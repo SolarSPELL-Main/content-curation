@@ -99,7 +99,17 @@ def welcome(request, *args, **kwargs):
     token = SocialToken.objects.get(account__user=request.user,
                                        account__provider='google')
     print("User :", request.user, " Token : ", token)
-    return JsonResponse({"token_key": token.token})
+    grp_name=''
+    query_set = Group.objects.filter(user=request.user)
+    # print to console for debug/checking
+    for g in query_set:
+        # this should print all group names for the user
+        print("Grp Name",g.name)
+        grp_name += g.name
+    return JsonResponse({
+        "token_key": token.token,
+        "User Groups": grp_name,
+    })
 
 class Welcome(TemplateView):
     template_name = 'welcome.html'
