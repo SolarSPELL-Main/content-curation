@@ -94,12 +94,16 @@ class MetadataTypeViewSet(StandardDataView, viewsets.ModelViewSet):
 
 @api_view(('GET',))
 @renderer_classes((JSONRenderer,))
-def welcome(request, *args, **kwargs):
-    print("welcome method")
-    token = SocialToken.objects.get(account__user=request.user,
-                                       account__provider='google')
-    print("User :", request.user, " Token : ", token)
-    return JsonResponse({"token_key": token.token})
+def get_user(request, *args, **kwargs):
+    token = SocialToken.objects.get(
+        account__user=request.user, account__provider='google'
+    )
+    return build_response({
+        "token_key": token.token,
+        "user": request.user.username,
+        "email": request.user.email,
+        "groups": [group.name for group in request.user.groups.all()],
+    })
 
 class Welcome(TemplateView):
     template_name = 'welcome.html'

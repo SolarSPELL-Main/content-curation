@@ -14,6 +14,9 @@ import {
     edit_metadata, fetch_metadatatype, update_metadatatype, add_metadatatype,
     delete_metadatatype, edit_metadatatype, preload_all_metadata
 } from './metadata'
+import {
+    fetch_user, update_user
+} from './global'
 
 import { api } from '../utils'
 
@@ -150,6 +153,16 @@ const updateMetadataTypeEpic: MyEpic = action$ =>
         map(_ => preload_all_metadata())
     )
 
+const fetchUserEpic: MyEpic = action$ =>
+    action$.pipe(
+        filter(fetch_user.match),
+        mergeMap(_ =>
+            from(api.get(APP_URLS.USER_INFO)).pipe(
+                map(({ data }) => update_user(data.data))
+            )
+        )
+    )
+
 const epics = combineEpics(
     addMetaEpic,
     fetchMetadataEpic,
@@ -160,7 +173,8 @@ const epics = combineEpics(
     editMetatypeEpic,
     deleteMetatypeEpic,
     preloadMetadataEpic,
-    updateMetadataTypeEpic
+    updateMetadataTypeEpic,
+    fetchUserEpic
 )
 
 const store = configureStore({

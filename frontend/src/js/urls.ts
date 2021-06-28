@@ -8,6 +8,7 @@ const APP_URLS = {
     METADATA_LIST: `/api/metadata/`,
     METADATA_TYPES: `/api/metadata_types/`,
     METADATA_TYPE: (id: number) => `/api/metadata_types/${id}/`,
+    USER_INFO: `/api/get_user/`,
 }
 
 export default APP_URLS
