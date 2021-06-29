@@ -1,4 +1,8 @@
-import type { BaseMetadata, BaseMetadataType, BaseContent } from "solarspell-react-lib"
+import type {
+    BaseMetadata,
+    BaseMetadataType,
+    BaseContent
+} from "solarspell-react-lib"
 
 type MetadataType = {
 
@@ -14,6 +18,7 @@ type Content = {
     creator: string
     reviewer: string
     copyrighter: string
+    file?: File
 } & BaseContent<Metadata>
 
 interface User {

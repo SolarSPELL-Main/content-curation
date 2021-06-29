@@ -24,14 +24,13 @@ function Page(_: PageProps): React.ReactElement {
 
     React.useEffect(() => {
         dispatch(MetadataActions.fetch_metadatatype());
+        dispatch(ContentActions.fetch_content()); // Will be needed at some point
     }, []);
 
     const onSubmit_ = React.useCallback(
         (content?: Content) => {
             if (content) {
-                dispatch(ContentActions.add_content(
-                    { ...content, creator: user }
-                ));
+                dispatch(ContentActions.add_content(content));
             }
         },
         [user],

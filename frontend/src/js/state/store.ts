@@ -26,6 +26,7 @@ import {
 } from './content'
 
 import { api } from '../utils'
+import { format } from 'date-fns'
 
 import APP_URLS from '../urls'
 
@@ -205,25 +206,51 @@ const addContentEpic: MyEpic = action$ =>
     action$.pipe(
         filter(add_content.match),
         mergeMap(action =>
-            from(api.post(APP_URLS.CONTENT_LIST, {
-                file_name: action.payload.fileName,
-                title: action.payload.title,
-                description: action.payload.description,
-                metadata: Object.values(action.payload.metadata).reduce(
-                    (accum, val) => [ ...accum, ...val ],
-                    [],
-                ),
-                active: true,
-                copyright_notes: action.payload.copyright,
-                rights_statement: action.payload.rightsStatement,
-                additional_notes: action.payload.notes,
-                created_by: action.payload.creator,
-                reviewed_by: '',
-                copyright_approved: false,
-                copyright_by: '',
-            })).pipe(
-                map(_ => fetch_content())
-            ),
+            {
+                const content = action.payload;
+                const data = new FormData();
+                data.append('file_name', content.fileName);
+                data.append('title', content.title);
+                data.append('content_file', content.file ?? '');
+                data.append('description', content.description);
+                data.append('metadata_info', JSON.stringify(
+                    Object.values(content.metadata).reduce(
+                        (accum, val) => [
+                            ...accum,
+                            ...val.map(v => ({
+                                id: v.id,
+                                name: v.name,
+                                type_name: v.metadataType.name,
+                                type: v.metadataType.id,
+                            }))
+                        ],
+                        [] as any[],
+                    )
+                ));
+                // data.append('metadata', JSON.stringify(
+                //     Object.values(content.metadata).reduce(
+                //         (accum, val) => [ ...accum, ...val.map(v => v.id) ],
+                //         [] as number[],
+                //     )
+                // )); // change record to array
+                data.append('active', 'true');
+                data.append('copyright_notes', content.copyright);
+                data.append('rights_statement', content.rightsStatement);
+                data.append('additional_notes', content.notes);
+                // Same format as DLMS, default to Jan. 1st
+                data.append('published_date', `${content.datePublished}-01-01`);
+                data.append('created_by', content.creator);
+                data.append('created_on', format(Date.now(), 'yyyy-MM-dd'));
+                data.append('reviewed_by', '');
+                data.append('copyright_approved', 'false');
+                data.append('copyright_by', '');
+                data.append('published_year', content.datePublished);
+
+                const req = api.post(APP_URLS.CONTENT_LIST, data);
+                return from(req).pipe(
+                    map(_ => fetch_content())
+                );
+            }
         ),
     )
 
@@ -246,7 +273,15 @@ const epics = combineEpics(
 const store = configureStore({
     reducer,
     middleware: [
-        ...getDefaultMiddleware({ thunk: false }),
+        ...getDefaultMiddleware({
+            thunk: false,
+            serializableCheck: {
+                // File required for upload,
+                // hence serialization check
+                // should be ignored
+                ignoredActions: [add_content.type],
+            },
+        }),
         epicMiddleware,
     ],
 })

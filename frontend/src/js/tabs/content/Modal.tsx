@@ -46,8 +46,10 @@ function Modal({
                             return {
                                 fullWidth: true,
                                 label: 'Title',
-                                onChange: (event: React.SyntheticEvent<HTMLInputElement>) => {
-                                    setter(event.currentTarget.value);
+                                onChange: (
+                                    e: React.SyntheticEvent<HTMLInputElement>
+                                ) => {
+                                    setter(e.currentTarget.value);
                                 },
                                 error: !!reasons['title'],
                                 helperText: reasons['title'],
@@ -70,8 +72,10 @@ function Modal({
                             return {
                                 fullWidth: true,
                                 label: 'Description',
-                                onChange: (event: React.SyntheticEvent<HTMLInputElement>) => {
-                                    setter(event.currentTarget.value);
+                                onChange: (
+                                    e: React.SyntheticEvent<HTMLInputElement>
+                                ) => {
+                                    setter(e.currentTarget.value);
                                 },
                                 value: state['description'],
                             };
@@ -97,13 +101,16 @@ function Modal({
                                 <Typography>{props.text}</Typography>
                             </>
                         ),
-                        propFactory: (state, _r, setter) => {
+                        propFactory: (state, _r, setter, genericSetter) => {
                             return {
-                                onChange: (event: React.SyntheticEvent<HTMLInputElement>) => {
-                                    const target = event.target as HTMLInputElement;
+                                onChange: (
+                                    e: React.SyntheticEvent<HTMLInputElement>
+                                ) => {
+                                    const target = e.target as HTMLInputElement;
                                     const file = target.files?.[0];
                                     if (file) {
-                                        setter(file.name);
+                                        setter(file);
+                                        genericSetter('fileName', file.name);
                                     }
                                 },
                                 text: state['fileName'] ?
@@ -112,8 +119,8 @@ function Modal({
                                     'No file chosen',
                             };
                         },
-                        label: 'fileName',
-                        initialValue: '',
+                        label: 'file',
+                        initialValue: undefined,
                     },
                     {
                         component: TextField,
@@ -121,8 +128,10 @@ function Modal({
                             return {
                                 fullWidth: true,
                                 label: 'Year of Publication',
-                                onChange: (event: React.SyntheticEvent<HTMLInputElement>) => {
-                                    setter(event.currentTarget.value);
+                                onChange: (
+                                    e: React.SyntheticEvent<HTMLInputElement>
+                                ) => {
+                                    setter(e.currentTarget.value);
                                 },
                                 error: !!reasons['datePublished'],
                                 helperText: reasons['datePublished'],
@@ -132,7 +141,10 @@ function Modal({
                         label: 'datePublished',
                         initialValue: '',
                         validator: (state) => {
-                            if (!state['datePublished'] || isNaN(Number(state['datePublished']))) {
+                            if (
+                                !state['datePublished'] ||
+                                isNaN(Number(state['datePublished'])
+                            )) {
                                 return 'Invalid year';
                             } else {
                                 return null;
@@ -145,8 +157,10 @@ function Modal({
                             return {
                             fullWidth: true,
                             label: 'Copyright Notes',
-                            onChange: (event: React.SyntheticEvent<HTMLInputElement>) => {
-                                setter(event.currentTarget.value);
+                            onChange: (
+                                e: React.SyntheticEvent<HTMLInputElement>
+                            ) => {
+                                setter(e.currentTarget.value);
                             },
                             value: state['copyright'],
                             };
@@ -160,8 +174,10 @@ function Modal({
                             return {
                                 fullWidth: true,
                                 label: 'Rights Statement',
-                                onChange: (event: React.SyntheticEvent<HTMLInputElement>) => {
-                                    setter(event.currentTarget.value);
+                                onChange: (
+                                    e: React.SyntheticEvent<HTMLInputElement>
+                                ) => {
+                                    setter(e.currentTarget.value);
                                 },
                                 value: state['rightsStatement'],
                             };
@@ -198,8 +214,10 @@ function Modal({
                             return {
                                 fullWidth: true,
                                 label: 'Additional Notes',
-                                onChange: (event: React.SyntheticEvent<HTMLInputElement>) => {
-                                    setter(event.currentTarget.value);
+                                onChange: (
+                                    e: React.SyntheticEvent<HTMLInputElement>
+                                ) => {
+                                    setter(e.currentTarget.value);
                                 },
                                 value: state['notes'],
                             };
