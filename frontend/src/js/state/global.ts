@@ -7,6 +7,8 @@ export const globalSlice = createSlice({
     name: 'global',
     initialState: {
         current_tab: 'home',
+        snackbar_open: false,
+        snackbar_message: '',
         user: {
             username: "",
             email: "",
