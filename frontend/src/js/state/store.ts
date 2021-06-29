@@ -7,23 +7,34 @@ import { filter, map, mergeMap } from 'rxjs/operators'
 
 import globalReducer from './global'
 import metadataReducer from './metadata'
+import contentReducer from './content'
 
-//import these from './metadata' so they can be used in this file
+import {
+    fetch_user, update_user
+} from './global'
+
 import {
     fetch_metadata, update_metadata, add_metadata, delete_metadata, 
     edit_metadata, fetch_metadatatype, update_metadatatype, add_metadatatype,
     delete_metadatatype, edit_metadatatype, preload_all_metadata
 } from './metadata'
+
 import {
-    fetch_user, update_user
-} from './global'
+    fetch_content,
+    update_content,
+    add_content,
+} from './content'
 
 import { api } from '../utils'
 
 import APP_URLS from '../urls'
+
+import { Content, Metadata } from '../types'
+
 const reducer = combineReducers({
-    metadata: metadataReducer,
     global: globalReducer,
+    metadata: metadataReducer,
+    content: contentReducer,
 });
 
 export type MyState = ReturnType<typeof reducer>
@@ -31,6 +42,18 @@ export type MyEpic = Epic<AnyAction, AnyAction, MyState>
 
 export const epicMiddleware = createEpicMiddleware<AnyAction, AnyAction, MyState>();
 
+/** GLOBAL EPICS */
+const fetchUserEpic: MyEpic = action$ =>
+    action$.pipe(
+        filter(fetch_user.match),
+        mergeMap(_ =>
+            from(api.get(APP_URLS.USER_INFO)).pipe(
+                map(({ data }) => update_user(data.data))
+            )
+        )
+    )
+
+/** METADATA EPICS */
 //Epic to add metadata to the application state
 const addMetaEpic: MyEpic = action$ =>
     action$.pipe(
@@ -153,14 +176,55 @@ const updateMetadataTypeEpic: MyEpic = action$ =>
         map(_ => preload_all_metadata())
     )
 
-const fetchUserEpic: MyEpic = action$ =>
+/** CONTENT EPICS */
+const fetchContentEpic: MyEpic = action$ =>
     action$.pipe(
-        filter(fetch_user.match),
+        filter(fetch_content.match),
         mergeMap(_ =>
-            from(api.get(APP_URLS.USER_INFO)).pipe(
-                map(({ data }) => update_user(data.data))
-            )
-        )
+            from(api.get(APP_URLS.CONTENT_LIST)).pipe(
+                map(({ data }) => update_content(data.data.map(
+                    (content: Content) => ({
+                        ...content,
+                        metadata: (content.metadata as unknown as Metadata[]).reduce(
+                            (accum, val) => ({
+                                ...accum,
+                                [val.metadataType.id]:
+                                    val.metadataType.id in accum ?
+                                        accum[val.metadataType.id].concat(val)
+                                        : [val],
+                            }),
+                            {} as Record<number,Metadata[]>,
+                        ),
+                    }),
+                ))),
+            ),
+        ),
+    )
+
+const addContentEpic: MyEpic = action$ =>
+    action$.pipe(
+        filter(add_content.match),
+        mergeMap(action =>
+            from(api.post(APP_URLS.CONTENT_LIST, {
+                file_name: action.payload.fileName,
+                title: action.payload.title,
+                description: action.payload.description,
+                metadata: Object.values(action.payload.metadata).reduce(
+                    (accum, val) => [ ...accum, ...val ],
+                    [],
+                ),
+                active: true,
+                copyright_notes: action.payload.copyright,
+                rights_statement: action.payload.rightsStatement,
+                additional_notes: action.payload.notes,
+                created_by: action.payload.creator,
+                reviewed_by: '',
+                copyright_approved: false,
+                copyright_by: '',
+            })).pipe(
+                map(_ => fetch_content())
+            ),
+        ),
     )
 
 const epics = combineEpics(
@@ -174,7 +238,9 @@ const epics = combineEpics(
     deleteMetatypeEpic,
     preloadMetadataEpic,
     updateMetadataTypeEpic,
-    fetchUserEpic
+    fetchUserEpic,
+    fetchContentEpic,
+    addContentEpic,
 )
 
 const store = configureStore({
