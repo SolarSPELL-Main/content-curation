@@ -16,9 +16,8 @@ type Content = {
     notes: string
     active: boolean
     creator: string
-    reviewer: string
-    copyrighter: string
     file?: File
+    fileURL?: string
 } & BaseContent<Metadata>
 
 interface User {

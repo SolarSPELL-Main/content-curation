@@ -183,21 +183,50 @@ const fetchContentEpic: MyEpic = action$ =>
         filter(fetch_content.match),
         mergeMap(_ =>
             from(api.get(APP_URLS.CONTENT_LIST)).pipe(
-                map(({ data }) => update_content(data.data.map(
-                    (content: Content) => ({
-                        ...content,
-                        metadata: (content.metadata as unknown as Metadata[]).reduce(
-                            (accum, val) => ({
-                                ...accum,
-                                [val.metadataType.id]:
-                                    val.metadataType.id in accum ?
-                                        accum[val.metadataType.id].concat(val)
-                                        : [val],
+                map(({ data }) => 
+                    update_content(
+                        // Maps API response to Content array
+                        data.data.map(
+                            (val: any) => <Content>({
+                                notes: val.additional_notes,
+                                active: val.active,
+                                fileURL: val.content_file,
+                                copyright: val.copyright_notes,
+                                creator: val.created_by,
+                                description: val.description,
+                                fileName: val.file_name,
+                                datePublished: val.published_year,
+                                rightsStatement: val.rights_statement,
+                                title: val.title,
+                                // Turns API Metadata array into Record
+                                metadata: val.metadata_info.reduce(
+                                    (
+                                        accum: Record<number,Metadata[]>,
+                                        val: any,
+                                    ) => {
+                                        const key: number = val.type;
+                                        const metadata: Metadata = {
+                                            id: val.id,
+                                            name: val.name,
+                                            creator: '',
+                                            metadataType: {
+                                                name: val.type_name,
+                                                id: key,
+                                            },
+                                        };
+                                        return {
+                                            ...accum,
+                                            [key]: key in accum ?
+                                                accum[key].concat(metadata)
+                                                : [metadata]
+                                        };
+                                    },
+                                    {} as Record<number,Metadata[]>,
+                                )
                             }),
-                            {} as Record<number,Metadata[]>,
                         ),
-                    }),
-                ))),
+                    )
+                ),
             ),
         ),
     )
@@ -213,26 +242,18 @@ const addContentEpic: MyEpic = action$ =>
                 data.append('title', content.title);
                 data.append('content_file', content.file ?? '');
                 data.append('description', content.description);
-                data.append('metadata_info', JSON.stringify(
-                    Object.values(content.metadata).reduce(
-                        (accum, val) => [
-                            ...accum,
-                            ...val.map(v => ({
-                                id: v.id,
-                                name: v.name,
-                                type_name: v.metadataType.name,
-                                type: v.metadataType.id,
-                            }))
-                        ],
-                        [] as any[],
-                    )
-                ));
-                // data.append('metadata', JSON.stringify(
-                //     Object.values(content.metadata).reduce(
-                //         (accum, val) => [ ...accum, ...val.map(v => v.id) ],
-                //         [] as number[],
-                //     )
-                // )); // change record to array
+                // For many-to-many fields
+                // Django expects FormData with repeated fields
+                Object.values(content.metadata).forEach(
+                    val => val.forEach(metadata => {
+                        data.append('metadata_info', JSON.stringify({
+                            id: metadata.id,
+                            name: metadata.name,
+                            type_name: metadata.metadataType.name,
+                            type: metadata.metadataType.id,
+                        }))
+                    })
+                );
                 data.append('active', 'true');
                 data.append('copyright_notes', content.copyright);
                 data.append('rights_statement', content.rightsStatement);
