@@ -21,6 +21,13 @@ function Modal({
     onSubmit,
 }: ModalProps): React.ReactElement {
     const [open, setOpen] = React.useState(false);
+    const onSubmit_ = React.useCallback(
+        (content?: Content) => {
+            setOpen(false);
+            onSubmit(content);
+        },
+        [onSubmit, setOpen],
+    );
 
     return (
         <>
@@ -207,7 +214,7 @@ function Modal({
                     confirmColor: 'primary',
                     confirmText: 'Add',
                 }}
-                onSubmit={onSubmit}
+                onSubmit={onSubmit_}
                 open={open}
             />
         </>
