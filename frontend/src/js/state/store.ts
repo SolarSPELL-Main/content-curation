@@ -7,23 +7,35 @@ import { filter, map, mergeMap } from 'rxjs/operators'
 
 import globalReducer from './global'
 import metadataReducer from './metadata'
+import contentReducer from './content'
 
-//import these from './metadata' so they can be used in this file
+import {
+    fetch_user, update_user
+} from './global'
+
 import {
     fetch_metadata, update_metadata, add_metadata, delete_metadata, 
     edit_metadata, fetch_metadatatype, update_metadatatype, add_metadatatype,
     delete_metadatatype, edit_metadatatype, preload_all_metadata
 } from './metadata'
+
 import {
-    fetch_user, update_user
-} from './global'
+    fetch_content,
+    update_content,
+    add_content,
+} from './content'
 
 import { api } from '../utils'
+import { format } from 'date-fns'
 
 import APP_URLS from '../urls'
+
+import { Content, Metadata } from '../types'
+
 const reducer = combineReducers({
-    metadata: metadataReducer,
     global: globalReducer,
+    metadata: metadataReducer,
+    content: contentReducer,
 });
 
 export type MyState = ReturnType<typeof reducer>
@@ -31,6 +43,18 @@ export type MyEpic = Epic<AnyAction, AnyAction, MyState>
 
 export const epicMiddleware = createEpicMiddleware<AnyAction, AnyAction, MyState>();
 
+/** GLOBAL EPICS */
+const fetchUserEpic: MyEpic = action$ =>
+    action$.pipe(
+        filter(fetch_user.match),
+        mergeMap(_ =>
+            from(api.get(APP_URLS.USER_INFO)).pipe(
+                map(({ data }) => update_user(data.data))
+            )
+        )
+    )
+
+/** METADATA EPICS */
 //Epic to add metadata to the application state
 const addMetaEpic: MyEpic = action$ =>
     action$.pipe(
@@ -153,14 +177,102 @@ const updateMetadataTypeEpic: MyEpic = action$ =>
         map(_ => preload_all_metadata())
     )
 
-const fetchUserEpic: MyEpic = action$ =>
+/** CONTENT EPICS */
+const fetchContentEpic: MyEpic = action$ =>
     action$.pipe(
-        filter(fetch_user.match),
+        filter(fetch_content.match),
         mergeMap(_ =>
-            from(api.get(APP_URLS.USER_INFO)).pipe(
-                map(({ data }) => update_user(data.data))
-            )
-        )
+            from(api.get(APP_URLS.CONTENT_LIST)).pipe(
+                map(({ data }) => 
+                    update_content(
+                        // Maps API response to Content array
+                        data.data.map(
+                            (val: any) => <Content>({
+                                notes: val.additional_notes,
+                                active: val.active,
+                                fileURL: val.content_file,
+                                copyright: val.copyright_notes,
+                                creator: val.created_by,
+                                description: val.description,
+                                fileName: val.file_name,
+                                datePublished: val.published_year,
+                                rightsStatement: val.rights_statement,
+                                title: val.title,
+                                // Turns API Metadata array into Record
+                                metadata: val.metadata_info.reduce(
+                                    (
+                                        accum: Record<number,Metadata[]>,
+                                        val: any,
+                                    ) => {
+                                        const key: number = val.type;
+                                        const metadata: Metadata = {
+                                            id: val.id,
+                                            name: val.name,
+                                            creator: '',
+                                            metadataType: {
+                                                name: val.type_name,
+                                                id: key,
+                                            },
+                                        };
+                                        return {
+                                            ...accum,
+                                            [key]: key in accum ?
+                                                accum[key].concat(metadata)
+                                                : [metadata]
+                                        };
+                                    },
+                                    {} as Record<number,Metadata[]>,
+                                )
+                            }),
+                        ),
+                    )
+                ),
+            ),
+        ),
+    )
+
+const addContentEpic: MyEpic = action$ =>
+    action$.pipe(
+        filter(add_content.match),
+        mergeMap(action =>
+            {
+                const content = action.payload;
+                const data = new FormData();
+                data.append('file_name', content.fileName);
+                data.append('title', content.title);
+                data.append('content_file', content.file ?? '');
+                data.append('description', content.description);
+                // For many-to-many fields
+                // Django expects FormData with repeated fields
+                Object.values(content.metadata).forEach(
+                    val => val.forEach(metadata => {
+                        data.append('metadata_info', JSON.stringify({
+                            id: metadata.id,
+                            name: metadata.name,
+                            type_name: metadata.metadataType.name,
+                            type: metadata.metadataType.id,
+                        }))
+                    })
+                );
+                data.append('active', 'true');
+                data.append('copyright_notes', content.copyright);
+                data.append('rights_statement', content.rightsStatement);
+                data.append('additional_notes', content.notes);
+                // Same format as DLMS, default to Jan. 1st
+                data.append('published_date', `${content.datePublished}-01-01`);
+                data.append('created_by', content.creator);
+                data.append('created_on', format(Date.now(), 'yyyy-MM-dd'));
+                data.append('reviewed_by', '');
+                data.append('copyright_approved', 'false');
+                data.append('copyright_by', '');
+                data.append('published_year', content.datePublished);
+
+                const req = api.post(APP_URLS.CONTENT_LIST, data);
+                return from(req).pipe(
+                    map(_ => fetch_content())
+                );
+            }
+        ),
     )
 
 const epics = combineEpics(
@@ -174,13 +286,23 @@ const epics = combineEpics(
     deleteMetatypeEpic,
     preloadMetadataEpic,
     updateMetadataTypeEpic,
-    fetchUserEpic
+    fetchUserEpic,
+    fetchContentEpic,
+    addContentEpic,
 )
 
 const store = configureStore({
     reducer,
     middleware: [
-        ...getDefaultMiddleware({ thunk: false }),
+        ...getDefaultMiddleware({
+            thunk: false,
+            serializableCheck: {
+                // File required for upload,
+                // hence serialization check
+                // should be ignored
+                ignoredActions: [add_content.type],
+            },
+        }),
         epicMiddleware,
     ],
 })
