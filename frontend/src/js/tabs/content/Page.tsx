@@ -29,9 +29,9 @@ function Page(_: PageProps): React.ReactElement {
     const onSubmit_ = React.useCallback(
         (content?: Content) => {
             if (content) {
-                ContentActions.add_content(
+                dispatch(ContentActions.add_content(
                     { ...content, creator: user }
-                );
+                ));
             }
         },
         [user],
