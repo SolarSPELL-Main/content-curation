@@ -60,7 +60,7 @@ const showToastEpic: MyEpic = action$ =>
         filter(show_toast.match),
         mergeMap(_ =>
             from(api.get(APP_URLS.TOAST_MESSAGE)).pipe(
-                map(({ data }) => show_toast(data.data), close_toast()),
+                delay(1000), map(({ data }) => show_toast(data.data), close_toast()),
             )
         ),
     )
