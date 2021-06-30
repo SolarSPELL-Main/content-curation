@@ -58,11 +58,8 @@ const fetchUserEpic: MyEpic = action$ =>
 const showToastEpic: MyEpic = action$ =>
     action$.pipe(
         filter(show_toast.match),
-        mergeMap(_ =>
-            from(api.get(APP_URLS.TOAST_MESSAGE)).pipe(
-                delay(1000), map(({ data }) => show_toast(data.data), close_toast()),
-            )
-        ),
+        delay(1000),
+        map(_ => close_toast()),
     )
 
 /** METADATA EPICS */
