@@ -3,14 +3,14 @@ import {
 } from '@reduxjs/toolkit'
 import { combineEpics, createEpicMiddleware, Epic } from "redux-observable"
 import { from } from 'rxjs'
-import { filter, map, mergeMap } from 'rxjs/operators'
+import { filter, map, mergeMap, delay } from 'rxjs/operators'
 
 import globalReducer from './global'
 import metadataReducer from './metadata'
 import contentReducer from './content'
 
 import {
-    fetch_user, update_user
+    fetch_user, update_user, show_toast , close_toast
 } from './global'
 
 import {
@@ -52,6 +52,17 @@ const fetchUserEpic: MyEpic = action$ =>
                 map(({ data }) => update_user(data.data))
             )
         )
+    )
+
+//Epic to show the toast message and then outout the close message action after a second of delay
+const showToastEpic: MyEpic = action$ =>
+    action$.pipe(
+        filter(show_toast.match),
+        mergeMap(_ =>
+            from(api.get(APP_URLS.TOAST_MESSAGE)).pipe(
+                map(({ data }) => show_toast(data.data), close_toast()),
+            )
+        ),
     )
 
 /** METADATA EPICS */
@@ -289,6 +300,7 @@ const epics = combineEpics(
     fetchUserEpic,
     fetchContentEpic,
     addContentEpic,
+    showToastEpic,
 )
 
 const store = configureStore({

@@ -10,6 +10,7 @@ const APP_URLS = {
     METADATA_TYPE: (id: number) => `/api/metadata_types/${id}/`,
     USER_INFO: `/api/get_user/`,
     CONTENT_LIST: `/api/content/`,
+    TOAST_MESSAGE: ``,
 }
 
 export default APP_URLS

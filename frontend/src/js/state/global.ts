@@ -2,13 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import type { User } from "js/types"
 
-
 export const globalSlice = createSlice({
     name: 'global',
     initialState: {
         current_tab: 'home',
-        snackbar_open: false,
-        snackbar_message: '',
+        toast_open: false,
+        toast_message: '',
         user: {
             username: "",
             email: "",
@@ -23,11 +22,18 @@ export const globalSlice = createSlice({
         fetch_user: () => {},
         update_user: (state, action: PayloadAction<User>) => {
             state.user = action.payload
+        },
+        show_toast: (state, action:PayloadAction<string>) => {
+            state.toast_open = true
+            state.toast_message = action.payload
+        },
+        close_toast: (state) => {
+            state.toast_open = false
         }
     },
 })
 
 export const {
-    update_current_tab, fetch_user, update_user
+    update_current_tab, fetch_user, update_user, show_toast, close_toast
 } = globalSlice.actions
 export default globalSlice.reducer
