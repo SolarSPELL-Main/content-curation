@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 import HomePage from './tabs/home';
 import MetadataPage from './tabs/metadata';
 import ContentPage from './tabs/content';
+import Profile from "./tabs/profile"
 import { NavBar } from "./tabs";
 import { fetch_user } from "./state/global"
 import { useDispatch } from "react-redux"
@@ -24,6 +25,9 @@ export default () => {
             </Route>
             <Route path={'/metadata'}>
                 <MetadataPage />
+            </Route>
+            <Route path={'/profile'}>
+                <Profile />
             </Route>
             <Route path={['/home', '/']}>
                 <HomePage />

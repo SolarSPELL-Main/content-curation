@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework import routers
 from django.conf.urls.static import static
 from rest_framework import routers
-from .views import mock_data, MetadataTypeViewSet, MetadataViewSet, \
+from .views import MetadataTypeViewSet, MetadataViewSet, \
     ContentViewSet, get_user
 
 router = routers.DefaultRouter()

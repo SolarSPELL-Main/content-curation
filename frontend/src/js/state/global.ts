@@ -21,11 +21,12 @@ export const globalSlice = createSlice({
         fetch_user: () => {},
         update_user: (state, action: PayloadAction<User>) => {
             state.user = action.payload
-        }
+        },
+        logout: () => {},
     },
 })
 
 export const {
-    update_current_tab, fetch_user, update_user
+    update_current_tab, fetch_user, update_user, logout
 } = globalSlice.actions
 export default globalSlice.reducer

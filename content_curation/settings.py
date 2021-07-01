@@ -158,4 +158,4 @@ SOCIALACCOUNT_PROVIDERS = {
 
 
 SITE_ID = 5
-LOGIN_REDIRECT_URL = 'welcome'
+LOGIN_REDIRECT_URL = '/static/index.html#/profile'

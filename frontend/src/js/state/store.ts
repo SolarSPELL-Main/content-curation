@@ -3,14 +3,14 @@ import {
 } from '@reduxjs/toolkit'
 import { combineEpics, createEpicMiddleware, Epic } from "redux-observable"
 import { from } from 'rxjs'
-import { filter, map, mergeMap } from 'rxjs/operators'
+import { filter, map, mergeMap, mapTo } from 'rxjs/operators'
 
 import globalReducer from './global'
 import metadataReducer from './metadata'
 import contentReducer from './content'
 
 import {
-    fetch_user, update_user
+    fetch_user, update_user, logout
 } from './global'
 
 import {
@@ -50,6 +50,16 @@ const fetchUserEpic: MyEpic = action$ =>
         mergeMap(_ =>
             from(api.get(APP_URLS.USER_INFO)).pipe(
                 map(({ data }) => update_user(data.data))
+            )
+        )
+    )
+
+const logoutEpic: MyEpic = action$ =>
+    action$.pipe(
+        filter(logout.match),
+        mergeMap(_ =>
+            from(api.post(APP_URLS.LOGOUT)).pipe(
+                mapTo(fetch_user())
             )
         )
     )
@@ -275,6 +285,7 @@ const addContentEpic: MyEpic = action$ =>
         ),
     )
 
+
 const epics = combineEpics(
     addMetaEpic,
     fetchMetadataEpic,
@@ -289,6 +300,7 @@ const epics = combineEpics(
     fetchUserEpic,
     fetchContentEpic,
     addContentEpic,
+    logoutEpic
 )
 
 const store = configureStore({

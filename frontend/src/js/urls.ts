@@ -1,5 +1,7 @@
 //All hardcoded end-points live in this file
 const APP_URLS = {
+    CONTENT_LIST: `/api/content/`,
+    LOGOUT: `/accounts/logout/`,
     METADATA: (id: number) => `/api/metadata/${id}/`,
     //api endpoint `/api/metadata_types/{type_id}/metadata/ ` returns all 
     // metadata of that type
@@ -9,7 +11,6 @@ const APP_URLS = {
     METADATA_TYPES: `/api/metadata_types/`,
     METADATA_TYPE: (id: number) => `/api/metadata_types/${id}/`,
     USER_INFO: `/api/get_user/`,
-    CONTENT_LIST: `/api/content/`,
 }
 
 export default APP_URLS
