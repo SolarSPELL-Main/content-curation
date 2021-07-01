@@ -21,7 +21,7 @@ type PageProps = {
 export default function Page(_: PageProps): React.ReactElement {
     const dispatch = useCCDispatch();
     const open = useCCSelector(state => state.global.toast_open);
-    //const message = useCCSelector(state => state.global.toast_message)
+    const message = useCCSelector(state => state.global.toast_message)
 
     useEffect(() => {
         dispatch(fetch_user())
@@ -47,7 +47,7 @@ export default function Page(_: PageProps): React.ReactElement {
                 <HomePage />
             </Route>
         </Switch>
-        <Snackbar open={open} message=""/>"
+        <Snackbar open={open} message={message}/>
     </>
 }
 
