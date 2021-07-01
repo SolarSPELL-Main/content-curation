@@ -15,7 +15,7 @@ import { useCCDispatch, useCCSelector } from './hooks';
 function Main(): React.ReactElement {
     const dispatch = useCCDispatch();
     const open = useCCSelector(state => state.global.toast_open);
-    //const message = useCCSelector(state => state.global.toast_message)
+    const message = useCCSelector(state => state.global.toast_message)
 
     useEffect(() => {
         dispatch(fetch_user())
