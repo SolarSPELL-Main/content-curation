@@ -3,14 +3,14 @@ import {
 } from '@reduxjs/toolkit'
 import { combineEpics, createEpicMiddleware, Epic } from "redux-observable"
 import { from, of } from 'rxjs'
-import { filter, map, mergeMap, delay, catchError } from 'rxjs/operators'
+import { filter, map, mergeMap, delay, mapTo, catchError } from 'rxjs/operators'
 
 import globalReducer from './global'
 import metadataReducer from './metadata'
 import contentReducer from './content'
 
 import {
-    fetch_user, update_user, show_toast , close_toast
+    fetch_user, update_user, show_toast, close_toast, logout
 } from './global'
 
 import {
@@ -59,6 +59,16 @@ const fetchUserEpic: MyEpic = action$ =>
                     payload: 'Error fetching user'
                 })
         ),
+    )
+
+const logoutEpic: MyEpic = action$ =>
+    action$.pipe(
+        filter(logout.match),
+        mergeMap(_ =>
+            from(api.post(APP_URLS.LOGOUT)).pipe(
+                mapTo(fetch_user())
+            )
+        )
     )
 
 //Epic to show the toast message and then outout the close message action after a second of delay
@@ -290,6 +300,7 @@ const addContentEpic: MyEpic = action$ =>
         ),
     )
 
+
 const epics = combineEpics(
     addMetaEpic,
     fetchMetadataEpic,
@@ -304,6 +315,7 @@ const epics = combineEpics(
     fetchUserEpic,
     fetchContentEpic,
     addContentEpic,
+    logoutEpic,
     showToastEpic,
 )
 

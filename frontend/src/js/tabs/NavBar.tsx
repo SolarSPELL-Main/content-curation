@@ -41,6 +41,12 @@ const tabDescriptors = [
         label: 'Content',
         value: 'content',
     },
+    {
+        component: RouterLink,
+        to: "/profile",
+        label: "Profile",
+        value: "profile",
+    },
 ];
 
 type NavBarProps = {
@@ -52,6 +58,7 @@ const tabMap: Record<string, string> = {
     '/home': 'home',
     '/metadata': 'metadata',
     '/content': 'content',
+    "/profile": "profile"
 };
 
 /**

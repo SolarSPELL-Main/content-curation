@@ -16,26 +16,7 @@ from django.views.generic import TemplateView
 
 from allauth.socialaccount.models import SocialToken
 from django.contrib.auth.models import Group
-
-@api_view(('GET',))
-@renderer_classes((JSONRenderer,))
-def mock_data(request):
-    def build_metadata(name: str, id: int):
-        return {
-            "name": name,
-            "id": id,
-        }
-
-    return JsonResponse({
-        "Subject": [build_metadata(name, i) for i, name in 
-                enumerate(["Math", "Language Arts", "Computer Science"])],
-        "Language": [build_metadata(name, i) for i, name in 
-                enumerate(["Arabic", "English", "Spanish", "Chinese", "Hindi"])],
-    })
-
-
-
-# Create your views here.
+from rest_framework.permissions import DjangoModelPermissions
 
 class StandardDataView:
    # permission_classes = (IsAdminUser,)
@@ -78,12 +59,13 @@ class StandardDataView:
 
 
 class MetadataViewSet(StandardDataView, viewsets.ModelViewSet):
+    permission_classes = [DjangoModelPermissions]
     queryset = Metadata.objects.all()
     serializer_class = MetadataSerializer
     print("Metadataviewset  query ",queryset.query)
 
 class MetadataTypeViewSet(StandardDataView, viewsets.ModelViewSet):
-    print("Metadatatypeset")
+    permission_classes = [DjangoModelPermissions]
     queryset = MetadataType.objects.all()
     serializer_class = MetadataTypeSerializer
 
@@ -96,20 +78,28 @@ class MetadataTypeViewSet(StandardDataView, viewsets.ModelViewSet):
 @api_view(('GET',))
 @renderer_classes((JSONRenderer,))
 def get_user(request, *args, **kwargs):
-    token = SocialToken.objects.get(
-        account__user=request.user, account__provider='google'
-    )
-    return build_response({
-        "token_key": token.token,
-        "user": request.user.username,
-        "email": request.user.email,
-        "groups": [group.name for group in request.user.groups.all()],
-    })
+    if request.user.is_authenticated:
+        token = SocialToken.objects.get(
+            account__user=request.user, account__provider='google'
+        )
+        return build_response({
+            "token_key": token.token,
+            "username": request.user.username,
+            "email": request.user.email,
+            "groups": [group.name for group in request.user.groups.all()],
+        })
+    else:
+        return build_response({
+            "token_key": "",
+            "username": "",
+            "email": "",
+            "groups": "",
+        })
 
 class Welcome(TemplateView):
     template_name = 'welcome.html'
     
 class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
-    print("contentviewset")
+    permission_classes = [DjangoModelPermissions]
     queryset = Content.objects.all()
     serializer_class = ContentSerializer
