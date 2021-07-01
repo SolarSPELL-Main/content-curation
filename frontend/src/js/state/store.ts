@@ -250,7 +250,7 @@ const fetchContentEpic: MyEpic = action$ =>
                                 )
                             }),
                         ),
-                    )
+                    ),
                 ),
             ),
         ),
@@ -271,12 +271,7 @@ const addContentEpic: MyEpic = action$ =>
                 // Django expects FormData with repeated fields
                 Object.values(content.metadata).forEach(
                     val => val.forEach(metadata => {
-                        data.append('metadata_info', JSON.stringify({
-                            id: metadata.id,
-                            name: metadata.name,
-                            type_name: metadata.metadataType.name,
-                            type: metadata.metadataType.id,
-                        }))
+                        data.append('metadata', metadata.id.toString());
                     })
                 );
                 data.append('active', 'true');
