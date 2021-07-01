@@ -1,14 +1,8 @@
 import NavBar from './NavBar';
-import Home from './home';
-import Metadata, { Icon as MetadataIcon } from './metadata';
-import Content, { Icon as ContentIcon } from './content';
+import { Icon as MetadataIcon } from './metadata';
+import { Icon as ContentIcon } from './content';
 
-export const Pages = {
-    'home': Home,
-    'metadata': Metadata,
-    'content': Content,
-};
-
+// Add Icon assets here if you would like it to appear in the homepage
 export const Icons = {
     'metadata': MetadataIcon,
     'content': ContentIcon,
