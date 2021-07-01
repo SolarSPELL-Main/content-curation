@@ -2,8 +2,8 @@ import {
     configureStore, getDefaultMiddleware, AnyAction, combineReducers
 } from '@reduxjs/toolkit'
 import { combineEpics, createEpicMiddleware, Epic } from "redux-observable"
-import { from } from 'rxjs'
-import { filter, map, mergeMap, delay } from 'rxjs/operators'
+import { from, of } from 'rxjs'
+import { filter, map, mergeMap, delay, catchError } from 'rxjs/operators'
 
 import globalReducer from './global'
 import metadataReducer from './metadata'
@@ -50,8 +50,15 @@ const fetchUserEpic: MyEpic = action$ =>
         mergeMap(_ =>
             from(api.get(APP_URLS.USER_INFO)).pipe(
                 map(({ data }) => update_user(data.data))
-            )
-        )
+            ),
+        ),
+        catchError(
+            _ => 
+                of({
+                    type: show_toast.type,
+                    payload: 'Error fetching user'
+                })
+        ),
     )
 
 //Epic to show the toast message and then outout the close message action after a second of delay

@@ -33,7 +33,7 @@ function Main(): React.ReactElement {
                 <HomePage />
             </Route>
         </Switch>
-        <Snackbar open={open} message={message} />"
+        <Snackbar open={open} message={message} />
     </>);
 }
 
