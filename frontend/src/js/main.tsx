@@ -20,10 +20,6 @@ function Main(): React.ReactElement {
     useEffect(() => {
         dispatch(fetch_user())
     }, [dispatch])
-    
-    useEffect(() => {
-        dispatch(fetch_user());
-    }, []);
 
     return (<>
         <NavBar />
