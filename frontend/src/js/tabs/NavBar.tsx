@@ -76,8 +76,10 @@ function NavBar(_: NavBarProps): React.ReactElement {
     }, [dispatch]);
 
     React.useEffect(() => {
-        if (tabMap[currentTab] !== stateTab) {
-            updateTab(tabMap[currentTab]);
+        // Default tab to home
+        const tab = tabMap[currentTab] ?? 'home';
+        if (tab !== stateTab) {
+            updateTab(tab);
         }
     }, [updateTab, stateTab, currentTab, tabMap]);
 
