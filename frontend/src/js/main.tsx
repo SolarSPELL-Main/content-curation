@@ -1,10 +1,5 @@
 import React, { useEffect } from "react";
-import { Switch, Route } from 'react-router-dom';
-import HomePage from './tabs/home';
-import MetadataPage from './tabs/metadata';
-import ContentPage from './tabs/content';
-import Profile from "./tabs/profile"
-import { NavBar } from "./tabs";
+import Tabs from './tabs';
 import { fetch_user } from "./state/global"
 import Snackbar from '@material-ui/core/Snackbar';
 import { useCCDispatch, useCCSelector } from './hooks';
@@ -22,21 +17,7 @@ function Main(): React.ReactElement {
     }, [dispatch])
 
     return (<>
-        <NavBar />
-        <Switch>
-            <Route path={'/content'}>
-                <ContentPage />
-            </Route>
-            <Route path={'/metadata'}>
-                <MetadataPage />
-            </Route>
-            <Route path={'/profile'}>
-                <Profile />
-            </Route>
-            <Route path={['/home', '/']}>
-                <HomePage />
-            </Route>
-        </Switch>
+        <Tabs />
         <Snackbar open={open} message={message} />
     </>);
 }

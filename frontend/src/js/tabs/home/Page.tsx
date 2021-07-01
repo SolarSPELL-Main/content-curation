@@ -2,7 +2,7 @@ import React from 'react';
 import Icons from './Icons';
 
 type PageProps = {
-
+    icons: Record<string,any>
 }
 
 /**
@@ -10,9 +10,9 @@ type PageProps = {
  * @param _ Unused for now.
  * @returns The home tab body.
  */
-function Page(_: PageProps): React.ReactElement {
-    const icons = require('../').Icons;
-
+function Page({
+    icons,
+}: PageProps): React.ReactElement {
     return (
         <Icons icons={icons} />
     );
