@@ -265,4 +265,4 @@ function ContentForm({
     );
 }
 
-export default ContentForm;
+export default React.memo(ContentForm);
