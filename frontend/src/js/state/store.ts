@@ -222,9 +222,7 @@ const fetchContentEpic: MyEpic = action$ =>
                         // Maps API response to Content array
                         data.data.map(
                             (val: any) => <Content>({
-                                // Generate random ID to simulate unique ID
-                                // TODO: Remove this and fetch ID from backend
-                                id: Math.random(),
+                                id: Number(val.id),
                                 notes: val.additional_notes,
                                 active: val.active,
                                 fileURL: val.content_file,
