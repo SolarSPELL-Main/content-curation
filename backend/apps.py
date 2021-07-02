@@ -4,6 +4,7 @@ from django.apps import AppConfig
 class BackendConfig(AppConfig):
     name = 'backend'
 
+
 class GroupPermissionsConfig(AppConfig):
     name = 'backend'
 

@@ -3,7 +3,7 @@ from rest_framework import routers
 from django.conf.urls.static import static
 from rest_framework import routers
 from .views import MetadataTypeViewSet, MetadataViewSet, \
-    ContentViewSet, get_user
+    ContentViewSet, get_user, search
 
 router = routers.DefaultRouter()
 router.register(r'metadata', MetadataViewSet,basename='metadata')
@@ -13,5 +13,6 @@ router.register(r'content', ContentViewSet, basename='content')
 
 urlpatterns = [
     path(r'get_user/', get_user),
+    path(r'search',search),
     path('', include(router.urls)),
 ]
