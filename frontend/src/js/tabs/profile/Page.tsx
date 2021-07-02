@@ -3,7 +3,7 @@ import { useCCSelector, useCCDispatch } from '../../hooks';
 import Button from "@material-ui/core/Button"
 import Typography from "@material-ui/core/Typography"
 
-import { logout } from "../../state/global"
+import { logout, show_toast } from "../../state/global"
 
 export default () => {
     const dispatch = useCCDispatch()
@@ -28,5 +28,6 @@ export default () => {
                 Login
             </Button>
         </>}
+        <Button onClick={() => dispatch(show_toast("Message to display"))} > Test Button </Button>
     </div>
 }

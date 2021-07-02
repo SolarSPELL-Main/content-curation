@@ -157,5 +157,5 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 
-SITE_ID = 5
+SITE_ID = 6
 LOGIN_REDIRECT_URL = '/static/index.html#/profile'

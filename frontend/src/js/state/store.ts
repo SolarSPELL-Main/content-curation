@@ -75,8 +75,17 @@ const logoutEpic: MyEpic = action$ =>
 const showToastEpic: MyEpic = action$ =>
     action$.pipe(
         filter(show_toast.match),
+        map(_res=> {console.log("passed filter")
+        return _res}
+        ),
         delay(1000),
+        map(_res=> {console.log("delay executed")
+        return _res}
+        ),
         map(_ => close_toast()),
+        map(_res=> {console.log("toast closed")
+        return _res}
+        ),
     )
 
 /** METADATA EPICS */
