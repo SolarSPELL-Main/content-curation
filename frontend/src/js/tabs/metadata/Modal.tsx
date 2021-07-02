@@ -7,7 +7,7 @@ import { MetadataDisplay } from 'solarspell-react-lib';
 import KebabMenu, { KebabMenuActionProps } from './KebabMenu';
 import ActionPanel, { ActionPanelActionProps } from './ActionPanel';
 import TypeAdder, { TypeAdderActionProps } from './TypeAdder';
-import { Metadata, MetadataType } from '../../types';
+import { Metadata, MetadataType } from 'js/types';
 
 type ModalActionProps = {
     actions: {

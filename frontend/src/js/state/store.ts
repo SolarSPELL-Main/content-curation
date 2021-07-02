@@ -3,9 +3,9 @@ import {
     configureStore, getDefaultMiddleware, AnyAction, combineReducers
 } from '@reduxjs/toolkit'
 import { combineEpics, createEpicMiddleware, Epic } from "redux-observable"
-import { from, EMPTY, of } from 'rxjs'
+import { from, /** EMPTY */ } from 'rxjs'
 import {
-    filter, map, mergeMap, mapTo, delay, catchError
+    filter, map, mergeMap, mapTo, delay, /** catchError */
 } from 'rxjs/operators'
 
 //Importing from other files in the project
@@ -26,7 +26,6 @@ import {
     add_content,
 } from './content'
 import { api } from '../utils'
-import { format } from 'date-fns'
 import APP_URLS from '../urls'
 import { Content, Metadata } from '../types'
 
@@ -50,13 +49,13 @@ const fetchUserEpic: MyEpic = action$ =>
                 map(({ data }) => update_user(data.data))
             ),
         ),
-        catchError(
-            _ => 
-                of({
-                    type: show_toast.type,
-                    payload: 'Error fetching user'
-                })
-        ),
+        // catchError(
+        //     _ => 
+        //         of({
+        //             type: show_toast.type,
+        //             payload: 'Error fetching user'
+        //         })
+        // ),
     )
 
 const logoutEpic: MyEpic = action$ =>
@@ -218,8 +217,12 @@ const fetchContentEpic: MyEpic = action$ =>
                                 notes: val.additional_notes,
                                 active: val.active,
                                 fileURL: val.content_file,
+                                copyrighter: val.copyright_by,
                                 copyright: val.copyright_notes,
+                                copyrightApproved: val.copyright_approved,
                                 creator: val.created_by,
+                                createdDate: val.created_on,
+                                reviewer: val.reviewed_by,
                                 description: val.description,
                                 fileName: val.file_name,
                                 datePublished: val.published_year,
@@ -249,7 +252,7 @@ const fetchContentEpic: MyEpic = action$ =>
                                         };
                                     },
                                     {} as Record<number,Metadata[]>,
-                                )
+                                ),
                             }),
                         ),
                     ),
@@ -265,9 +268,12 @@ const addContentEpic: MyEpic = action$ =>
             {
                 const content = action.payload;
                 const data = new FormData();
-                data.append('file_name', content.fileName ?? '');
-                data.append('title', content.title ?? '');
-                data.append('content_file', content.file ?? '');
+                data.append('file_name', content.fileName);
+                data.append('title', content.title);
+                // This action should only be called on adding content
+                // Hence the file should not be null
+                // If it is, an error will be thrown here, anyway
+                data.append('content_file', content.file!);
                 data.append('description', content.description ?? '');
                 // For many-to-many fields
                 // Django expects FormData with repeated fields
@@ -276,18 +282,20 @@ const addContentEpic: MyEpic = action$ =>
                         data.append('metadata', metadata.id.toString());
                     })
                 );
-                data.append('active', 'true');
                 data.append('copyright_notes', content.copyright ?? '');
                 data.append('rights_statement', content.rightsStatement ?? '');
                 data.append('additional_notes', content.notes ?? '');
                 // Same format as DLMS, default to Jan. 1st
                 data.append('published_date', `${content.datePublished}-01-01`);
-                data.append('created_by', content.creator ?? '');
-                data.append('created_on', format(Date.now(), 'yyyy-MM-dd'));
-                data.append('reviewed_by', '');
-                data.append('copyright_approved', 'false');
-                data.append('copyright_by', '');
-                data.append('published_year', content.datePublished ?? '');
+
+                // Unused fields
+                // data.append('active', 'true');
+                // data.append('created_by', content.creator ?? 'admin');
+                // data.append('created_on', format(Date.now(), 'yyyy-MM-dd'));
+                // data.append('reviewed_by', '');
+                // data.append('copyright_approved', 'false');
+                // data.append('copyright_by', '');
+                // data.append('published_year', content.datePublished ?? '');
 
                 const req = api.post(APP_URLS.CONTENT_LIST, data);
                 return from(req).pipe(
@@ -297,13 +305,13 @@ const addContentEpic: MyEpic = action$ =>
         ),
     )
 
-const catchErrorEpic: MyEpic = action$ =>
-    action$.pipe(
-        catchError(err => {
-            console.error(err)
-            return EMPTY
-        }),
-    )
+// const catchErrorEpic: MyEpic = action$ =>
+//     action$.pipe(
+//         catchError(err => {
+//             console.error(err)
+//             return EMPTY
+//         }),
+//     )
 
 const epics = combineEpics(
     addMetaEpic,
@@ -321,7 +329,7 @@ const epics = combineEpics(
     addContentEpic,
     logoutEpic,
     showToastEpic,
-    catchErrorEpic // Make sure this epic is last
+    // catchErrorEpic // Make sure this epic is last
 )
 
 const store = configureStore({

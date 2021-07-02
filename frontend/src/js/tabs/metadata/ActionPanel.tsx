@@ -5,7 +5,7 @@ import { Edit, Delete } from '@material-ui/icons';
 //Importing from other files in the project
 import { ActionPanel as SolarSPELLActionPanel, ActionPanelItem } from 
         'solarspell-react-lib';
-import { Metadata, MetadataType } from '../../types';
+import { Metadata, MetadataType } from 'js/types';
 
 type ActionPanelActionProps = {
     onEdit: (item: Metadata, val: string) => void
