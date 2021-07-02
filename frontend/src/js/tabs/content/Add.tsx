@@ -1,6 +1,7 @@
 //Importing from outside the project
 import React from 'react';
 import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Box';
 
 //Importing from other files in the project
 import ContentForm from './ContentForm';
@@ -34,7 +35,7 @@ function Add({
     );
 
     return (
-        <>
+        <Box mb={1}>
             <Button
                 variant={'contained'}
                 color={'primary'}
@@ -49,7 +50,7 @@ function Add({
                 open={open}
                 type={'add'}
             />
-        </>
+        </Box>
     );
 }
 

@@ -1,5 +1,6 @@
 //Importing from outside the project
 import React from 'react';
+import Box from '@material-ui/core/Box';
 
 //Importing from other files in the project
 import Add from './Add';
@@ -24,19 +25,21 @@ function Modal({
     content,
     actions,
 }: ModalProps): React.ReactElement {
-    return (<>
-        <Add
-            metadata={metadata}
-            metadataTypes={metadataTypes}
-            onAdd={actions.Toolbar.onAdd}
-        />
-        <Display
-            metadata={metadata}
-            metadataTypes={metadataTypes}
-            content={content}
-            actions={actions.Display}
-        />
-    </>);
+    return (
+        <Box p={2}>
+            <Add
+                metadata={metadata}
+                metadataTypes={metadataTypes}
+                onAdd={actions.Toolbar.onAdd}
+            />
+            <Display
+                metadata={metadata}
+                metadataTypes={metadataTypes}
+                content={content}
+                actions={actions.Display}
+            />
+        </Box>
+    );
 }
 
 export default Modal;
