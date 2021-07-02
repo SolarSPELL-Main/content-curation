@@ -2,8 +2,8 @@ import {
     configureStore, getDefaultMiddleware, AnyAction, combineReducers
 } from '@reduxjs/toolkit'
 import { combineEpics, createEpicMiddleware, Epic } from "redux-observable"
-import { from } from 'rxjs'
-import { filter, map, mergeMap, mapTo, delay } from 'rxjs/operators'
+import { from, of } from 'rxjs'
+import { filter, map, mergeMap, delay, mapTo, catchError } from 'rxjs/operators'
 
 import globalReducer from './global'
 import metadataReducer from './metadata'
@@ -50,8 +50,15 @@ const fetchUserEpic: MyEpic = action$ =>
         mergeMap(_ =>
             from(api.get(APP_URLS.USER_INFO)).pipe(
                 map(({ data }) => update_user(data.data))
-            )
-        )
+            ),
+        ),
+        catchError(
+            _ => 
+                of({
+                    type: show_toast.type,
+                    payload: 'Error fetching user'
+                })
+        ),
     )
 
 const logoutEpic: MyEpic = action$ =>
@@ -215,6 +222,9 @@ const fetchContentEpic: MyEpic = action$ =>
                         // Maps API response to Content array
                         data.data.map(
                             (val: any) => <Content>({
+                                // Generate random ID to simulate unique ID
+                                // TODO: Remove this and fetch ID from backend
+                                id: Math.random(),
                                 notes: val.additional_notes,
                                 active: val.active,
                                 fileURL: val.content_file,
@@ -252,7 +262,7 @@ const fetchContentEpic: MyEpic = action$ =>
                                 )
                             }),
                         ),
-                    )
+                    ),
                 ),
             ),
         ),
@@ -273,12 +283,7 @@ const addContentEpic: MyEpic = action$ =>
                 // Django expects FormData with repeated fields
                 Object.values(content.metadata).forEach(
                     val => val.forEach(metadata => {
-                        data.append('metadata_info', JSON.stringify({
-                            id: metadata.id,
-                            name: metadata.name,
-                            type_name: metadata.metadataType.name,
-                            type: metadata.metadataType.id,
-                        }))
+                        data.append('metadata', metadata.id.toString());
                     })
                 );
                 data.append('active', 'true');
