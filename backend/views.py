@@ -79,11 +79,16 @@ class MetadataTypeViewSet(StandardDataView, viewsets.ModelViewSet):
 @renderer_classes((JSONRenderer,))
 def get_user(request, *args, **kwargs):
     if request.user.is_authenticated:
-        token = SocialToken.objects.get(
-            account__user=request.user, account__provider='google'
-        )
+        token = ""
+        try:
+            token = SocialToken.objects.get(
+                account__user=request.user, account__provider='google'
+            ).token
+        except SocialToken.DoesNotExist:
+            pass
+
         return build_response({
-            "token_key": token.token,
+            "token_key": token,
             "username": request.user.username,
             "email": request.user.email,
             "groups": [group.name for group in request.user.groups.all()],

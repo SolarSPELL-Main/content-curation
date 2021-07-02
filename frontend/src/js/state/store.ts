@@ -2,8 +2,10 @@ import {
     configureStore, getDefaultMiddleware, AnyAction, combineReducers
 } from '@reduxjs/toolkit'
 import { combineEpics, createEpicMiddleware, Epic } from "redux-observable"
-import { from } from 'rxjs'
-import { filter, map, mergeMap, mapTo, delay } from 'rxjs/operators'
+import { from, EMPTY } from 'rxjs'
+import {
+    filter, map, mergeMap, mapTo, delay, catchError
+} from 'rxjs/operators'
 
 import globalReducer from './global'
 import metadataReducer from './metadata'
@@ -302,6 +304,13 @@ const addContentEpic: MyEpic = action$ =>
         ),
     )
 
+const catchErrorEpic: MyEpic = action$ =>
+    action$.pipe(
+        catchError(err => {
+            console.error(err)
+            return EMPTY
+        }),
+    )
 
 const epics = combineEpics(
     addMetaEpic,
@@ -319,6 +328,7 @@ const epics = combineEpics(
     addContentEpic,
     logoutEpic,
     showToastEpic,
+    catchErrorEpic // Make sure this epic is last
 )
 
 const store = configureStore({
