@@ -79,7 +79,7 @@ function ContentForm({
                     initialValue: '',
                     validator: (state) => {
                         if (!state['title']) {
-                            return 'Title is required.';
+                            return 'Title is required';
                         } else {
                             return null;
                         }
@@ -118,9 +118,12 @@ function ContentForm({
                                 />
                             </Button>
                             <Typography>{props.text}</Typography>
+                            <Typography color={'secondary'}>
+                                {props.error}
+                            </Typography>
                         </>
                     ),
-                    propFactory: (state, _r, setter, genericSetter) => {
+                    propFactory: (state, reasons, setter, genericSetter) => {
                         return {
                             onChange: (
                                 e: React.SyntheticEvent<HTMLInputElement>
@@ -136,10 +139,18 @@ function ContentForm({
                                 `Existing file: ${state['fileName']}`
                                 :
                                 'No file chosen',
+                            error: reasons['file'],
                         };
                     },
                     label: 'file',
                     initialValue: undefined,
+                    validator: (state) => {
+                        if (!state['file'] && !state['fileURL']) {
+                            return 'A file must be uploaded';
+                        } else {
+                            return null;
+                        }
+                    },
                 },
                 {
                     component: TextField,
