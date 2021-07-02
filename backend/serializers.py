@@ -1,7 +1,9 @@
+'''Importing from outside the project'''
 from rest_framework.serializers import ModelSerializer
 from rest_framework.validators import UniqueTogetherValidator
-from backend.models import Metadata, MetadataType, Content
 
+'''Importing from other files in the project'''
+from backend.models import Metadata, MetadataType, Content
 
 class MetadataTypeSerializer(ModelSerializer):
     class Meta:
@@ -26,7 +28,7 @@ class ContentSerializer(ModelSerializer):
     class Meta:
         model = Content
         fields = (
-        'file_name', 'title', 'content_file', 'description', 'metadata_info',
+            'id', 'file_name', 'title', 'content_file', 'description', 'metadata_info',
         'metadata', 'active', 'copyright_notes', 'rights_statement',
         'additional_notes', 'published_date', 'created_by', 'created_on',
         'reviewed_by', 'copyright_approved',

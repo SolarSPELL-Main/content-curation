@@ -1,24 +1,20 @@
+//Importing from outside the project
 import React, { useEffect } from "react";
-import { Switch, Route } from 'react-router-dom';
-import HomePage from './tabs/home';
-import MetadataPage from './tabs/metadata';
-import ContentPage from './tabs/content';
-import Profile from "./tabs/profile"
-import { NavBar } from "./tabs";
-import { fetch_user } from "./state/global"
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 import Snackbar from '@material-ui/core/Snackbar';
+
+//Importing from other files in the project
+import Tabs from './tabs';
+import { fetch_user } from "./state/global"
 import { useCCDispatch, useCCSelector } from './hooks';
-import * as Actions from './state/metadata';
 
-
-type PageProps = {
-
-}
 
 /*
  * Main entry point of the application
  */
-export default function Page(_: PageProps): React.ReactElement {
+function Main(): React.ReactElement {
     const dispatch = useCCDispatch();
     const open = useCCSelector(state => state.global.toast_open);
     const message = useCCSelector(state => state.global.toast_message)
@@ -26,28 +22,26 @@ export default function Page(_: PageProps): React.ReactElement {
     useEffect(() => {
         dispatch(fetch_user())
     }, [dispatch])
-    
-    useEffect(() => {
-        dispatch(Actions.fetch_metadatatype());
-    }, []);
 
-    return <>
-        <NavBar />
-        <Switch>
-            <Route path={'/content'}>
-                <ContentPage />
-            </Route>
-            <Route path={'/metadata'}>
-                <MetadataPage />
-            </Route>
-            <Route path={'/profile'}>
-                <Profile />
-            </Route>
-            <Route path={['/home', '/']}>
-                <HomePage />
-            </Route>
-        </Switch>
-        <Snackbar open={open} message={message}/>
-    </>
+    return (<>
+        <Tabs />
+        <Snackbar anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        open={open}
+        message={message}
+        action={
+            <React.Fragment>
+              <Button color="secondary" size="small">
+                UNDO
+              </Button>
+              <IconButton size="small" aria-label="close" color="inherit">
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </React.Fragment>
+        }/>
+    </>);
 }
 
+export default Main;

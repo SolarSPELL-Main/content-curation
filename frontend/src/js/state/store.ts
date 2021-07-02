@@ -1,35 +1,33 @@
+//Importing from outside the project
 import {
     configureStore, getDefaultMiddleware, AnyAction, combineReducers
 } from '@reduxjs/toolkit'
 import { combineEpics, createEpicMiddleware, Epic } from "redux-observable"
-import { from } from 'rxjs'
-import { filter, map, mergeMap, mapTo, delay } from 'rxjs/operators'
+import { from, EMPTY, of } from 'rxjs'
+import {
+    filter, map, mergeMap, mapTo, delay, catchError
+} from 'rxjs/operators'
 
+//Importing from other files in the project
 import globalReducer from './global'
 import metadataReducer from './metadata'
 import contentReducer from './content'
-
 import {
     fetch_user, update_user, show_toast, close_toast, logout
 } from './global'
-
 import {
     fetch_metadata, update_metadata, add_metadata, delete_metadata, 
     edit_metadata, fetch_metadatatype, update_metadatatype, add_metadatatype,
     delete_metadatatype, edit_metadatatype, preload_all_metadata
 } from './metadata'
-
 import {
     fetch_content,
     update_content,
     add_content,
 } from './content'
-
 import { api } from '../utils'
 import { format } from 'date-fns'
-
 import APP_URLS from '../urls'
-
 import { Content, Metadata } from '../types'
 
 const reducer = combineReducers({
@@ -50,8 +48,15 @@ const fetchUserEpic: MyEpic = action$ =>
         mergeMap(_ =>
             from(api.get(APP_URLS.USER_INFO)).pipe(
                 map(({ data }) => update_user(data.data))
-            )
-        )
+            ),
+        ),
+        catchError(
+            _ => 
+                of({
+                    type: show_toast.type,
+                    payload: 'Error fetching user'
+                })
+        ),
     )
 
 const logoutEpic: MyEpic = action$ =>
@@ -68,13 +73,7 @@ const logoutEpic: MyEpic = action$ =>
 const showToastEpic: MyEpic = action$ =>
     action$.pipe(
         filter(show_toast.match),
-        map(_res=> {console.log("passed filter")
-        return _res}
-        ),
-        delay(1000),
-        map(_res=> {console.log("delay executed")
-        return _res}
-        ),
+        delay(6000),
         map(_ => close_toast()),
         map(_res=> {console.log("toast closed")
         return _res}
@@ -215,6 +214,7 @@ const fetchContentEpic: MyEpic = action$ =>
                         // Maps API response to Content array
                         data.data.map(
                             (val: any) => <Content>({
+                                id: Number(val.id),
                                 notes: val.additional_notes,
                                 active: val.active,
                                 fileURL: val.content_file,
@@ -252,7 +252,7 @@ const fetchContentEpic: MyEpic = action$ =>
                                 )
                             }),
                         ),
-                    )
+                    ),
                 ),
             ),
         ),
@@ -265,34 +265,29 @@ const addContentEpic: MyEpic = action$ =>
             {
                 const content = action.payload;
                 const data = new FormData();
-                data.append('file_name', content.fileName);
-                data.append('title', content.title);
+                data.append('file_name', content.fileName ?? '');
+                data.append('title', content.title ?? '');
                 data.append('content_file', content.file ?? '');
-                data.append('description', content.description);
+                data.append('description', content.description ?? '');
                 // For many-to-many fields
                 // Django expects FormData with repeated fields
-                Object.values(content.metadata).forEach(
+                Object.values(content.metadata ?? []).forEach(
                     val => val.forEach(metadata => {
-                        data.append('metadata_info', JSON.stringify({
-                            id: metadata.id,
-                            name: metadata.name,
-                            type_name: metadata.metadataType.name,
-                            type: metadata.metadataType.id,
-                        }))
+                        data.append('metadata', metadata.id.toString());
                     })
                 );
                 data.append('active', 'true');
-                data.append('copyright_notes', content.copyright);
-                data.append('rights_statement', content.rightsStatement);
-                data.append('additional_notes', content.notes);
+                data.append('copyright_notes', content.copyright ?? '');
+                data.append('rights_statement', content.rightsStatement ?? '');
+                data.append('additional_notes', content.notes ?? '');
                 // Same format as DLMS, default to Jan. 1st
                 data.append('published_date', `${content.datePublished}-01-01`);
-                data.append('created_by', content.creator);
+                data.append('created_by', content.creator ?? '');
                 data.append('created_on', format(Date.now(), 'yyyy-MM-dd'));
                 data.append('reviewed_by', '');
                 data.append('copyright_approved', 'false');
                 data.append('copyright_by', '');
-                data.append('published_year', content.datePublished);
+                data.append('published_year', content.datePublished ?? '');
 
                 const req = api.post(APP_URLS.CONTENT_LIST, data);
                 return from(req).pipe(
@@ -302,6 +297,13 @@ const addContentEpic: MyEpic = action$ =>
         ),
     )
 
+const catchErrorEpic: MyEpic = action$ =>
+    action$.pipe(
+        catchError(err => {
+            console.error(err)
+            return EMPTY
+        }),
+    )
 
 const epics = combineEpics(
     addMetaEpic,
@@ -319,6 +321,7 @@ const epics = combineEpics(
     addContentEpic,
     logoutEpic,
     showToastEpic,
+    catchErrorEpic // Make sure this epic is last
 )
 
 const store = configureStore({

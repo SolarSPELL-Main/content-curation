@@ -1,3 +1,4 @@
+'''Importing from outside the project'''
 from django.db.utils import IntegrityError, Error
 from django.shortcuts import render
 from django.http.response import JsonResponse
@@ -5,18 +6,17 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import api_view, renderer_classes, action
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
+from django.middleware.csrf import get_token
+from django.views.generic import TemplateView
+from allauth.socialaccount.models import SocialToken
+from django.contrib.auth.models import Group
+from rest_framework.permissions import DjangoModelPermissions
 
+'''Importing from other files in the project'''
 from backend.models import MetadataType, Metadata, Content
 from backend.serializers import MetadataTypeSerializer, MetadataSerializer, \
     ContentSerializer
 from backend.standardize_format import build_response
-
-from django.middleware.csrf import get_token
-from django.views.generic import TemplateView
-
-from allauth.socialaccount.models import SocialToken
-from django.contrib.auth.models import Group
-from rest_framework.permissions import DjangoModelPermissions
 from .filters import ContentFilter
 
 
@@ -83,11 +83,16 @@ class MetadataTypeViewSet(StandardDataView, viewsets.ModelViewSet):
 @renderer_classes((JSONRenderer,))
 def get_user(request, *args, **kwargs):
     if request.user.is_authenticated:
-        token = SocialToken.objects.get(
-            account__user=request.user, account__provider='google'
-        )
+        token = ""
+        try:
+            token = SocialToken.objects.get(
+                account__user=request.user, account__provider='google'
+            ).token
+        except SocialToken.DoesNotExist:
+            pass
+
         return build_response({
-            "token_key": token.token,
+            "token_key": token,
             "username": request.user.username,
             "email": request.user.email,
             "groups": [group.name for group in request.user.groups.all()],

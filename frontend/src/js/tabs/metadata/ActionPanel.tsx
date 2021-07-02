@@ -1,8 +1,10 @@
+//Importing from outside the project
 import React from 'react';
-import { ActionPanel as SolarSPELLActionPanel, ActionPanelItem } from 
-        'solarspell-react-lib';
 import { Edit, Delete } from '@material-ui/icons';
 
+//Importing from other files in the project
+import { ActionPanel as SolarSPELLActionPanel, ActionPanelItem } from 
+        'solarspell-react-lib';
 import { Metadata, MetadataType } from '../../types';
 
 type ActionPanelActionProps = {
