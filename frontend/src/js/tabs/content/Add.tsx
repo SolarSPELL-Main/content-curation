@@ -9,7 +9,7 @@ import { Metadata, MetadataType, Content } from '../../types';
 type AddProps = {
     metadata: Record<number, Metadata[]>
     metadataTypes: MetadataType[]
-    onAdd: (content: Partial<Content>) => void
+    onAdd: (content: Content) => void
 }
 
 /**
@@ -27,7 +27,7 @@ function Add({
         (content?: Partial<Content>) => {
             setOpen(false);
             if (content) {
-                onAdd(content);
+                onAdd(content as Content);
             }
         },
         [onAdd, setOpen],

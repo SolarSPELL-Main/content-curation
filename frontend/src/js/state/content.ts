@@ -21,7 +21,7 @@ export const contentSlice = createSlice({
         },
         
         // Posts content to backend
-        add_content: (_state, _action: PayloadAction<Partial<Content>>) => {},
+        add_content: (_state, _action: PayloadAction<Content>) => {},
     },
 });
 

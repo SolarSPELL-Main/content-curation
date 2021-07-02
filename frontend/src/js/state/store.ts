@@ -5,7 +5,7 @@ import {
 import { combineEpics, createEpicMiddleware, Epic } from "redux-observable"
 import { from, of } from 'rxjs'
 import { filter, map, mergeMap, delay, mapTo, catchError } from 'rxjs/operators'
-import { format } from 'date-fns'
+// import { format } from 'date-fns'
 
 //Importing from other files in the project
 import globalReducer from './global'
@@ -267,9 +267,12 @@ const addContentEpic: MyEpic = action$ =>
             {
                 const content = action.payload;
                 const data = new FormData();
-                data.append('file_name', content.fileName ?? '');
-                data.append('title', content.title ?? '');
-                data.append('content_file', content.file ?? '');
+                data.append('file_name', content.fileName);
+                data.append('title', content.title);
+                // This action should only be called on adding content
+                // Hence the file should not be null
+                // If it is, an error will be thrown here, anyway
+                data.append('content_file', content.file!);
                 data.append('description', content.description ?? '');
                 // For many-to-many fields
                 // Django expects FormData with repeated fields
@@ -278,18 +281,20 @@ const addContentEpic: MyEpic = action$ =>
                         data.append('metadata', metadata.id.toString());
                     })
                 );
-                data.append('active', 'true');
                 data.append('copyright_notes', content.copyright ?? '');
                 data.append('rights_statement', content.rightsStatement ?? '');
                 data.append('additional_notes', content.notes ?? '');
                 // Same format as DLMS, default to Jan. 1st
                 data.append('published_date', `${content.datePublished}-01-01`);
-                data.append('created_by', content.creator ?? '');
-                data.append('created_on', format(Date.now(), 'yyyy-MM-dd'));
-                data.append('reviewed_by', '');
-                data.append('copyright_approved', 'false');
-                data.append('copyright_by', '');
-                data.append('published_year', content.datePublished ?? '');
+
+                // Unused fields
+                // data.append('active', 'true');
+                // data.append('created_by', content.creator ?? 'admin');
+                // data.append('created_on', format(Date.now(), 'yyyy-MM-dd'));
+                // data.append('reviewed_by', '');
+                // data.append('copyright_approved', 'false');
+                // data.append('copyright_by', '');
+                // data.append('published_year', content.datePublished ?? '');
 
                 const req = api.post(APP_URLS.CONTENT_LIST, data);
                 return from(req).pipe(

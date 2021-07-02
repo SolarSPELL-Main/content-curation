@@ -23,7 +23,7 @@ function Page(_: PageProps): React.ReactElement {
     const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
     const content = useCCSelector(state => state.content.content);
     // Can be changed to email, token, etc.
-    const user = useCCSelector(state => state.global.user.username);
+    const user = useCCSelector(state => state.global.user.email);
 
     React.useEffect(() => {
         dispatch(MetadataActions.fetch_metadatatype());
@@ -31,7 +31,7 @@ function Page(_: PageProps): React.ReactElement {
     }, []);
 
     const onAdd_ = React.useCallback(
-        (content?: Partial<Content>) => {
+        (content?: Content) => {
             if (content) {
                 content.creator = user;
                 dispatch(ContentActions.add_content(content));

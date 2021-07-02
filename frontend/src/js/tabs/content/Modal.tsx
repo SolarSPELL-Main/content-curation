@@ -13,7 +13,7 @@ type ModalProps = {
     actions: {
         Display: DisplayActionProps
         Toolbar: {
-            onAdd: (content: Partial<Content>) => void
+            onAdd: (content: Content) => void
         }
     }
 }
