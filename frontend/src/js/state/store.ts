@@ -5,6 +5,7 @@ import {
 import { combineEpics, createEpicMiddleware, Epic } from "redux-observable"
 import { from, of } from 'rxjs'
 import { filter, map, mergeMap, delay, mapTo, catchError } from 'rxjs/operators'
+import { format } from 'date-fns'
 
 //Importing from other files in the project
 import globalReducer from './global'
@@ -24,7 +25,6 @@ import {
     add_content,
 } from './content'
 import { api } from '../utils'
-import { format } from 'date-fns'
 import APP_URLS from '../urls'
 import { Content, Metadata } from '../types'
 
@@ -216,8 +216,12 @@ const fetchContentEpic: MyEpic = action$ =>
                                 notes: val.additional_notes,
                                 active: val.active,
                                 fileURL: val.content_file,
+                                copyrighter: val.copyright_by,
                                 copyright: val.copyright_notes,
+                                copyrightApproved: val.copyright_approved,
                                 creator: val.created_by,
+                                createdDate: val.created_on,
+                                reviewer: val.reviewed_by,
                                 description: val.description,
                                 fileName: val.file_name,
                                 datePublished: val.published_year,
@@ -247,7 +251,7 @@ const fetchContentEpic: MyEpic = action$ =>
                                         };
                                     },
                                     {} as Record<number,Metadata[]>,
-                                )
+                                ),
                             }),
                         ),
                     ),

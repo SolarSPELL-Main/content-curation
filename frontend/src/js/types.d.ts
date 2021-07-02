@@ -14,11 +14,15 @@ type Metadata = {
 } & BaseMetadata<MetadataType>
 
 type Content = {
-    notes: string
     active: boolean
+    copyrighter?: string
+    copyrightApproved: boolean
     creator: string
+    createdDate: string
+    reviewer?: string
     file?: File
     fileURL?: string
+    notes?: string
 } & BaseContent<Metadata>
 
 interface User {
