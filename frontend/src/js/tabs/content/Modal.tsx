@@ -4,7 +4,7 @@ import Box from '@material-ui/core/Box';
 
 //Importing from other files in the project
 import Add from './Add';
-import SearchBar from './SearchBar';
+import SearchBar, { Query } from './SearchBar';
 import Display, { DisplayActionProps } from './Display';
 import { Content, Metadata, MetadataType } from 'js/types';
 
@@ -18,7 +18,7 @@ type ModalProps = {
             onAdd: (content: Content) => void
         }
         Search: {
-            onQueryChange: (query: any) => void
+            onQueryChange: (query: Query) => void
         }
     }
 }

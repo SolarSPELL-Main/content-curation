@@ -6,6 +6,7 @@ import Modal from './Modal';
 import * as MetadataActions from '../../state/metadata';
 import * as ContentActions from '../../state/content';
 import { useCCDispatch, useCCSelector } from '../../hooks';
+import { Query } from './SearchBar';
 import { Content } from 'js/types';
 
 type PageProps = {
@@ -59,7 +60,7 @@ function Page(_: PageProps): React.ReactElement {
     );
 
     const onQueryChange_ = React.useCallback(
-        (query: any) => {
+        (query: Query) => {
             console.log(query);
         },
         [],

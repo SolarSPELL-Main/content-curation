@@ -2,8 +2,28 @@ import React from 'react';
 
 import { ContentSearch } from 'solarspell-react-lib';
 
+type Query = Partial<{
+    title: string
+    fileName: string
+    copyright: string
+    years: {
+        from?: number
+        to?: number
+    }
+    filesize: {
+        from?: number
+        to?: number
+    }
+    reviewed: {
+        from?: Date
+        to?: Date
+    }
+    active: 'all' | 'active' | 'inactive'
+    duplicatable: 'all' | 'duplicatable' | 'nonduplicatable'
+}>
+
 type SearchBarProps = {
-    onQueryChange: (vals: any) => void
+    onQueryChange: (vals: Query) => void
 }
 
 /**
@@ -104,4 +124,5 @@ function SearchBar({
     );
 }
 
+export type { Query };
 export default SearchBar;
