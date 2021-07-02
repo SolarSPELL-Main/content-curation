@@ -29,7 +29,7 @@ function Page(_: PageProps): React.ReactElement {
     }, []);
 
     const onAdd_ = React.useCallback(
-        (content?: Content) => {
+        (content?: Partial<Content>) => {
             if (content) {
                 content.creator = user;
                 dispatch(ContentActions.add_content(content));

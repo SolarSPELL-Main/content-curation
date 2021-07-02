@@ -17,7 +17,7 @@ type TypeProps = {
 type ContentFormProps = {
     metadata: Record<number, Metadata[]>
     metadataTypes: MetadataType[]
-    onSubmit: (content?: Content) => void
+    onSubmit: (content?: Partial<Content>) => void
     open: boolean
 } & TypeProps
 

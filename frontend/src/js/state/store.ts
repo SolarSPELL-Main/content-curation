@@ -273,29 +273,29 @@ const addContentEpic: MyEpic = action$ =>
             {
                 const content = action.payload;
                 const data = new FormData();
-                data.append('file_name', content.fileName);
-                data.append('title', content.title);
+                data.append('file_name', content.fileName ?? '');
+                data.append('title', content.title ?? '');
                 data.append('content_file', content.file ?? '');
-                data.append('description', content.description);
+                data.append('description', content.description ?? '');
                 // For many-to-many fields
                 // Django expects FormData with repeated fields
-                Object.values(content.metadata).forEach(
+                Object.values(content.metadata ?? []).forEach(
                     val => val.forEach(metadata => {
                         data.append('metadata', metadata.id.toString());
                     })
                 );
                 data.append('active', 'true');
-                data.append('copyright_notes', content.copyright);
-                data.append('rights_statement', content.rightsStatement);
-                data.append('additional_notes', content.notes);
+                data.append('copyright_notes', content.copyright ?? '');
+                data.append('rights_statement', content.rightsStatement ?? '');
+                data.append('additional_notes', content.notes ?? '');
                 // Same format as DLMS, default to Jan. 1st
                 data.append('published_date', `${content.datePublished}-01-01`);
-                data.append('created_by', content.creator);
+                data.append('created_by', content.creator ?? '');
                 data.append('created_on', format(Date.now(), 'yyyy-MM-dd'));
                 data.append('reviewed_by', '');
                 data.append('copyright_approved', 'false');
                 data.append('copyright_by', '');
-                data.append('published_year', content.datePublished);
+                data.append('published_year', content.datePublished ?? '');
 
                 const req = api.post(APP_URLS.CONTENT_LIST, data);
                 return from(req).pipe(
