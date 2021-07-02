@@ -1,9 +1,10 @@
+//Importing from outside the project
 import React from 'react';
-import { ContentTable } from 'solarspell-react-lib';
 
+//Importing from other files in the project
+import { ContentTable } from 'solarspell-react-lib';
 import ActionPanel from './ActionPanel';
 import ContentForm from './ContentForm';
-
 import { Content, Metadata, MetadataType } from 'js/types';
 
 type DisplayActionProps = {

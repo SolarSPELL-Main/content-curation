@@ -1,10 +1,12 @@
+//Importing from outside the project
 import React from 'react';
 import Box from '@material-ui/core/Box';
+
+//Importing from other files in the project
 import { MetadataDisplay } from 'solarspell-react-lib';
 import KebabMenu, { KebabMenuActionProps } from './KebabMenu';
 import ActionPanel, { ActionPanelActionProps } from './ActionPanel';
 import TypeAdder, { TypeAdderActionProps } from './TypeAdder';
-
 import { Metadata, MetadataType } from '../../types';
 
 type ModalActionProps = {

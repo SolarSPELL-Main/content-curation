@@ -1,10 +1,12 @@
+//Importing from outside the project
 import React from 'react';
+import { Edit, CheckCircleOutline, HighlightOff, Visibility } from '@material-ui/icons';
+
+//Importing from other files in the project
 import {
   ActionPanel as SolarSPELLActionPanel,
   ActionPanelItem,
 } from 'solarspell-react-lib';
-import { Edit, CheckCircleOutline, HighlightOff, Visibility } from '@material-ui/icons';
-
 import { Content } from 'js/types';
 
 type ActionPanelProps = {

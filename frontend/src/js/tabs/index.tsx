@@ -1,13 +1,14 @@
+//Importing from outside the project
 import React from 'react';
+import { Link as RouterLink, Route, Switch } from 'react-router-dom';
 
+//Importing from other files in the project
 import HomePage from './home';
 import MetadataPage, { Icon as MetadataIcon } from './metadata';
 import ContentPage, { Icon as ContentIcon } from './content';
 import ProfilePage from './profile';
 import Logo from '../../assets/logo.png';
-
 import NavBar from './NavBar';
-import { Link as RouterLink, Route, Switch } from 'react-router-dom';
 
 // Style for the logo itself
 const logoStyle: React.CSSProperties = {

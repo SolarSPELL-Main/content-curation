@@ -1,8 +1,10 @@
+//Importing from outside the project
 import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import Tab from '@material-ui/core/Tab';
-import Tabs from './Tabs';
 
+//Importing from other files in the project
+import Tabs from './Tabs';
 import { useCCSelector, useCCDispatch } from '../hooks';
 import { update_current_tab } from '../state/global';
 

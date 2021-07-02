@@ -1,9 +1,11 @@
+//Importing from outside the project
 import React from 'react';
+
+//Importing from other files in the project
 import Modal from './Modal';
 import * as MetadataActions from '../../state/metadata';
 import * as ContentActions from '../../state/content';
 import { useCCDispatch, useCCSelector } from '../../hooks';
-
 import { Content } from 'js/types';
 
 type PageProps = {

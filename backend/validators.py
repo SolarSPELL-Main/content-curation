@@ -1,8 +1,10 @@
+'''Importing from outside the project'''
 import os
 import filecmp
 from django.core.exceptions import ValidationError
 from django.utils.text import get_valid_filename
 
+'''Importing from other files in the project'''
 from content_curation import settings
 
 def validate_unique_filename(value):

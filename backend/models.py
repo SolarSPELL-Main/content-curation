@@ -1,15 +1,13 @@
+'''Importing from outside the project'''
 import os
-
 import datetime
 from django.db import models
 from django.dispatch import receiver
-
 import logging
-
-from backend.validators import validate_unique_filename,validate_unique_file
-
-
 from django.utils.text import get_valid_filename
+
+'''Importing from other files in the project'''
+from backend.validators import validate_unique_filename,validate_unique_file
 
 logger = logging.getLogger(__name__)
 

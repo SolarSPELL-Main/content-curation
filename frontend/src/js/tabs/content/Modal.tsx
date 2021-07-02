@@ -1,7 +1,9 @@
+//Importing from outside the project
 import React from 'react';
+
+//Importing from other files in the project
 import Add from './Add';
 import Display, { DisplayActionProps } from './Display';
-
 import { Content, Metadata, MetadataType } from 'js/types';
 
 type ModalProps = {

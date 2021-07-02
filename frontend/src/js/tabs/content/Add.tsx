@@ -1,7 +1,9 @@
+//Importing from outside the project
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import ContentForm from './ContentForm';
 
+//Importing from other files in the project
+import ContentForm from './ContentForm';
 import { Metadata, MetadataType, Content } from '../../types';
 
 type AddProps = {

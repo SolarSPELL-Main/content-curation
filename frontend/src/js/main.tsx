@@ -1,10 +1,13 @@
+//Importing from outside the project
 import React, { useEffect } from "react";
 import Button from '@material-ui/core/Button';
-import Tabs from './tabs';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import { fetch_user } from "./state/global"
 import Snackbar from '@material-ui/core/Snackbar';
+
+//Importing from other files in the project
+import Tabs from './tabs';
+import { fetch_user } from "./state/global"
 import { useCCDispatch, useCCSelector } from './hooks';
 
 

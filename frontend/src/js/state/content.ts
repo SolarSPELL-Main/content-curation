@@ -1,4 +1,7 @@
+//Importing from outside the project
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+
+//Importing from other files in the project
 import { Content } from "../types"
 
 export const contentSlice = createSlice({

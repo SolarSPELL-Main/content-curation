@@ -1,3 +1,4 @@
+//Importing from outside the project
 import {
     configureStore, getDefaultMiddleware, AnyAction, combineReducers
 } from '@reduxjs/toolkit'
@@ -5,31 +6,26 @@ import { combineEpics, createEpicMiddleware, Epic } from "redux-observable"
 import { from, of } from 'rxjs'
 import { filter, map, mergeMap, delay, mapTo, catchError } from 'rxjs/operators'
 
+//Importing from other files in the project
 import globalReducer from './global'
 import metadataReducer from './metadata'
 import contentReducer from './content'
-
 import {
     fetch_user, update_user, show_toast, close_toast, logout
 } from './global'
-
 import {
     fetch_metadata, update_metadata, add_metadata, delete_metadata, 
     edit_metadata, fetch_metadatatype, update_metadatatype, add_metadatatype,
     delete_metadatatype, edit_metadatatype, preload_all_metadata
 } from './metadata'
-
 import {
     fetch_content,
     update_content,
     add_content,
 } from './content'
-
 import { api } from '../utils'
 import { format } from 'date-fns'
-
 import APP_URLS from '../urls'
-
 import { Content, Metadata } from '../types'
 
 const reducer = combineReducers({
