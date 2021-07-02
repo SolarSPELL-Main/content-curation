@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 
 //Importing from other files in the project
 import { ContentModal, ContentMetadataDisplay } from 'solarspell-react-lib';
-import { Metadata, MetadataType, Content } from '../../types';
+import { Metadata, MetadataType, Content } from 'js/types';
 
 type TypeProps = {
     type: 'add'

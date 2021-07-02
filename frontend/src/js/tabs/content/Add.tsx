@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 
 //Importing from other files in the project
 import ContentForm from './ContentForm';
-import { Metadata, MetadataType, Content } from '../../types';
+import { Metadata, MetadataType, Content } from 'js/types';
 
 type AddProps = {
     metadata: Record<number, Metadata[]>
