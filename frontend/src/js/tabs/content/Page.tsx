@@ -22,23 +22,11 @@ function Page(_: PageProps): React.ReactElement {
     const metadata = useCCSelector(state => state.metadata.metadata);
     const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
     const content = useCCSelector(state => state.content.content);
-    // Can be changed to email, token, etc.
-    const user = useCCSelector(state => state.global.user.email);
 
     React.useEffect(() => {
         dispatch(MetadataActions.fetch_metadatatype());
         dispatch(ContentActions.fetch_content()); // Will be needed at some point
     }, []);
-
-    const onAdd_ = React.useCallback(
-        (content?: Content) => {
-            if (content) {
-                content.creator = user;
-                dispatch(ContentActions.add_content(content));
-            }
-        },
-        [user],
-    );
 
     const onEdit_ = React.useCallback(
         (content: Content, vals: Partial<Content>) => {
@@ -61,6 +49,22 @@ function Page(_: PageProps): React.ReactElement {
         [],
     );
 
+    const onAdd_ = React.useCallback(
+        (content?: Content) => {
+            if (content) {
+                dispatch(ContentActions.add_content(content));
+            }
+        },
+        [],
+    );
+
+    const onQueryChange_ = React.useCallback(
+        (query: any) => {
+            console.log(query);
+        },
+        [],
+    );
+
     return (
         <Modal
             metadata={metadata}
@@ -75,6 +79,9 @@ function Page(_: PageProps): React.ReactElement {
                 Toolbar: {
                     onAdd: onAdd_,
                 },
+                Search: {
+                    onQueryChange: onQueryChange_,
+                }
             }}
         />
     );
