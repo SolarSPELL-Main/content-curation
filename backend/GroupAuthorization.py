@@ -1,4 +1,3 @@
-
 from django.contrib.auth.models import Group, Permission
 import logging
 
@@ -21,7 +20,6 @@ GROUPS = {
     },
 
     "Content Specialist": {
-        # django app model specific permissions
         "metadata type": ["view"],
         "metadata": ["view"],
         "content": ["add", "delete", "change", "view"],
@@ -35,6 +33,7 @@ GROUPS = {
 }
 
 
+# Creates Groups and permission
 def handle(self, *args, **options):
     print("Handle _ GroupAuthorization")
     for group_name in GROUPS:

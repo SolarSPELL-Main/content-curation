@@ -3,9 +3,10 @@ import {
     configureStore, getDefaultMiddleware, AnyAction, combineReducers
 } from '@reduxjs/toolkit'
 import { combineEpics, createEpicMiddleware, Epic } from "redux-observable"
-import { from, of } from 'rxjs'
-import { filter, map, mergeMap, delay, mapTo, catchError } from 'rxjs/operators'
-// import { format } from 'date-fns'
+import { from, /** EMPTY */ } from 'rxjs'
+import {
+    filter, map, mergeMap, mapTo, delay, /** catchError */
+} from 'rxjs/operators'
 
 //Importing from other files in the project
 import globalReducer from './global'
@@ -48,13 +49,13 @@ const fetchUserEpic: MyEpic = action$ =>
                 map(({ data }) => update_user(data.data))
             ),
         ),
-        catchError(
-            _ => 
-                of({
-                    type: show_toast.type,
-                    payload: 'Error fetching user'
-                })
-        ),
+        // catchError(
+        //     _ => 
+        //         of({
+        //             type: show_toast.type,
+        //             payload: 'Error fetching user'
+        //         })
+        // ),
     )
 
 const logoutEpic: MyEpic = action$ =>
@@ -304,6 +305,13 @@ const addContentEpic: MyEpic = action$ =>
         ),
     )
 
+// const catchErrorEpic: MyEpic = action$ =>
+//     action$.pipe(
+//         catchError(err => {
+//             console.error(err)
+//             return EMPTY
+//         }),
+//     )
 
 const epics = combineEpics(
     addMetaEpic,
@@ -321,6 +329,7 @@ const epics = combineEpics(
     addContentEpic,
     logoutEpic,
     showToastEpic,
+    // catchErrorEpic // Make sure this epic is last
 )
 
 const store = configureStore({

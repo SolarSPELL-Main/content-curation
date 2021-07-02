@@ -6,7 +6,7 @@ from rest_framework import routers
 
 '''Importing from other files in the project'''
 from .views import MetadataTypeViewSet, MetadataViewSet, \
-    ContentViewSet, get_user
+    ContentViewSet, get_user, search
 
 router = routers.DefaultRouter()
 router.register(r'metadata', MetadataViewSet,basename='metadata')
@@ -16,5 +16,6 @@ router.register(r'content', ContentViewSet, basename='content')
 
 urlpatterns = [
     path(r'get_user/', get_user),
+    path(r'search',search),
     path('', include(router.urls)),
 ]
