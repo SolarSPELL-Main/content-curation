@@ -37,6 +37,8 @@ function Modal({
                 onAdd={actions.Toolbar.onAdd}
             />
             <SearchBar
+                metadata={metadata}
+                metadataTypes={metadataTypes}
                 onQueryChange={actions.Search.onQueryChange}
             />
             <Display

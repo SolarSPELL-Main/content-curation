@@ -1,6 +1,11 @@
 import React from 'react';
 
-import { ContentSearch } from 'solarspell-react-lib';
+import {
+    ContentSearch,
+    ContentMetadataDisplay,
+} from 'solarspell-react-lib';
+
+import { Metadata, MetadataType } from 'js/types';
 
 type Query = Partial<{
     title: string
@@ -20,9 +25,12 @@ type Query = Partial<{
     }
     active: 'all' | 'active' | 'inactive'
     duplicatable: 'all' | 'duplicatable' | 'nonduplicatable'
+    metadata: Record<number,Metadata[]>
 }>
 
 type SearchBarProps = {
+    metadata: Record<number,Metadata[]>
+    metadataTypes: MetadataType[]
     onQueryChange: (vals: Query) => void
 }
 
@@ -32,6 +40,8 @@ type SearchBarProps = {
  * @returns A search bar for content.
  */
 function SearchBar({
+    metadata,
+    metadataTypes,
     onQueryChange,
 }: SearchBarProps): React.ReactElement {
     return (
@@ -118,6 +128,29 @@ function SearchBar({
                     ],
                     initialValue: 'all',
                 },
+                {
+                    label: 'metadata',
+                    title: 'Metadata',
+                    type: 'custom',
+                    width: 12,
+                    component: ContentMetadataDisplay,
+                    propFactory: (setter, state) => ({
+                        metadataTypes: metadataTypes,
+                        metadata: state['metadata'] ?? {},
+                        options: metadata,
+                        actions: {
+                            onSelect: (
+                                metadataType: MetadataType,
+                                tags: Metadata[],
+                            ) => setter(
+                                (oldState: any) => ({
+                                    ...oldState,
+                                    [metadataType.id]: tags,
+                                })
+                            ),
+                        },
+                    }),
+                  },
             ]}
             onQueryChange={onQueryChange}
         />
