@@ -1,8 +1,10 @@
+//Importing from outside the project
 import React from "react"
-import { useCCSelector, useCCDispatch } from '../../hooks';
 import Button from "@material-ui/core/Button"
 import Typography from "@material-ui/core/Typography"
 
+//Importing from other files in the project
+import { useCCSelector, useCCDispatch } from '../../hooks';
 import { logout, show_toast } from "../../state/global"
 
 export default () => {

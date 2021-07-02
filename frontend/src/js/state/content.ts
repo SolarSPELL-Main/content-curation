@@ -1,4 +1,7 @@
+//Importing from outside the project
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+
+//Importing from other files in the project
 import { Content } from "../types"
 
 export const contentSlice = createSlice({
@@ -18,7 +21,7 @@ export const contentSlice = createSlice({
         },
         
         // Posts content to backend
-        add_content: (_state, _action: PayloadAction<Content>) => {},
+        add_content: (_state, _action: PayloadAction<Partial<Content>>) => {},
     },
 });
 

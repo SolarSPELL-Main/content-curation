@@ -1,4 +1,7 @@
+//Importing from outside the project
 import React, { useEffect } from 'react';
+
+//Importing from other files in the project
 import Modal from './Modal';
 import * as Actions from '../../state/metadata';
 import { useCCDispatch, useCCSelector } from '../../hooks';
