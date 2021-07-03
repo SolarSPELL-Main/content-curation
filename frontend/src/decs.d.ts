@@ -1,0 +1,16 @@
+declare module '@material-ui/core/IconButton'
+declare module '@material-ui/core/Button'
+declare module '@material-ui/icons/Close'
+declare module "material-ui/core/IconButton"
+declare module '@material-ui/core/Snackbar'
+declare module "@material-ui/core/Typography"
+declare module '@reduxjs/toolkit'
+declare module "redux-observable"
+declare module 'rxjs'
+declare module 'rxjs/operators'
+declare module 'axios'
+declare module '@material-ui/core/Tabs'
+declare module '@material-ui/core/Tab'
+declare module 'date-fns'
+declare module 'solarspell-react-lib'
+declare module '@material-ui/core/Box'
