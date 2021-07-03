@@ -1,4 +1,5 @@
 import React from 'react';
+import { format, parseISO } from 'date-fns';
 
 import {
     ContentSearch,
@@ -20,8 +21,8 @@ type Query = Partial<{
         to?: number
     }
     reviewed: {
-        from?: Date
-        to?: Date
+        from?: string
+        to?: string
     }
     active: 'all' | 'active' | 'inactive'
     duplicatable: 'all' | 'duplicatable' | 'nonduplicatable'
@@ -85,6 +86,8 @@ function SearchBar({
                     title: 'Reviewed',
                     type: 'date',
                     width: 2,
+                    stringifier: date => format(date, 'yyyy-MM-dd'),
+                    parser: val => parseISO(val),
                 },
                 {
                     label: 'active',
