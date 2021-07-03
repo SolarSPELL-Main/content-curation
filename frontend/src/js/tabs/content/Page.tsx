@@ -6,8 +6,7 @@ import Modal from './Modal';
 import * as MetadataActions from '../../state/metadata';
 import * as ContentActions from '../../state/content';
 import { useCCDispatch, useCCSelector } from '../../hooks';
-import { Query } from './SearchBar';
-import { Content } from 'js/types';
+import { Content, Query } from 'js/types';
 
 type PageProps = {
 
@@ -26,7 +25,7 @@ function Page(_: PageProps): React.ReactElement {
 
     React.useEffect(() => {
         dispatch(MetadataActions.fetch_metadatatype());
-        dispatch(ContentActions.fetch_content()); // Will be needed at some point
+        dispatch(ContentActions.fetch_content());
     }, []);
 
     const onEdit_ = React.useCallback(

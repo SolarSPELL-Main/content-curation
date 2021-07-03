@@ -4,9 +4,9 @@ import Box from '@material-ui/core/Box';
 
 //Importing from other files in the project
 import Add from './Add';
-import SearchBar, { Query } from './SearchBar';
+import SearchBar from './SearchBar';
 import Display, { DisplayActionProps } from './Display';
-import { Content, Metadata, MetadataType } from 'js/types';
+import { Content, Metadata, MetadataType, Query } from 'js/types';
 
 type ModalProps = {
     metadata: Record<number, Metadata[]>

@@ -6,28 +6,7 @@ import {
     ContentMetadataDisplay,
 } from 'solarspell-react-lib';
 
-import { Metadata, MetadataType } from 'js/types';
-
-type Query = Partial<{
-    title: string
-    fileName: string
-    copyright: string
-    years: {
-        from?: number
-        to?: number
-    }
-    filesize: {
-        from?: number
-        to?: number
-    }
-    reviewed: {
-        from?: string
-        to?: string
-    }
-    active: 'all' | 'active' | 'inactive'
-    duplicatable: 'all' | 'duplicatable' | 'nonduplicatable'
-    metadata: Record<number,Metadata[]>
-}>
+import { Metadata, MetadataType, Query } from 'js/types';
 
 type SearchBarProps = {
     metadata: Record<number,Metadata[]>
@@ -160,5 +139,4 @@ function SearchBar({
     );
 }
 
-export type { Query };
 export default SearchBar;
