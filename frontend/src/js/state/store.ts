@@ -3,9 +3,9 @@ import {
     configureStore, getDefaultMiddleware, AnyAction, combineReducers
 } from '@reduxjs/toolkit'
 import { combineEpics, createEpicMiddleware, Epic } from "redux-observable"
-import { from, EMPTY, of } from 'rxjs'
+import { from, of } from 'rxjs'
 import {
-    filter, map, mergeMap, mapTo, delay, catchError
+    filter, map, mergeMap, mapTo, delay, catchError 
 } from 'rxjs/operators'
 
 //Importing from other files in the project
@@ -297,15 +297,16 @@ const addContentEpic: MyEpic = action$ =>
         ),
     )
 
-const catchErrorEpic: MyEpic = action$ =>
-    action$.pipe(
-        catchError(err => {
-            console.error(err)
-            return EMPTY
-        }),
+const errorCatcher = (epic: MyEpic) => (...args: Parameters<MyEpic>) =>
+    epic(...args).pipe(
+        catchError((error, caught$) => {
+            console.log("Intercepted error in the error catcher")
+            console.error(error)
+            return caught$
+        })
     )
 
-const epics = combineEpics(
+const epics = combineEpics(...[
     addMetaEpic,
     fetchMetadataEpic,
     editMetaEpic,
@@ -320,9 +321,8 @@ const epics = combineEpics(
     fetchContentEpic,
     addContentEpic,
     logoutEpic,
-    showToastEpic,
-    catchErrorEpic // Make sure this epic is last
-)
+    showToastEpic
+].map(epic => errorCatcher(epic)))
 
 const store = configureStore({
     reducer,
