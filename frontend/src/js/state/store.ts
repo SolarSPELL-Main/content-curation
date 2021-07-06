@@ -286,7 +286,14 @@ const addContentEpic: MyEpic = action$ =>
                 data.append('rights_statement', content.rightsStatement ?? '');
                 data.append('additional_notes', content.notes ?? '');
                 // Same format as DLMS, default to Jan. 1st
-                data.append('published_date', `${content.datePublished}-01-01`);
+                // TODO: published_date should no longer be required on
+                // the backend. Until then, a very improbable date will be
+                // assigned as a placeholder.
+                data.append('published_date', content.datePublished ? 
+                    `${content.datePublished.padStart(4, '0')}-01-01`
+                    :
+                    '0001-01-01'
+                );
 
                 // Unused fields
                 // data.append('active', 'true');
