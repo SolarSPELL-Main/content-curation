@@ -5,14 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-bash": "npm run-script clean; webpack --mode=development",
-    "build-bash:prod": "npm run-script clean; webpack --mode=production",
-    "build-win": "npm run-script winclean & webpack --mode=development",
-    "winbuild": "npm run-script win-clean && webpack --mode=development",
-    "win-clean": "rd /? -Rf ./static",
+    "build": "npm run-script clean; webpack --mode=development",
+    "build:prod": "npm run-script clean; webpack --mode=production",
+    "clean": "rimraf ./static",
     "watch": "webpack --watch --mode=development",
-    "clean": "rm -Rf ./static",
-    "winclean": "rd /s /q static",
     "update-lib": "npm r solarspell-react-lib && npm i github:SolarSPELL-Main/solarspell-react-lib#main"
   },
   "devDependencies": {
@@ -31,6 +27,7 @@
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^5.3.1",
     "react-dnd": "^7.7.0",
+    "rimraf": "^2.6.3",
     "style-loader": "^1.1.4",
     "ts-loader": "^9.2.2",
     "typescript": "^4.3.2",
