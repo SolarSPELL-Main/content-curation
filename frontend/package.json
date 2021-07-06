@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run-script clean; webpack --mode=development",
-    "build:prod": "npm run-script clean; webpack --mode=production",
+    "build": "npm run-script clean && webpack --mode=development",
+    "build:prod": "npm run-script clean && webpack --mode=production",
     "clean": "rimraf ./static",
     "watch": "webpack --watch --mode=development",
     "update-lib": "npm r solarspell-react-lib && npm i github:SolarSPELL-Main/solarspell-react-lib#main"
