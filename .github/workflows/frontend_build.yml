@@ -14,10 +14,15 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "greet"
+  # This workflow contains a single job
   build:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+
+    # Different configurations to run across
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
     
     # Set time limit for job
     timeout-minutes: 10
@@ -51,4 +56,4 @@ jobs:
       run: |
         cd frontend
         npm install
-        npm run build-bash:prod
+        npm run build:prod
