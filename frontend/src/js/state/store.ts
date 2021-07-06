@@ -13,7 +13,7 @@ import globalReducer from './global'
 import metadataReducer from './metadata'
 import contentReducer from './content'
 import {
-    fetch_user, update_user, show_toast, logout, close_toast
+    fetch_user, update_user, show_toast, close_toast, logout
 } from './global'
 import {
     fetch_metadata, update_metadata, add_metadata, delete_metadata, 
@@ -72,8 +72,8 @@ const logoutEpic: MyEpic = action$ =>
 const showToastEpic: MyEpic = action$ =>
     action$.pipe(
         filter(show_toast.match),
-        delay(6000),
-        map(_ => close_toast()),
+        //delay(6000),
+        //map(_ => close_toast()),
         map(_res=> {console.log("toast closed")
         return _res}
         ),
