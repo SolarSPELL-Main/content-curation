@@ -24,6 +24,7 @@ import {
     fetch_content,
     update_content,
     add_content,
+    delete_content,
 } from './content'
 import { api } from '../utils'
 import APP_URLS from '../urls'
@@ -312,6 +313,16 @@ const addContentEpic: MyEpic = action$ =>
         ),
     )
 
+const deleteContentEpic: MyEpic = action$ =>
+    action$.pipe(
+        filter(delete_content.match),
+        mergeMap(action =>
+            from(api.delete(APP_URLS.CONTENT(action.payload))).pipe(
+                map(_res => fetch_content())
+            ),
+        ),
+    )
+
 // const catchErrorEpic: MyEpic = action$ =>
 //     action$.pipe(
 //         catchError(err => {
@@ -334,6 +345,7 @@ const epics = combineEpics(
     fetchUserEpic,
     fetchContentEpic,
     addContentEpic,
+    deleteContentEpic,
     logoutEpic,
     showToastEpic,
     // catchErrorEpic // Make sure this epic is last

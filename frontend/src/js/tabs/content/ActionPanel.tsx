@@ -1,6 +1,6 @@
 //Importing from outside the project
 import React from 'react';
-import { Edit, CheckCircleOutline, HighlightOff, Visibility } from '@material-ui/icons';
+import { Edit, Delete, Visibility } from '@material-ui/icons';
 
 //Importing from other files in the project
 import {
@@ -11,7 +11,7 @@ import { Content } from 'js/types';
 
 type ActionPanelProps = {
   onEdit: (item: Content, vals?: Partial<Content>) => void
-  onToggleActive: (item: Content, active: boolean) => void
+  onDelete: (item: Content) => void
   onView: (item: Content) => void
   content: Content
 }
@@ -23,7 +23,7 @@ type ActionPanelProps = {
  */
 function ActionPanel({
   onEdit,
-  onToggleActive,
+  onDelete,
   onView,
   content,
 }: ActionPanelProps): React.ReactElement {
@@ -32,13 +32,9 @@ function ActionPanel({
     [onEdit, content],
   );
 
-  const onToggleActive_ = React.useCallback(
-    (active, setActive) => {
-      onToggleActive(content, active);
-      // Dispatch value change for ActionPanelItem
-      setActive(active);
-    },
-    [onToggleActive, content],
+  const onDelete_ = React.useCallback(
+    () => onDelete(content),
+    [onDelete, content],
   );
 
   const onView_ = React.useCallback(
@@ -55,12 +51,12 @@ function ActionPanel({
         tooltip={'Edit Content'}
       />
       <ActionPanelItem
-        type={'toggle'}
-        activeIcon={HighlightOff}
-        inactiveIcon={CheckCircleOutline}
-        toggle={onToggleActive_}
-        tooltip={content.active ? 'Set inactive' : 'Set active'}
-        active={content.active}
+        type={'confirm'}
+        icon={Delete}
+        confirmationTitle={`Delete content titled "${content.title}"?`}
+        onAction={onDelete_}
+        tooltip={'Delete'}
+        confirmationSize={'xs'}
       />
       <ActionPanelItem
         type={'button'}

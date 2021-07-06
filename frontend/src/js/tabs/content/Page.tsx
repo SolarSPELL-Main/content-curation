@@ -35,9 +35,9 @@ function Page(_: PageProps): React.ReactElement {
         [],
     );
 
-    const onToggleActive_ = React.useCallback(
-        (content: Content, active: boolean) => {
-            console.log(`Toggled ${content.title} active to ${active}`);
+    const onDelete_ = React.useCallback(
+        (content: Content) => {
+            dispatch(ContentActions.delete_content(content.id));
         },
         [],
     );
@@ -73,7 +73,7 @@ function Page(_: PageProps): React.ReactElement {
             actions={{
                 Display: {
                     onEdit: onEdit_,
-                    onToggleActive: onToggleActive_,
+                    onDelete: onDelete_,
                     onView: onView_,
                 },
                 Toolbar: {
