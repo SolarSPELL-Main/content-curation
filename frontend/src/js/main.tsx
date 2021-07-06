@@ -19,19 +19,9 @@ function Alert(props) {
  */
 function Main(): React.ReactElement {
     const dispatch = useCCDispatch();
-    //const open = useCCSelector(state => state.global.toast_open);
-    var open = useCCSelector(state => state.global.toast_open)
+    const open = useCCSelector(state => state.global.toast_open);
     const message = useCCSelector(state => state.global.toast_message);
     const severity = useCCSelector(state => state.global.toast_severity);
-    var duration = 6000;
-
-    const handleClose = (event, reason) => {
-      if (reason === 'clickaway') {
-        return;
-      }
-      if (severity!="error")
-        open = false
-    };
 
     useEffect(() => {
         dispatch(fetch_user())
@@ -43,12 +33,9 @@ function Main(): React.ReactElement {
           vertical: 'bottom',
           horizontal: 'right',
         }}
-        open={open}
-        autoHideDuration={duration}
-        onClose={handleClose}
-        >
+        open={open}>
           <React.Fragment >
-            <Alert severity={severity} autoHideDuration={duration}> {message}
+            <Alert severity={severity} > {message}
               <IconButton size="small" aria-label="close" color="inherit" >
                 <CloseIcon fontSize="small" />
               </IconButton>
