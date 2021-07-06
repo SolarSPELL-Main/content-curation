@@ -56,4 +56,4 @@ jobs:
       run: |
         cd frontend
         npm install
-        npm run build-bash:prod
+        npm run build:prod
