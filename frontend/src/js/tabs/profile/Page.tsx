@@ -30,5 +30,6 @@ export default () => {
                 Login
             </Button>
         </>}
-        <Button onClick={() => dispatch(show_error("Message to display"))} > Test Button </Button>    </div>
+            <Button onClick={() => dispatch(show_toast("Message to display"))} > Test Button </Button>    
+    </div>
 }
