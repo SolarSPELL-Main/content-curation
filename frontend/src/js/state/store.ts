@@ -9,7 +9,7 @@ import {
 } from 'rxjs/operators'
 
 //Importing from other files in the project
-import globalReducer from './global'
+import globalReducer, { show_error } from './global'
 import metadataReducer from './metadata'
 import contentReducer from './content'
 import {
@@ -74,9 +74,14 @@ const showToastEpic: MyEpic = action$ =>
         filter(show_toast.match),
         delay(6000),
         map(_ => close_toast()),
-        map(_res=> {console.log("toast closed")
-        return _res}
-        ),
+    )
+
+//Epic to show the error message
+const showErrorEpic: MyEpic = action$ =>
+    action$.pipe(
+        filter(show_error.match),
+        delay(Number.MAX_SAFE_INTEGER),
+        map(_ => close_toast()),
     )
 
 /** METADATA EPICS */
@@ -329,6 +334,7 @@ const epics = combineEpics(
     addContentEpic,
     logoutEpic,
     showToastEpic,
+    showErrorEpic
     // catchErrorEpic // Make sure this epic is last
 )
 
