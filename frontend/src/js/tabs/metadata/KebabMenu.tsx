@@ -6,7 +6,7 @@ import {
     KebabMenu as SolarSPELLKebabMenu,
     KebabMenuItem,
 } from 'solarspell-react-lib';
-import { MetadataType } from '../../types';
+import { MetadataType } from 'js/types';
 
 type KebabMenuActionProps = {
     onAdd: (type: MetadataType, val: string) => void
