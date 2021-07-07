@@ -3,14 +3,14 @@ import React, { useEffect } from "react";
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
+import MuiAlert, { Color } from '@material-ui/lab/Alert';
 
 //Importing from other files in the project
 import Tabs from './tabs';
 import { fetch_user } from "./state/global"
 import { useCCDispatch, useCCSelector } from './hooks';
 
-function Alert(props) {
+function Alert(props: React.ComponentProps<typeof MuiAlert>) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
@@ -35,7 +35,7 @@ function Main(): React.ReactElement {
         }}
         open={open}>
           <React.Fragment >
-            <Alert severity={severity} > {message}
+            <Alert severity={severity as Color} > {message}
               <IconButton size="small" aria-label="close" color="inherit" >
                 <CloseIcon fontSize="small" />
               </IconButton>
