@@ -7,7 +7,7 @@ import MuiAlert, { Color } from '@material-ui/lab/Alert';
 
 //Importing from other files in the project
 import Tabs from './tabs';
-import { fetch_user } from "./state/global"
+import { close_toast, fetch_user } from "./state/global"
 import { useCCDispatch, useCCSelector } from './hooks';
 
 function Alert(props: React.ComponentProps<typeof MuiAlert>) {
@@ -36,7 +36,7 @@ function Main(): React.ReactElement {
         open={open}>
           <React.Fragment >
             <Alert severity={severity as Color} > {message}
-              <IconButton size="small" aria-label="close" color="inherit" >
+              <IconButton size="small" aria-label="close" color="inherit" onClick={() => dispatch(close_toast())}>
                 <CloseIcon fontSize="small" />
               </IconButton>
             </Alert>
