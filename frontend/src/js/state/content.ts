@@ -10,8 +10,6 @@ export const contentSlice = createSlice({
         content: [] as Content[],
     },
     reducers: {
-        // Currently the bare minimum needed to add content
-
         // Fetches list of content from backend
         fetch_content: () => {},
 
@@ -22,6 +20,9 @@ export const contentSlice = createSlice({
         
         // Posts content to backend
         add_content: (_state, _action: PayloadAction<Content>) => {},
+
+        // Deletes content, payload should be content ID
+        delete_content: (_state, _action: PayloadAction<number>) => {},
     },
 });
 
@@ -29,6 +30,7 @@ export const {
     fetch_content,
     update_content,
     add_content,
+    delete_content,
 } = contentSlice.actions;
 
 export default contentSlice.reducer;
