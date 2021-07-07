@@ -1,6 +1,5 @@
 //Importing from outside the project
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-//import { delay } from 'rxjs/operators'
 
 //Importing from other files in the project
 import type { User } from "js/types"
