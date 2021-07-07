@@ -24,6 +24,7 @@ import {
     fetch_content,
     update_content,
     add_content,
+    delete_content,
 } from './content'
 import { api } from '../utils'
 import APP_URLS from '../urls'
@@ -286,7 +287,14 @@ const addContentEpic: MyEpic = action$ =>
                 data.append('rights_statement', content.rightsStatement ?? '');
                 data.append('additional_notes', content.notes ?? '');
                 // Same format as DLMS, default to Jan. 1st
-                data.append('published_date', `${content.datePublished}-01-01`);
+                // TODO: published_date should no longer be required on
+                // the backend. Until then, a very improbable date will be
+                // assigned as a placeholder.
+                data.append('published_date', content.datePublished ? 
+                    `${content.datePublished.padStart(4, '0')}-01-01`
+                    :
+                    '0001-01-01'
+                );
 
                 // Unused fields
                 // data.append('active', 'true');
@@ -302,6 +310,16 @@ const addContentEpic: MyEpic = action$ =>
                     map(_ => fetch_content())
                 );
             }
+        ),
+    )
+
+const deleteContentEpic: MyEpic = action$ =>
+    action$.pipe(
+        filter(delete_content.match),
+        mergeMap(action =>
+            from(api.delete(APP_URLS.CONTENT(action.payload))).pipe(
+                map(_res => fetch_content())
+            ),
         ),
     )
 
@@ -327,6 +345,7 @@ const epics = combineEpics(
     fetchUserEpic,
     fetchContentEpic,
     addContentEpic,
+    deleteContentEpic,
     logoutEpic,
     showToastEpic,
     // catchErrorEpic // Make sure this epic is last
