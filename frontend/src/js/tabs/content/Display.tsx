@@ -9,7 +9,7 @@ import { Content, Metadata, MetadataType } from 'js/types';
 
 type DisplayActionProps = {
   onEdit: (item: Content, vals: Partial<Content>) => void
-  onToggleActive: (item: Content, active: boolean) => void
+  onDelete: (item: Content) => void
   onView: (item: Content) => void
 }
 

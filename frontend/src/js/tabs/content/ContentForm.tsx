@@ -98,7 +98,7 @@ function ContentForm({
                             ) => {
                                 setter(e.currentTarget.value);
                             },
-                            value: state['description'],
+                            value: state['description'] ?? '',
                         };
                     },
                     label: 'description',
@@ -156,7 +156,7 @@ function ContentForm({
                 },
                 {
                     component: TextField,
-                    propFactory: (state, reasons, setter) => {
+                    propFactory: (state, _r, setter) => {
                         return {
                             fullWidth: true,
                             label: 'Year of Publication',
@@ -165,23 +165,12 @@ function ContentForm({
                             ) => {
                                 setter(e.currentTarget.value);
                             },
-                            error: !!reasons['datePublished'],
-                            helperText: reasons['datePublished'],
-                            value: state['datePublished'],
+                            value: state['datePublished'] ?? '',
+                            type: 'number',
                         };
                     },
                     label: 'datePublished',
                     initialValue: '',
-                    validator: (state) => {
-                        if (
-                            !state['datePublished'] ||
-                            isNaN(Number(state['datePublished'])
-                        )) {
-                            return 'Invalid year';
-                        } else {
-                            return null;
-                        }
-                    },
                 },
                 {
                     component: TextField,
@@ -194,7 +183,7 @@ function ContentForm({
                         ) => {
                             setter(e.currentTarget.value);
                         },
-                        value: state['copyright'],
+                        value: state['copyright'] ?? '',
                         };
                     },
                     label: 'copyright',
@@ -211,7 +200,7 @@ function ContentForm({
                             ) => {
                                 setter(e.currentTarget.value);
                             },
-                            value: state['rightsStatement'],
+                            value: state['rightsStatement'] ?? '',
                         };
                     },
                     label: 'rightsStatement',
@@ -251,7 +240,7 @@ function ContentForm({
                             ) => {
                                 setter(e.currentTarget.value);
                             },
-                            value: state['notes'],
+                            value: state['notes'] ?? '',
                         };
                     },
                     label: 'notes',

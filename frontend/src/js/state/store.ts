@@ -9,11 +9,11 @@ import {
 } from 'rxjs/operators'
 
 //Importing from other files in the project
-import globalReducer from './global'
+import globalReducer, { show_error } from './global'
 import metadataReducer from './metadata'
 import contentReducer from './content'
 import {
-    fetch_user, update_user, show_toast, close_toast, logout
+    fetch_user, update_user, show_toast, logout, close_toast
 } from './global'
 import {
     fetch_metadata, update_metadata, add_metadata, delete_metadata, 
@@ -24,6 +24,7 @@ import {
     fetch_content,
     update_content,
     add_content,
+    delete_content,
 } from './content'
 import { api } from '../utils'
 import APP_URLS from '../urls'
@@ -74,9 +75,14 @@ const showToastEpic: MyEpic = action$ =>
         filter(show_toast.match),
         delay(6000),
         map(_ => close_toast()),
-        map(_res=> {console.log("toast closed")
-        return _res}
-        ),
+    )
+
+//Epic to show the error message
+const showErrorEpic: MyEpic = action$ =>
+    action$.pipe(
+        filter(show_error.match),
+        delay(Number.MAX_SAFE_INTEGER),
+        map(_ => close_toast()),
     )
 
 /** METADATA EPICS */
@@ -286,7 +292,14 @@ const addContentEpic: MyEpic = action$ =>
                 data.append('rights_statement', content.rightsStatement ?? '');
                 data.append('additional_notes', content.notes ?? '');
                 // Same format as DLMS, default to Jan. 1st
-                data.append('published_date', `${content.datePublished}-01-01`);
+                // TODO: published_date should no longer be required on
+                // the backend. Until then, a very improbable date will be
+                // assigned as a placeholder.
+                data.append('published_date', content.datePublished ? 
+                    `${content.datePublished.padStart(4, '0')}-01-01`
+                    :
+                    '0001-01-01'
+                );
 
                 // Unused fields
                 // data.append('active', 'true');
@@ -313,6 +326,15 @@ const errorCatcher = (epic: MyEpic) => (...args: Parameters<MyEpic>) =>
             return caught$
         })
     )
+const deleteContentEpic: MyEpic = action$ =>
+    action$.pipe(
+        filter(delete_content.match),
+        mergeMap(action =>
+            from(api.delete(APP_URLS.CONTENT(action.payload))).pipe(
+                map(_res => fetch_content())
+            ),
+        ),
+    )
 
 const epics = combineEpics(...[
     addMetaEpic,
@@ -328,8 +350,10 @@ const epics = combineEpics(...[
     fetchUserEpic,
     fetchContentEpic,
     addContentEpic,
+    deleteContentEpic,
     logoutEpic,
-    showToastEpic
+    showToastEpic,
+    showErrorEpic
 ].map(epic => errorCatcher(epic)))
 
 const store = configureStore({
