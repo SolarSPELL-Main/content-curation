@@ -4,7 +4,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 //Importing from other files in the project
 import type { User } from "js/types"
-import { delay } from 'rxjs/operators';
 
 export const globalSlice = createSlice({
     name: 'global',
@@ -29,15 +28,13 @@ export const globalSlice = createSlice({
             state.user = action.payload
         },
         logout: () => {},
-        show_toast: (state, action:PayloadAction<string>) => {
+        show_toast: (state, action:PayloadAction<{
+            message: string,
+            severity: 'error'|'warning'|'info'|'success',
+        }>) => {
             state.toast_open = true
-            state.toast_message = action.payload
-            state.toast_severity = "success"
-        },
-        show_error: (state, action:PayloadAction<string>) => {
-            state.toast_open = true
-            state.toast_message = action.payload
-            state.toast_severity = "error"
+            state.toast_message = action.payload.message
+            state.toast_severity = action.payload.severity
         },
         close_toast: (state) => {
             state.toast_open = false
@@ -46,7 +43,7 @@ export const globalSlice = createSlice({
 })
 
 export const {
-    update_current_tab, fetch_user, update_user, show_toast, show_error, close_toast,
+    update_current_tab, fetch_user, update_user, show_toast, close_toast,
     logout
 } = globalSlice.actions
 export default globalSlice.reducer

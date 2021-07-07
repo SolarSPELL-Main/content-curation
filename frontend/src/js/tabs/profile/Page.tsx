@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography"
 
 //Importing from other files in the project
 import { useCCSelector, useCCDispatch } from '../../hooks';
-import { logout, show_toast, show_error } from "../../state/global"
+import { logout, show_toast } from "../../state/global"
 
 export default () => {
     const dispatch = useCCDispatch()
@@ -30,5 +30,6 @@ export default () => {
                 Login
             </Button>
         </>}
-        <Button onClick={() => dispatch(show_error("Message to display"))} > Test Button </Button>    </div>
+        <Button onClick={() => dispatch(show_toast({message: "Message to display",severity:"info"}))} > Test Button </Button>
+    </div>
 }
