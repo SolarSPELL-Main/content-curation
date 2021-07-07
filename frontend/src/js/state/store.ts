@@ -13,7 +13,7 @@ import globalReducer from './global'
 import metadataReducer from './metadata'
 import contentReducer from './content'
 import {
-    fetch_user, update_user, show_toast, close_toast, logout
+    fetch_user, update_user, show_toast, logout, close_toast
 } from './global'
 import {
     fetch_metadata, update_metadata, add_metadata, delete_metadata, 
