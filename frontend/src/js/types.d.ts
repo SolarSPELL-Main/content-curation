@@ -32,18 +32,18 @@ interface User {
     groups: string[]
 }
 
-type Range = {
-    from?: number
-    to?: number
+type Range<T> = {
+    from?: T
+    to?: T
 }
 
 type Query = Partial<{
     title: string
     fileName: string
     copyright: string
-    years: Range
-    filesize: Range
-    reviewed: Range
+    years: Range<number>
+    filesize: Range<number>
+    reviewed: Range<string>
     active: 'all' | 'active' | 'inactive'
     duplicatable: 'all' | 'duplicatable' | 'nonduplicatable'
     metadata: Record<number,Metadata[]>
