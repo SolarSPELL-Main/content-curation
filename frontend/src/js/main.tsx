@@ -1,48 +1,50 @@
 //Importing from outside the project
 import React, { useEffect } from "react";
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert, { Color } from '@material-ui/lab/Alert';
+import { useSnackbar } from "notistack"
 
 //Importing from other files in the project
 import Tabs from './tabs';
-import { close_toast, fetch_user } from "./state/global"
-import { useCCDispatch, useCCSelector } from './hooks';
-
-function Alert(props: React.ComponentProps<typeof MuiAlert>) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+import { fetch_user } from "./state/global"
+import { useCCDispatch, useCCSelector, usePrevious } from './hooks';
 
 /*
  * Main entry point of the application
  */
 function Main(): React.ReactElement {
     const dispatch = useCCDispatch();
-    const open = useCCSelector(state => state.global.toast_open);
-    const message = useCCSelector(state => state.global.toast_message);
-    const severity = useCCSelector(state => state.global.toast_severity);
+    const toasts = useCCSelector(state => state.global.toasts)
+    const prevToasts = usePrevious(toasts)
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+
+    useEffect(() => {
+        const new_toasts = prevToasts === undefined ? 
+            [] :
+            toasts.filter(toast =>
+                prevToasts.every(lastToast => lastToast.key !== toast.key)
+            )
+
+        new_toasts.forEach(toast => enqueueSnackbar(
+            toast.message,
+            {
+                variant: toast.severity,
+                persist: false
+            }
+        ))
+
+        if (prevToasts !== undefined) {
+            const old_toasts = prevToasts.filter(toast =>
+                toasts.every(lastToast => lastToast.key !== toast.key)
+            )
+            old_toasts.forEach(toast => closeSnackbar(toast.key))
+        }
+
+    }, [toasts, prevToasts])
 
     useEffect(() => {
         dispatch(fetch_user())
     }, [dispatch])
 
-    return (<>
-        <Tabs />
-        <Snackbar anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        open={open}>
-          <React.Fragment >
-            <Alert severity={severity as Color} > {message}
-              <IconButton size="small" aria-label="close" color="inherit" onClick={() => dispatch(close_toast())}>
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            </Alert>
-          </React.Fragment>
-        </Snackbar>
-    </>);
+    return <Tabs />
 }
 
 export default Main;

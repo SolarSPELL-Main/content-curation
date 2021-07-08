@@ -3,13 +3,13 @@ import {
     configureStore, getDefaultMiddleware, AnyAction, combineReducers
 } from '@reduxjs/toolkit'
 import { combineEpics, createEpicMiddleware, Epic } from "redux-observable"
-import { from } from 'rxjs'
+import { from, of } from 'rxjs'
 import {
     filter, map, mergeMap, mapTo, delay, catchError 
 } from 'rxjs/operators'
 
 //Importing from other files in the project
-import globalReducer, { show_error } from './global'
+import globalReducer from './global'
 import metadataReducer from './metadata'
 import contentReducer from './content'
 import {
@@ -50,13 +50,6 @@ const fetchUserEpic: MyEpic = action$ =>
                 map(({ data }) => update_user(data.data))
             ),
         ),
-        // catchError(
-        //     _ => 
-        //         of({
-        //             type: show_toast.type,
-        //             payload: 'Error fetching user'
-        //         })
-        // ),
     )
 
 const logoutEpic: MyEpic = action$ =>
@@ -74,16 +67,9 @@ const showToastEpic: MyEpic = action$ =>
     action$.pipe(
         filter(show_toast.match),
         delay(6000),
-        map(_ => close_toast()),
+        map(action => close_toast(action.payload.key)),
     )
 
-//Epic to show the error message
-const showErrorEpic: MyEpic = action$ =>
-    action$.pipe(
-        filter(show_error.match),
-        delay(Number.MAX_SAFE_INTEGER),
-        map(_ => close_toast()),
-    )
 
 /** METADATA EPICS */
 //Epic to add metadata to the application state
@@ -320,12 +306,16 @@ const addContentEpic: MyEpic = action$ =>
 
 const errorCatcher = (epic: MyEpic) => (...args: Parameters<MyEpic>) =>
     epic(...args).pipe(
-        catchError((error, caught$) => {
-            console.log("Intercepted error in the error catcher")
+        catchError(error => {
             console.error(error)
-            return caught$
+            return of(show_toast({
+                message: `${error.name} - ${error.message}`,
+                key: Math.random(),
+                severity: "error"
+            }))
         })
     )
+
 const deleteContentEpic: MyEpic = action$ =>
     action$.pipe(
         filter(delete_content.match),
@@ -353,7 +343,6 @@ const epics = combineEpics(...[
     deleteContentEpic,
     logoutEpic,
     showToastEpic,
-    showErrorEpic
 ].map(epic => errorCatcher(epic)))
 
 const store = configureStore({

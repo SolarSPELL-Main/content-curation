@@ -32,23 +32,25 @@ interface User {
     groups: string[]
 }
 
+type Range = {
+    from?: number
+    to?: number
+}
+
 type Query = Partial<{
     title: string
     fileName: string
     copyright: string
-    years: {
-        from?: number
-        to?: number
-    }
-    filesize: {
-        from?: number
-        to?: number
-    }
-    reviewed: {
-        from?: string
-        to?: string
-    }
+    years: Range
+    filesize: Range
+    reviewed: Range
     active: 'all' | 'active' | 'inactive'
     duplicatable: 'all' | 'duplicatable' | 'nonduplicatable'
     metadata: Record<number,Metadata[]>
 }>
+
+type Toast = {
+    key: number
+    severity: "success" | "warning" | "error"
+    message: string
+}

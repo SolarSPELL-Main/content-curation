@@ -6,6 +6,7 @@ import { HashRouter } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+import { SnackbarProvider } from 'notistack'
 
 //Importing from other files in the project
 import store from './state/store'
@@ -17,12 +18,14 @@ import './styles.css';
 */
 ReactDOM.render(
     (<Provider store={store}>
-        <HashRouter>
-            <CssBaseline />
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <Main />
-            </MuiPickersUtilsProvider>
-        </HashRouter>
+        <SnackbarProvider>
+            <HashRouter>
+                <CssBaseline />
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <Main />
+                </MuiPickersUtilsProvider>
+            </HashRouter>
+        </SnackbarProvider>
     </Provider>),
     document.getElementById('container')
 );
