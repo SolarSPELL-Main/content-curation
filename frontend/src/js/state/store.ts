@@ -314,8 +314,21 @@ const editContentEpic: MyEpic = action$ =>
             {
                 const content = action.payload;
                 const data = contentToFormData(content);
-                const req = api.patch(APP_URLS.CONTENT(action.payload.id), data);
-                return from(req).pipe(
+                const reqs = [];
+                reqs.push(api.patch(APP_URLS.CONTENT(action.payload.id), data));
+
+                // Check if metadata is empty
+                // If so, push a separate request for empty metadata
+                if (Object.values(content.metadata).reduce(
+                    (accum, val) => accum + val.length,
+                    0,
+                ) < 1) {
+                    reqs.push(api.patch(APP_URLS.CONTENT(action.payload.id), {
+                        metadata: [],
+                    }));
+                }
+
+                return from(Promise.all(reqs)).pipe(
                     map(_ => fetch_content()),
                 );
             },
