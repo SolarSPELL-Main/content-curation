@@ -44,9 +44,9 @@ function Page(_: PageProps): React.ReactElement {
 
     const onSelectedDelete_ = React.useCallback(
         (content: Content[]) => {
-            console.log(content);
+            dispatch(ContentActions.delete_content(content.map(c => c.id)));
         },
-        [],
+        [dispatch],
     );
 
     const onView_ = React.useCallback(

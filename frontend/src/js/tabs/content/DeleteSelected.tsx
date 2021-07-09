@@ -14,6 +14,7 @@ type DeleteSelectedProps = {
 /**
  * This is a button that appears/disappears when selected is not empty.
  * It prompts the user if they are sure they want to delete selected content.
+ * Collapse animation is to reduce jarring appearing/disappearing.
  * @param props Array of selected members and callback.
  * @returns A button to delete selected members of the content table.
  */

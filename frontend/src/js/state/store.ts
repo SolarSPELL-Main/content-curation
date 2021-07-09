@@ -319,10 +319,23 @@ const errorCatcher = (epic: MyEpic) => (...args: Parameters<MyEpic>) =>
 const deleteContentEpic: MyEpic = action$ =>
     action$.pipe(
         filter(delete_content.match),
-        mergeMap(action =>
-            from(api.delete(APP_URLS.CONTENT(action.payload))).pipe(
-                map(_res => fetch_content())
-            ),
+        mergeMap(action => {
+                let payload = action.payload;
+
+                // If not array, convert single content ID to array
+                if (!Array.isArray(payload)) {
+                    payload = [payload];
+                }
+
+                // Construct promises for all IDs in payload
+                return from(
+                    Promise.all(
+                        payload.map(p => api.delete(APP_URLS.CONTENT(p)))
+                    )
+                ).pipe(
+                    map(_res => fetch_content())
+                )
+            },
         ),
     )
 

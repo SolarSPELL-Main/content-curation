@@ -21,8 +21,8 @@ export const contentSlice = createSlice({
         // Posts content to backend
         add_content: (_state, _action: PayloadAction<Content>) => {},
 
-        // Deletes content, payload should be content ID
-        delete_content: (_state, _action: PayloadAction<number>) => {},
+        // Deletes content, payload should be content ID(s)
+        delete_content: (_state, _action: PayloadAction<number|number[]>) => {},
     },
 });
 
