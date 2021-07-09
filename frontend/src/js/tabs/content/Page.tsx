@@ -26,20 +26,28 @@ function Page(_: PageProps): React.ReactElement {
     React.useEffect(() => {
         dispatch(MetadataActions.fetch_metadatatype());
         dispatch(ContentActions.fetch_content());
-    }, []);
+    }, [dispatch]);
 
     const onEdit_ = React.useCallback(
         (content: Content, vals: Partial<Content>) => {
-            console.log(content, vals);
+            vals.id = content.id;
+            dispatch(ContentActions.edit_content(vals as Content));
         },
-        [],
+        [dispatch],
     );
 
     const onDelete_ = React.useCallback(
         (content: Content) => {
             dispatch(ContentActions.delete_content(content.id));
         },
-        [],
+        [dispatch],
+    );
+
+    const onSelectedDelete_ = React.useCallback(
+        (content: Content[]) => {
+            dispatch(ContentActions.delete_content(content.map(c => c.id)));
+        },
+        [dispatch],
     );
 
     const onView_ = React.useCallback(
@@ -55,7 +63,7 @@ function Page(_: PageProps): React.ReactElement {
                 dispatch(ContentActions.add_content(content));
             }
         },
-        [],
+        [dispatch],
     );
 
     const onQueryChange_ = React.useCallback(
@@ -74,6 +82,7 @@ function Page(_: PageProps): React.ReactElement {
                 Display: {
                     onEdit: onEdit_,
                     onDelete: onDelete_,
+                    onSelectedDelete: onSelectedDelete_,
                     onView: onView_,
                 },
                 Toolbar: {

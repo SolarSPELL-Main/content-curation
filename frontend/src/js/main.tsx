@@ -27,7 +27,8 @@ function Main(): React.ReactElement {
             toast.message,
             {
                 variant: toast.severity,
-                persist: false
+                // Errors should be dismissed by hand
+                persist: toast.severity === 'error',
             }
         ))
 

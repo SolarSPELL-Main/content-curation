@@ -1,8 +1,10 @@
 //Importing from outside the project
 import React from 'react';
+import { GridSelectionModelChangeParams } from '@material-ui/data-grid';
 
 //Importing from other files in the project
 import { ContentTable } from 'solarspell-react-lib';
+import DeleteSelected from './DeleteSelected';
 import ActionPanel from './ActionPanel';
 import ContentForm from './ContentForm';
 import { Content, Metadata, MetadataType } from 'js/types';
@@ -11,6 +13,7 @@ type DisplayActionProps = {
   onEdit: (item: Content, vals: Partial<Content>) => void
   onDelete: (item: Content) => void
   onView: (item: Content) => void
+  onSelectedDelete: (content: Content[]) => void
 }
 
 type DisplayProps = {
@@ -32,6 +35,16 @@ function Display({
   actions,
 }: DisplayProps): React.ReactElement {
   const [editedContent, setEditedContent] = React.useState<Content | undefined>();
+  const [selected, setSelected] = React.useState<Content[]>([]);
+
+  // Ensures deleted content is cleaned from state
+  React.useEffect(
+    () => {
+      const ids = content.map(c => c.id);
+      setSelected(s => s.filter(c => ids.includes(c.id)));
+    },
+    [content],
+  );
 
   const onEdit_ = React.useCallback(
     (item: Content) => setEditedContent(item),
@@ -48,8 +61,22 @@ function Display({
     [actions.onEdit, editedContent, setEditedContent],
   );
 
+  const onSelectChange_ = React.useCallback(
+    (
+      content: Content[],
+      rows: GridSelectionModelChangeParams,
+    ) => setSelected(
+      content.filter(c => rows.selectionModel.includes(c.id))
+    ),
+    [setSelected],
+  );
+
   return (
     <>
+      <DeleteSelected
+        selected={selected}
+        onDelete={actions.onSelectedDelete}
+      />
       <ContentForm
         metadata={metadata}
         metadataTypes={metadataTypes}
@@ -61,6 +88,7 @@ function Display({
       <ContentTable
         content={content}
         selectable
+        onSelectChange={onSelectChange_}
         components={{
           ActionPanel: ActionPanel,
         }}
