@@ -34,6 +34,15 @@ function Modal({
 }: ModalProps): React.ReactElement {
     const [selected, setSelected] = React.useState<Content[]>([]);
 
+    // Ensures deleted content is cleaned from state
+    React.useEffect(
+        () => {
+            const ids = content.map(c => c.id);
+            setSelected(s => s.filter(c => ids.includes(c.id)));
+        },
+        [content],
+    );
+
     return (
         <Box p={2}>
             <Add
