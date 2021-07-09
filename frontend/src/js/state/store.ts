@@ -25,8 +25,12 @@ import {
     update_content,
     add_content,
     delete_content,
+    edit_content,
 } from './content'
-import { api } from '../utils'
+import {
+    api,
+    contentToFormData,
+} from '../utils'
 import APP_URLS from '../urls'
 import { Content, Metadata } from '../types'
 
@@ -259,43 +263,7 @@ const addContentEpic: MyEpic = action$ =>
         mergeMap(action =>
             {
                 const content = action.payload;
-                const data = new FormData();
-                data.append('file_name', content.fileName);
-                data.append('title', content.title);
-                // This action should only be called on adding content
-                // Hence the file should not be null
-                // If it is, an error will be thrown here, anyway
-                data.append('content_file', content.file!);
-                data.append('description', content.description ?? '');
-                // For many-to-many fields
-                // Django expects FormData with repeated fields
-                Object.values(content.metadata ?? []).forEach(
-                    val => val.forEach(metadata => {
-                        data.append('metadata', metadata.id.toString());
-                    })
-                );
-                data.append('copyright_notes', content.copyright ?? '');
-                data.append('rights_statement', content.rightsStatement ?? '');
-                data.append('additional_notes', content.notes ?? '');
-                // Same format as DLMS, default to Jan. 1st
-                // TODO: published_date should no longer be required on
-                // the backend. Until then, a very improbable date will be
-                // assigned as a placeholder.
-                data.append('published_date', content.datePublished ? 
-                    `${content.datePublished.padStart(4, '0')}-01-01`
-                    :
-                    '0001-01-01'
-                );
-
-                // Unused fields
-                // data.append('active', 'true');
-                // data.append('created_by', content.creator ?? 'admin');
-                // data.append('created_on', format(Date.now(), 'yyyy-MM-dd'));
-                // data.append('reviewed_by', '');
-                // data.append('copyright_approved', 'false');
-                // data.append('copyright_by', '');
-                // data.append('published_year', content.datePublished ?? '');
-
+                const data = contentToFormData(content);
                 const req = api.post(APP_URLS.CONTENT_LIST, data);
                 return from(req).pipe(
                     map(_ => fetch_content())
@@ -339,6 +307,21 @@ const deleteContentEpic: MyEpic = action$ =>
         ),
     )
 
+const editContentEpic: MyEpic = action$ =>
+    action$.pipe(
+        filter(edit_content.match),
+        mergeMap(action =>
+            {
+                const content = action.payload;
+                const data = contentToFormData(content);
+                const req = api.patch(APP_URLS.CONTENT(action.payload.id), data);
+                return from(req).pipe(
+                    map(_ => fetch_content()),
+                );
+            },
+        ),
+    )
+
 const epics = combineEpics(...[
     addMetaEpic,
     fetchMetadataEpic,
@@ -354,6 +337,7 @@ const epics = combineEpics(...[
     fetchContentEpic,
     addContentEpic,
     deleteContentEpic,
+    editContentEpic,
     logoutEpic,
     showToastEpic,
 ].map(epic => errorCatcher(epic)))
@@ -364,10 +348,9 @@ const store = configureStore({
         ...getDefaultMiddleware({
             thunk: false,
             serializableCheck: {
-                // File required for upload,
-                // hence serialization check
-                // should be ignored
-                ignoredActions: [add_content.type],
+                // File required for upload, hence serialization check
+                // should be ignored for these actions
+                ignoredActions: [add_content.type, edit_content.type],
             },
         }),
         epicMiddleware,

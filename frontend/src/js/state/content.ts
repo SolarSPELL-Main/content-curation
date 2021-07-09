@@ -23,6 +23,9 @@ export const contentSlice = createSlice({
 
         // Deletes content, payload should be content ID(s)
         delete_content: (_state, _action: PayloadAction<number|number[]>) => {},
+
+        // Puts content to backend
+        edit_content: (_state, _action: PayloadAction<Content>) => {},
     },
 });
 
@@ -31,6 +34,7 @@ export const {
     update_content,
     add_content,
     delete_content,
+    edit_content,
 } = contentSlice.actions;
 
 export default contentSlice.reducer;

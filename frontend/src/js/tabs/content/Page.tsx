@@ -30,9 +30,10 @@ function Page(_: PageProps): React.ReactElement {
 
     const onEdit_ = React.useCallback(
         (content: Content, vals: Partial<Content>) => {
-            console.log(content, vals);
+            vals.id = content.id;
+            dispatch(ContentActions.edit_content(vals as Content));
         },
-        [],
+        [dispatch],
     );
 
     const onDelete_ = React.useCallback(
