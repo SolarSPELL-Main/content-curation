@@ -42,6 +42,13 @@ function Page(_: PageProps): React.ReactElement {
         [dispatch],
     );
 
+    const onSelectedDelete_ = React.useCallback(
+        (content: Content[]) => {
+            console.log(content);
+        },
+        [],
+    );
+
     const onView_ = React.useCallback(
         (content: Content) => {
             console.log(`Viewing ${content.title}`);
@@ -74,6 +81,7 @@ function Page(_: PageProps): React.ReactElement {
                 Display: {
                     onEdit: onEdit_,
                     onDelete: onDelete_,
+                    onSelectedDelete: onSelectedDelete_,
                     onView: onView_,
                 },
                 Toolbar: {
