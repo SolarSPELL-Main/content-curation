@@ -26,7 +26,7 @@ function Page(_: PageProps): React.ReactElement {
     React.useEffect(() => {
         dispatch(MetadataActions.fetch_metadatatype());
         dispatch(ContentActions.fetch_content());
-    }, []);
+    }, [dispatch]);
 
     const onEdit_ = React.useCallback(
         (content: Content, vals: Partial<Content>) => {
@@ -39,7 +39,7 @@ function Page(_: PageProps): React.ReactElement {
         (content: Content) => {
             dispatch(ContentActions.delete_content(content.id));
         },
-        [],
+        [dispatch],
     );
 
     const onView_ = React.useCallback(
@@ -55,7 +55,7 @@ function Page(_: PageProps): React.ReactElement {
                 dispatch(ContentActions.add_content(content));
             }
         },
-        [],
+        [dispatch],
     );
 
     const onQueryChange_ = React.useCallback(

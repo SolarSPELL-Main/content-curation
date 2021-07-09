@@ -22,7 +22,7 @@ function Page(_: PageProps): React.ReactElement {
 
     useEffect(() => {
         dispatch(Actions.fetch_metadatatype());
-    }, []);
+    }, [dispatch]);
 
     return (
         <Modal
