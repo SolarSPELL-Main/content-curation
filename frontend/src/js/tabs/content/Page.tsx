@@ -50,13 +50,6 @@ function Page(_: PageProps): React.ReactElement {
         [dispatch],
     );
 
-    const onView_ = React.useCallback(
-        (content: Content) => {
-            console.log(`Viewing ${content.title}`);
-        },
-        [],
-    );
-
     const onAdd_ = React.useCallback(
         (content?: Content) => {
             if (content) {
@@ -83,7 +76,6 @@ function Page(_: PageProps): React.ReactElement {
                     onEdit: onEdit_,
                     onDelete: onDelete_,
                     onSelectedDelete: onSelectedDelete_,
-                    onView: onView_,
                 },
                 Toolbar: {
                     onAdd: onAdd_,

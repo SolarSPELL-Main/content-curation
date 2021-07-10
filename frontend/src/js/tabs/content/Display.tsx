@@ -7,12 +7,12 @@ import { ContentTable } from 'solarspell-react-lib';
 import DeleteSelected from './DeleteSelected';
 import ActionPanel from './ActionPanel';
 import ContentForm from './ContentForm';
+import Viewer from './Viewer';
 import { Content, Metadata, MetadataType } from 'js/types';
 
 type DisplayActionProps = {
   onEdit: (item: Content, vals: Partial<Content>) => void
   onDelete: (item: Content) => void
-  onView: (item: Content) => void
   onSelectedDelete: (content: Content[]) => void
 }
 
@@ -34,7 +34,8 @@ function Display({
   content,
   actions,
 }: DisplayProps): React.ReactElement {
-  const [editedContent, setEditedContent] = React.useState<Content | undefined>();
+  const [editedContent, setEditedContent] = React.useState<Content|undefined>();
+  const [viewedContent, setViewedContent] = React.useState<Content|undefined>();
   const [selected, setSelected] = React.useState<Content[]>([]);
 
   // Ensures deleted content is cleaned from state
@@ -61,6 +62,16 @@ function Display({
     [actions.onEdit, editedContent, setEditedContent],
   );
 
+  const onView_ = React.useCallback(
+    (item: Content) => setViewedContent(item),
+    [setViewedContent],
+  );
+
+  const onViewClose_ = React.useCallback(
+    () => setViewedContent(undefined),
+    [setViewedContent],
+  );
+
   const onSelectChange_ = React.useCallback(
     (
       content: Content[],
@@ -77,14 +88,20 @@ function Display({
         selected={selected}
         onDelete={actions.onSelectedDelete}
       />
-      <ContentForm
+      {editedContent && <ContentForm
         metadata={metadata}
         metadataTypes={metadataTypes}
         onSubmit={onEditSubmit_}
         open={!!editedContent}
-        content={editedContent!}
+        content={editedContent}
         type={'edit'}
-      />
+      />}
+      {viewedContent && <Viewer
+        metadataTypes={metadataTypes}
+        content={viewedContent}
+        open={!!viewedContent}
+        onClose={onViewClose_}
+      />}
       <ContentTable
         content={content}
         selectable
@@ -96,6 +113,7 @@ function Display({
           ActionPanel: {
             ...actions,
             onEdit: onEdit_,
+            onView: onView_,
           },
         }}
       />
