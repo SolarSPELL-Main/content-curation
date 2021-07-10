@@ -9,7 +9,7 @@
     "build:prod": "npm run-script clean && webpack --mode=production",
     "clean": "rimraf ./static",
     "watch": "npm run-script clean && webpack --watch --mode=development",
-    "update-lib": "npm r solarspell-react-lib && npm i github:SolarSPELL-Main/solarspell-react-lib#main"
+    "update-lib": "npm update solarspell-react-lib"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",
