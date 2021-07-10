@@ -61,13 +61,13 @@ function Viewer(props: ViewerProps): React.ReactElement {
             fileDisplay={{
                 field: 'fileURL',
                 // Currently unused
-                formatter: (_url: string) => (
+                formatter: (url: string) => (
                     <object
                         width={600}
                         height={600}
-                        data={new URL('https://image.shutterstock.com/image-vector/smile-icon-vector-face-emoticon-260nw-1721368459.jpg').href}
+                        data={new URL(url).href}
                     >
-                        File
+                        <i>File display</i>
                     </object>
                 )
             }}
