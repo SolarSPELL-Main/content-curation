@@ -3,6 +3,7 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import Checkbox from '@material-ui/core/Checkbox';
 
 //Importing from other files in the project
 import { ContentModal, ContentMetadataDisplay } from 'solarspell-react-lib';
@@ -60,7 +61,7 @@ function ContentForm({
     return (
         <ContentModal<Content>
             initialState={content}
-            items={[
+            fields={[
                 {
                     component: TextField,
                     propFactory: (state, reasons, setter) => {
@@ -77,7 +78,7 @@ function ContentForm({
                             value: state['title'],
                         };
                     },
-                    label: 'title',
+                    field: 'title',
                     initialValue: '',
                     validator: (state) => {
                         if (!state['title']) {
@@ -101,7 +102,7 @@ function ContentForm({
                             value: state['description'] ?? '',
                         };
                     },
-                    label: 'description',
+                    field: 'description',
                     initialValue: '',
                 },
                 {
@@ -144,7 +145,7 @@ function ContentForm({
                             error: reasons['file'],
                         };
                     },
-                    label: 'file',
+                    field: 'file',
                     initialValue: undefined,
                     validator: (state) => {
                         if (!state['file'] && !state['fileURL']) {
@@ -169,25 +170,46 @@ function ContentForm({
                             type: 'number',
                         };
                     },
-                    label: 'datePublished',
+                    field: 'datePublished',
                     initialValue: '',
                 },
                 {
                     component: TextField,
                     propFactory: (state, _r, setter) => {
                         return {
-                        fullWidth: true,
-                        label: 'Copyright Notes',
-                        onChange: (
-                            e: React.SyntheticEvent<HTMLInputElement>
-                        ) => {
-                            setter(e.currentTarget.value);
-                        },
-                        value: state['copyright'] ?? '',
+                            fullWidth: true,
+                            label: 'Copyright Notes',
+                            onChange: (
+                                e: React.SyntheticEvent<HTMLInputElement>
+                            ) => {
+                                setter(e.currentTarget.value);
+                            },
+                            value: state['copyright'] ?? '',
                         };
                     },
-                    label: 'copyright',
+                    field: 'copyright',
                     initialValue: '',
+                },
+                {
+                    component: (props) => (
+                        <>
+                            <Typography>Copyright Approved</Typography>
+                            <Checkbox {...props} />
+                        </>
+                    ),
+                    propFactory: (state, _r, setter) => {
+                        return {
+                            checked: state['copyrightApproved'],
+                            onChange: (
+                                _e: React.SyntheticEvent,
+                                checked: boolean,
+                            ) => {
+                                setter(checked);
+                            },
+                        };
+                    },
+                    field: 'copyrightApproved',
+                    initialValue: false,
                 },
                 {
                     component: TextField,
@@ -203,7 +225,7 @@ function ContentForm({
                             value: state['rightsStatement'] ?? '',
                         };
                     },
-                    label: 'rightsStatement',
+                    field: 'rightsStatement',
                     initialValue: '',
                 },
                 {
@@ -226,7 +248,7 @@ function ContentForm({
                             },
                         };
                     },
-                    label: 'metadata',
+                    field: 'metadata',
                     initialValue: {},
                 },
                 {
@@ -243,7 +265,7 @@ function ContentForm({
                             value: state['notes'] ?? '',
                         };
                     },
-                    label: 'notes',
+                    field: 'notes',
                     initialValue: '',
                 },
             ]}
