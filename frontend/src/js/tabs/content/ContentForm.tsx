@@ -3,6 +3,7 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import Checkbox from '@material-ui/core/Checkbox';
 
 //Importing from other files in the project
 import { ContentModal, ContentMetadataDisplay } from 'solarspell-react-lib';
@@ -176,18 +177,39 @@ function ContentForm({
                     component: TextField,
                     propFactory: (state, _r, setter) => {
                         return {
-                        fullWidth: true,
-                        label: 'Copyright Notes',
-                        onChange: (
-                            e: React.SyntheticEvent<HTMLInputElement>
-                        ) => {
-                            setter(e.currentTarget.value);
-                        },
-                        value: state['copyright'] ?? '',
+                            fullWidth: true,
+                            label: 'Copyright Notes',
+                            onChange: (
+                                e: React.SyntheticEvent<HTMLInputElement>
+                            ) => {
+                                setter(e.currentTarget.value);
+                            },
+                            value: state['copyright'] ?? '',
                         };
                     },
                     field: 'copyright',
                     initialValue: '',
+                },
+                {
+                    component: (props) => (
+                        <>
+                            <Typography>Copyright Approved</Typography>
+                            <Checkbox {...props} />
+                        </>
+                    ),
+                    propFactory: (state, _r, setter) => {
+                        return {
+                            checked: state['copyrightApproved'],
+                            onChange: (
+                                _e: React.SyntheticEvent,
+                                checked: boolean,
+                            ) => {
+                                setter(checked);
+                            },
+                        };
+                    },
+                    field: 'copyrightApproved',
+                    initialValue: false,
                 },
                 {
                     component: TextField,

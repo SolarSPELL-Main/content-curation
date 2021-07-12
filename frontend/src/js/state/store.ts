@@ -314,23 +314,39 @@ const editContentEpic: MyEpic = action$ =>
             {
                 const content = action.payload;
                 const data = contentToFormData(content);
-                const reqs = [];
-                reqs.push(api.patch(APP_URLS.CONTENT(action.payload.id), data));
+                const req = api.patch(APP_URLS.CONTENT(content.id), data);
 
-                // Check if metadata is empty
-                // If so, push a separate request for empty metadata
-                if (Object.values(content.metadata).reduce(
+                const metadataLength = Object.values(content.metadata).reduce(
                     (accum, val) => accum + val.length,
                     0,
-                ) < 1) {
-                    reqs.push(api.patch(APP_URLS.CONTENT(action.payload.id), {
-                        metadata: [],
-                    }));
-                }
-
-                return from(Promise.all(reqs)).pipe(
-                    map(_ => fetch_content()),
                 );
+
+                // Check if metadata is empty
+                // If not, make single request
+                // If it is, wait until first request finishes,
+                // then make a second request for empty metadata.
+                if (metadataLength) {
+                    return from(req).pipe(
+                        map(_ => fetch_content()),
+                    );
+                } else {
+                    return from(req).pipe(
+                        mergeMap(_ => {
+                            // Second request
+                            // Explicitly empty metadata in JSON
+                            const req = api.patch(
+                                APP_URLS.CONTENT(content.id),
+                                {
+                                    metadata: [],
+                                }
+                            );
+
+                            return from(req).pipe(
+                                map(_ => fetch_content()),
+                            );
+                        }),
+                    );
+                }
             },
         ),
     )
