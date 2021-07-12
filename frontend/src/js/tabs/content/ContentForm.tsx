@@ -60,7 +60,7 @@ function ContentForm({
     return (
         <ContentModal<Content>
             initialState={content}
-            items={[
+            fields={[
                 {
                     component: TextField,
                     propFactory: (state, reasons, setter) => {
@@ -77,7 +77,7 @@ function ContentForm({
                             value: state['title'],
                         };
                     },
-                    label: 'title',
+                    field: 'title',
                     initialValue: '',
                     validator: (state) => {
                         if (!state['title']) {
@@ -101,7 +101,7 @@ function ContentForm({
                             value: state['description'] ?? '',
                         };
                     },
-                    label: 'description',
+                    field: 'description',
                     initialValue: '',
                 },
                 {
@@ -144,7 +144,7 @@ function ContentForm({
                             error: reasons['file'],
                         };
                     },
-                    label: 'file',
+                    field: 'file',
                     initialValue: undefined,
                     validator: (state) => {
                         if (!state['file'] && !state['fileURL']) {
@@ -169,7 +169,7 @@ function ContentForm({
                             type: 'number',
                         };
                     },
-                    label: 'datePublished',
+                    field: 'datePublished',
                     initialValue: '',
                 },
                 {
@@ -186,7 +186,7 @@ function ContentForm({
                         value: state['copyright'] ?? '',
                         };
                     },
-                    label: 'copyright',
+                    field: 'copyright',
                     initialValue: '',
                 },
                 {
@@ -203,7 +203,7 @@ function ContentForm({
                             value: state['rightsStatement'] ?? '',
                         };
                     },
-                    label: 'rightsStatement',
+                    field: 'rightsStatement',
                     initialValue: '',
                 },
                 {
@@ -226,7 +226,7 @@ function ContentForm({
                             },
                         };
                     },
-                    label: 'metadata',
+                    field: 'metadata',
                     initialValue: {},
                 },
                 {
@@ -243,7 +243,7 @@ function ContentForm({
                             value: state['notes'] ?? '',
                         };
                     },
-                    label: 'notes',
+                    field: 'notes',
                     initialValue: '',
                 },
             ]}
