@@ -29,7 +29,7 @@ interface User {
     username: string
     email: string
     token: string
-    groups: string[]
+    groups: AuthGroup[]
 }
 
 type Range<T> = {
