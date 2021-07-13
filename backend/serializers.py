@@ -29,8 +29,8 @@ class ContentSerializer(ModelSerializer):
         model = Content
         fields = (
             'id', 'file_name', 'title', 'content_file', 'description', 'metadata_info',
-        'metadata', 'active', 'copyright_notes', 'rights_statement',
-        'additional_notes', 'published_date', 'created_by', 'created_on',
-        'reviewed_by', 'copyright_approved',
-        'copyright_by', 'published_year'
+            'metadata', 'active', 'copyright_notes', 'rights_statement',
+            'additional_notes', 'published_date', 'created_by', 'created_on',
+            'reviewed_by', 'reviewed_on', 'reviewed', 'copyright_approved',
+            'copyright_by', 'published_year'
         )

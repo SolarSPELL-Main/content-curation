@@ -3,8 +3,11 @@ import React from 'react';
 import { Edit, Delete } from '@material-ui/icons';
 
 //Importing from other files in the project
-import { ActionPanel as SolarSPELLActionPanel, ActionPanelItem } from 
-        'solarspell-react-lib';
+import {
+    ActionPanel as SolarSPELLActionPanel,
+    ActionPanelItem,
+} from 'solarspell-react-lib';
+import ShowForPermission from '../ShowForPermission';
 import { Metadata, MetadataType } from 'js/types';
 
 type ActionPanelActionProps = {
@@ -40,22 +43,26 @@ function ActionPanel({
 
     return (
         <SolarSPELLActionPanel>
-            <ActionPanelItem
-                type={'text_input'}
-                tooltip={'Edit'}
-                icon={Edit}
-                onAction={onAction}
-                textInputTitle={`Edit Metadata ${metadata.name}`}
-                textInputLabel={'Metadata Name'}
-            />
-            <ActionPanelItem
-                type={'confirm'}
-                tooltip={'Delete'}
-                icon={Delete}
-                onAction={onDelete_}
-                confirmationTitle={`Delete Metadata item ${metadata.name} of type ${metadataType.name}?`}
-                confirmationDescription={'WARNING: Deleting a metadata will also delete each of that metadata on every content and is irreversible.'}
-            />
+            <ShowForPermission slice={'metadata'} permission={'update'}>
+                <ActionPanelItem
+                    type={'text_input'}
+                    tooltip={'Edit'}
+                    icon={Edit}
+                    onAction={onAction}
+                    textInputTitle={`Edit Metadata ${metadata.name}`}
+                    textInputLabel={'Metadata Name'}
+                />
+            </ShowForPermission>
+            <ShowForPermission slice={'metadata'} permission={'delete'}>
+                <ActionPanelItem
+                    type={'confirm'}
+                    tooltip={'Delete'}
+                    icon={Delete}
+                    onAction={onDelete_}
+                    confirmationTitle={`Delete Metadata item ${metadata.name} of type ${metadataType.name}?`}
+                    confirmationDescription={'WARNING: Deleting a metadata will also delete each of that metadata on every content and is irreversible.'}
+                />
+            </ShowForPermission>
         </SolarSPELLActionPanel>
     );
 }

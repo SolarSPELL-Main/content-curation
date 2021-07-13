@@ -1,6 +1,5 @@
 import axios from 'axios'
-import { Content } from 'js/types';
-
+import { Content, CRUD, Permissions } from 'js/types';
 
 /*
  * Taken from Django documentation https://docs.djangoproject.com/en/3.2/ref/csrf/
@@ -22,6 +21,10 @@ export const getCookie = (name: string): string | null => {
     return cookieValue;
 }
 
+export const api = axios.create({
+    headers: { 'X-CSRFToken': getCookie("csrftoken") }
+})
+
 /**
  * Converts Content to a FormData object for adding or editing content.
  * @param content Content to convert to FormData.
@@ -31,7 +34,7 @@ export const getCookie = (name: string): string | null => {
  *                 Used for distinguishing patching / posting content.
  * @returns FormData representing the Content.
  */
-export const contentToFormData = (content: Content): FormData => {
+ export const contentToFormData = (content: Content): FormData => {
     const data = new FormData();
     data.append('file_name', content.fileName);
     data.append('title', content.title);
@@ -72,6 +75,12 @@ export const contentToFormData = (content: Content): FormData => {
         '0001-01-01'
     );
 
+    data.append('reviewed', content.reviewed?.toString() ?? 'false');
+    
+    if (content.reviewed && content.reviewedDate) {
+        data.append('reviewed_on', content.reviewedDate);
+    }
+
     // Unused fields
     // data.append('active', 'true');
     // data.append('created_by', content.creator ?? 'admin');
@@ -83,7 +92,80 @@ export const contentToFormData = (content: Content): FormData => {
     return data;
 }
 
-export const api = axios.create({
-    headers: { 'X-CSRFToken': getCookie("csrftoken") }
-})
 
+/**
+ * Updates a CREATE/READ/UPDATE/DELETE permissions object.
+ * Updates only if the field would become true, otherwise leaves it as is.
+ * @param crud The CRUD permissions object to update.
+ * @param permissions Should be some subset of 'C', 'R', 'U', and 'D'.
+ * @returns A CRUD object.
+ */
+export const updateCRUDPermissions = (
+    crud: CRUD,
+    permissions: string,
+): CRUD => {
+    const newCrud = Object.assign({}, crud);
+
+    if (permissions.includes('C')) {
+        newCrud.create = true;
+    }
+    if (permissions.includes('R')) {
+        newCrud.read = true;
+    }
+    if (permissions.includes('U')) {
+        newCrud.update = true;
+    }
+    if (permissions.includes('D')) {
+        newCrud.delete = true;
+    }
+
+    return newCrud;
+}
+
+/**
+ * Creates a CREATE/READ/UPDATE/DELETE permissions object.
+ * @param permissions Should be some subset of 'C', 'R', 'U', and 'D'.
+ * @returns A CRUD object.
+ */
+export const createCRUDPermissions = (
+    permissions?: string,
+): CRUD => {
+    const crud: CRUD = {
+        create: false,
+        read: false,
+        update: false,
+        delete: false,
+    };
+
+    if (permissions) {
+        return updateCRUDPermissions(crud, permissions);
+    } else {
+        return crud;
+    }
+}
+
+/**
+ * Checks if permissions object includes this permission.
+ * @param permissions The permissions object.
+ * @param slice Which slice to check.
+ * @param permission The specific CRUD permission.
+ * @param mode If permission is an array, whether to check every single
+ *             permission is present, or only if some are present.
+ * @returns Whether the permissions object includes that permission.
+ */
+export const hasPermission = (
+    permissions: Permissions,
+    slice: keyof Permissions,
+    permission: keyof CRUD|string[],
+    mode: 'every'|'some'='every',
+): boolean => {
+    if (Array.isArray(permission)) {
+        if (mode === 'every') {
+            return permission.every(p => permissions[slice][p as keyof CRUD]);
+        } else {
+            return permission.some(p => permissions[slice][p as keyof CRUD]);
+        }
+    } else {
+        return permissions[slice][permission as keyof CRUD];
+    }
+}

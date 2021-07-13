@@ -1,9 +1,15 @@
 //Importing from outside the project
 import React from 'react';
-import { GridSelectionModelChangeParams } from '@material-ui/data-grid';
+import {
+  GridSelectionModelChangeParams,
+  GridColDef,
+} from '@material-ui/data-grid';
 
 //Importing from other files in the project
 import { ContentTable } from 'solarspell-react-lib';
+import { useCCSelector } from '../../hooks';
+import { hasPermission } from '../../utils';
+import ShowForPermission from '../ShowForPermission';
 import DeleteSelected from './DeleteSelected';
 import ActionPanel from './ActionPanel';
 import ContentForm from './ContentForm';
@@ -21,6 +27,7 @@ type DisplayProps = {
   metadataTypes: MetadataType[]
   content: Content[]
   actions: DisplayActionProps
+  additionalColumns: GridColDef[]
 }
 
 /**
@@ -33,7 +40,27 @@ function Display({
   metadataTypes,
   content,
   actions,
+  additionalColumns,
 }: DisplayProps): React.ReactElement {
+  const permissions = useCCSelector(state => state.global.user.permissions);
+
+  // Users who do not have any of these permissions should not see
+  // the empty Actions column.
+  const showActionPanel = hasPermission(
+    permissions,
+    'content',
+    ['read', 'update', 'delete'],
+    'some',
+  );
+  
+  // Users who cannot delete should both not see the 'Delete Selected' button
+  // nor be able to select content from the content table.
+  const showDeleteSelection = hasPermission(
+    permissions,
+    'content',
+    'delete',
+  );
+
   const [editedContent, setEditedContent] = React.useState<Content|undefined>();
   const [viewedContent, setViewedContent] = React.useState<Content|undefined>();
   const [selected, setSelected] = React.useState<Content[]>([]);
@@ -84,30 +111,36 @@ function Display({
 
   return (
     <>
-      <DeleteSelected
-        selected={selected}
-        onDelete={actions.onSelectedDelete}
-      />
-      {editedContent && <ContentForm
-        metadata={metadata}
-        metadataTypes={metadataTypes}
-        onSubmit={onEditSubmit_}
-        open={!!editedContent}
-        content={editedContent}
-        type={'edit'}
-      />}
-      {viewedContent && <Viewer
-        metadataTypes={metadataTypes}
-        content={viewedContent}
-        open={!!viewedContent}
-        onClose={onViewClose_}
-      />}
+      <ShowForPermission slice={'content'} permission={'delete'}>
+        <DeleteSelected
+          selected={selected}
+          onDelete={actions.onSelectedDelete}
+        />
+      </ShowForPermission>
+      <ShowForPermission slice={'content'} permission={'update'}>
+        {editedContent && <ContentForm
+          metadata={metadata}
+          metadataTypes={metadataTypes}
+          onSubmit={onEditSubmit_}
+          open={!!editedContent}
+          content={editedContent}
+          type={'edit'}
+        />}
+      </ShowForPermission>
+      <ShowForPermission slice={'content'} permission={'read'}>
+        {viewedContent && <Viewer
+          metadataTypes={metadataTypes}
+          content={viewedContent}
+          open={!!viewedContent}
+          onClose={onViewClose_}
+        />}
+      </ShowForPermission>
       <ContentTable
         content={content}
-        selectable
+        selectable={showDeleteSelection}
         onSelectChange={onSelectChange_}
         components={{
-          ActionPanel: ActionPanel,
+          ActionPanel: showActionPanel ? ActionPanel : undefined,
         }}
         componentProps={{
           ActionPanel: {
@@ -116,6 +149,7 @@ function Display({
             onView: onView_,
           },
         }}
+        additionalColumns={additionalColumns}
       />
     </>
   )

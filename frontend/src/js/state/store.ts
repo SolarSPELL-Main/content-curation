@@ -219,7 +219,9 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                                 copyrightApproved: val.copyright_approved,
                                 creator: val.created_by,
                                 createdDate: val.created_on,
+                                reviewed: val.reviewed,
                                 reviewer: val.reviewed_by,
+                                reviewedDate: val.reviewed_on,
                                 description: val.description,
                                 fileName: val.file_name,
                                 datePublished: val.published_year,
@@ -271,18 +273,6 @@ const addContentEpic: MyEpic = action$ =>
                 );
             }
         ),
-    )
-
-const errorCatcher = (epic: MyEpic) => (...args: Parameters<MyEpic>) =>
-    epic(...args).pipe(
-        catchError(error => {
-            console.error(error)
-            return of(show_toast({
-                message: `${error.name} - ${error.message}`,
-                key: Math.random(),
-                severity: "error"
-            }))
-        })
     )
 
 const deleteContentEpic: MyEpic = action$ =>
@@ -356,6 +346,18 @@ const updateFiltersEpic: MyEpic = action$ =>
     action$.pipe(
         filter(update_filters.match),
         mapTo(fetch_content())
+    )
+
+const errorCatcher = (epic: MyEpic) => (...args: Parameters<MyEpic>) =>
+    epic(...args).pipe(
+        catchError(error => {
+            console.error(error)
+            return of(show_toast({
+                message: `${error.name} - ${error.message}`,
+                key: Math.random(),
+                severity: "error"
+            }))
+        })
     )
 
 const epics = combineEpics(...[
