@@ -58,13 +58,14 @@ export const contentToFormData = (content: Content): FormData => {
     );
     
     data.append('copyright_notes', content.copyright ?? '');
+    data.append('copyright_approved', content.copyrightApproved.toString());
     data.append('rights_statement', content.rightsStatement ?? '');
     data.append('additional_notes', content.notes ?? '');
 
     // Same format as DLMS, default to Jan. 1st
     // TODO: published_date should no longer be required on
     // the backend. Until then, a very improbable date will be
-    // assigned as a placeholder.
+    // assigned as a placeholder (0001-01-01).
     data.append('published_date', content.datePublished ? 
         `${content.datePublished.padStart(4, '0')}-01-01`
         :
@@ -76,7 +77,6 @@ export const contentToFormData = (content: Content): FormData => {
     // data.append('created_by', content.creator ?? 'admin');
     // data.append('created_on', format(Date.now(), 'yyyy-MM-dd'));
     // data.append('reviewed_by', '');
-    // data.append('copyright_approved', 'false');
     // data.append('copyright_by', '');
     // data.append('published_year', content.datePublished ?? '');
 
