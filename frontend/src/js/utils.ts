@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Content, CRUD } from 'js/types';
+import { Content, CRUD, Permissions } from 'js/types';
 
 /*
  * Taken from Django documentation https://docs.djangoproject.com/en/3.2/ref/csrf/
@@ -134,5 +134,24 @@ export const createCRUDPermissions = (
         return updateCRUDPermissions(crud, permissions);
     } else {
         return crud;
+    }
+}
+
+/**
+ * Checks if permissions object includes this permission.
+ * @param permissions The permissions object.
+ * @param slice Which slice to check.
+ * @param permission The specific CRUD permission.
+ * @returns Whether the permissions object includes that permission.
+ */
+export const hasPermission = (
+    permissions: Permissions,
+    slice: keyof Permissions,
+    permission: keyof CRUD|string[],
+): boolean => {
+    if (Array.isArray(permission)) {
+        return permission.every(p => permissions[slice][p as keyof CRUD]);
+    } else {
+        return permissions[slice][permission as keyof CRUD];
     }
 }

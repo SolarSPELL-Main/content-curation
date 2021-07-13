@@ -6,6 +6,7 @@ import {
     KebabMenu as SolarSPELLKebabMenu,
     KebabMenuItem,
 } from 'solarspell-react-lib';
+import ShowForPermission from '../ShowForPermission';
 import { MetadataType } from 'js/types';
 
 type KebabMenuActionProps = {
@@ -49,35 +50,47 @@ function KebabMenu({
     );
 
     return (
-        <SolarSPELLKebabMenu>
-            <KebabMenuItem
-                type={'text_input'}
-                label={'Add Metadata'}
-                onAction={onAdd_}
-                textInputTitle={`Create a new Metadata of type ${metadataType.name}`}
-                textInputLabel={'Metadata Name'}
-                submitButtonText={'Create'}
-            />
-            <KebabMenuItem
-                type={'text_input'}
-                label={'Edit Metadata Type'}
-                onAction={onEditType_}
-                textInputTitle={`Edit Metadata Type ${metadataType.name}`}
-                textInputLabel={'Metadata Type Name'}
-                textInputSize={'xs'}
-            />
-            <KebabMenuItem
-                type={'text_input'}
-                label={'Delete Metadata Type'}
-                onAction={onDeleteType_}
-                textInputTitle={`Delete Metadata Type ${metadataType.name}`}
-                textInputDescription={`WARNING: Deleting a metadata type will also delete all metadata of that type and is irreversible. Enter "${metadataType.name}" to confirm deletion`}
-                textInputLabel={`Enter "${metadataType.name}" here to confirm deletion`}
-                submitButtonColor={'secondary'}
-                cancelButtonColor={'primary'}
-                textInputSize={'md'}
-            />
-        </SolarSPELLKebabMenu>
+        <ShowForPermission slice={'metadata'} permission={[
+            'create',
+            'update',
+            'delete',
+        ]}>
+            <SolarSPELLKebabMenu>
+                <ShowForPermission slice={'metadata'} permission={'create'}>
+                    <KebabMenuItem
+                        type={'text_input'}
+                        label={'Add Metadata'}
+                        onAction={onAdd_}
+                        textInputTitle={`Create a new Metadata of type ${metadataType.name}`}
+                        textInputLabel={'Metadata Name'}
+                        submitButtonText={'Create'}
+                    />
+                </ShowForPermission>
+                <ShowForPermission slice={'metadata'} permission={'update'}>
+                    <KebabMenuItem
+                        type={'text_input'}
+                        label={'Edit Metadata Type'}
+                        onAction={onEditType_}
+                        textInputTitle={`Edit Metadata Type ${metadataType.name}`}
+                        textInputLabel={'Metadata Type Name'}
+                        textInputSize={'xs'}
+                    />
+                </ShowForPermission>
+                <ShowForPermission slice={'metadata'} permission={'delete'}>
+                    <KebabMenuItem
+                        type={'text_input'}
+                        label={'Delete Metadata Type'}
+                        onAction={onDeleteType_}
+                        textInputTitle={`Delete Metadata Type ${metadataType.name}`}
+                        textInputDescription={`WARNING: Deleting a metadata type will also delete all metadata of that type and is irreversible. Enter "${metadataType.name}" to confirm deletion`}
+                        textInputLabel={`Enter "${metadataType.name}" here to confirm deletion`}
+                        submitButtonColor={'secondary'}
+                        cancelButtonColor={'primary'}
+                        textInputSize={'md'}
+                    />
+                </ShowForPermission>
+            </SolarSPELLKebabMenu>
+        </ShowForPermission>
     );
 }
 
