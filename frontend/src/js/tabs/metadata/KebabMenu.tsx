@@ -50,11 +50,15 @@ function KebabMenu({
     );
 
     return (
-        <ShowForPermission slice={'metadata'} permission={[
-            'create',
-            'update',
-            'delete',
-        ]}>
+        <ShowForPermission
+            slice={'metadata'}
+            permission={[
+                'create',
+                'update',
+                'delete',
+            ]}
+            mode={'some'}
+        >
             <SolarSPELLKebabMenu>
                 <ShowForPermission slice={'metadata'} permission={'create'}>
                     <KebabMenuItem

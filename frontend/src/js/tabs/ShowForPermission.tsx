@@ -7,6 +7,7 @@ import { Permissions, CRUD } from 'js/types';
 type ShowForPermissionProps = {
     slice: keyof Permissions
     permission: keyof CRUD|string[]
+    mode?: 'some'|'every'
 }
 
 /**
@@ -17,6 +18,7 @@ type ShowForPermissionProps = {
 function ShowForPermission({
     slice,
     permission,
+    mode='every',
     children,
 }: React.PropsWithChildren<ShowForPermissionProps>): React.ReactElement {
     const permissions = useCCSelector(state => state.global.user.permissions);
@@ -24,6 +26,7 @@ function ShowForPermission({
         permissions,
         slice,
         permission,
+        mode,
     );
 
     return (
