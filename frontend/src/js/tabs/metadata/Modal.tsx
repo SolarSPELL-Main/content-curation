@@ -4,6 +4,9 @@ import Box from '@material-ui/core/Box';
 
 //Importing from other files in the project
 import { MetadataDisplay } from 'solarspell-react-lib';
+import { useCCSelector } from '../../hooks';
+import { hasPermission } from '../../utils';
+import ShowForPermission from '../ShowForPermission';
 import KebabMenu, { KebabMenuActionProps } from './KebabMenu';
 import ActionPanel, { ActionPanelActionProps } from './ActionPanel';
 import TypeAdder, { TypeAdderActionProps } from './TypeAdder';
@@ -33,18 +36,31 @@ function Modal({
     metadataTypes,
     actions,
 }: ModalProps): React.ReactElement {
+    const permissions = useCCSelector(state => state.global.user.permissions);
+
+    // Users who do not have any of these permissions should not see the
+    // empty Actions column.
+    const showActionPanel = hasPermission(
+        permissions,
+        'metadata',
+        ['update', 'delete'],
+        'some',
+    );
+
     return (
         <Box p={2}>
-            <TypeAdder
-                {...actions.AddType}
-            />
+            <ShowForPermission slice={'metadata'} permission={'create'}>
+                <TypeAdder
+                    {...actions.AddType}
+                />
+            </ShowForPermission>
             <MetadataDisplay
                 metadata={metadata}
                 metadataTypes={metadataTypes}
                 tableProps={{
                     components: {
                         KebabMenu: KebabMenu,
-                        ActionPanel: ActionPanel,
+                        ActionPanel: showActionPanel ? ActionPanel : undefined,
                     },
                     componentProps: {
                         KebabMenu: actions.KebabMenu,

@@ -19,18 +19,13 @@ type Content = {
     copyrightApproved: boolean
     creator: string
     createdDate: string
+    reviewed: boolean
     reviewer?: string
+    reviewedDate?: string
     file?: File
     fileURL?: string
     notes?: string
 } & BaseContent<Metadata>
-
-interface User {
-    username: string
-    email: string
-    token: string
-    groups: AuthGroup[]
-}
 
 type Range<T> = {
     from?: T
@@ -53,6 +48,26 @@ type Toast = {
     key: number
     severity: "success" | "warning" | "error"
     message: string
+}
+
+type User = {
+    username: string
+    email: string
+    token: string
+    groups: AuthGroup[]
+    permissions: Permissions
+}
+
+type CRUD = {
+    create: boolean
+    read: boolean
+    update: boolean
+    delete: boolean
+}
+
+type Permissions = {
+    content: CRUD
+    metadata: CRUD
 }
 
 type AuthGroup = 

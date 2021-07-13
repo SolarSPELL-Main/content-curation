@@ -7,6 +7,7 @@ import {
   ActionPanel as SolarSPELLActionPanel,
   ActionPanelItem,
 } from 'solarspell-react-lib';
+import ShowForPermission from '../ShowForPermission';
 import { Content } from 'js/types';
 
 type ActionPanelProps = {
@@ -44,25 +45,31 @@ function ActionPanel({
 
   return (
     <SolarSPELLActionPanel>
-      <ActionPanelItem
-        type={'button'}
-        icon={Edit}
-        onAction={onEdit_}
-        tooltip={'Edit Content'}
-      />
-      <ActionPanelItem
-        type={'confirm'}
-        icon={Delete}
-        confirmationTitle={`Delete content titled "${content.title}"?`}
-        onAction={onDelete_}
-        tooltip={'Delete'}
-        confirmationSize={'xs'}
-      />
-      <ActionPanelItem
-        type={'button'}
-        icon={Visibility}
-        onAction={onView_}
-      />
+      <ShowForPermission slice={'content'} permission={'update'}>
+        <ActionPanelItem
+          type={'button'}
+          icon={Edit}
+          onAction={onEdit_}
+          tooltip={'Edit Content'}
+        />
+      </ShowForPermission>
+      <ShowForPermission slice={'content'} permission={'delete'}>
+        <ActionPanelItem
+          type={'confirm'}
+          icon={Delete}
+          confirmationTitle={`Delete content titled "${content.title}"?`}
+          onAction={onDelete_}
+          tooltip={'Delete'}
+          confirmationSize={'xs'}
+        />
+      </ShowForPermission>
+      <ShowForPermission slice={'content'} permission={'read'}>
+        <ActionPanelItem
+          type={'button'}
+          icon={Visibility}
+          onAction={onView_}
+        />
+      </ShowForPermission>
     </SolarSPELLActionPanel>
   );
 }

@@ -70,8 +70,9 @@ class Content(models.Model):
     modified_by = models.TextField(null=True)
     modified_on = models.DateField(default=datetime.date.today, null=True)
     # Sara Team -> Reviews it
+    reviewed = models.BooleanField(default=0)
     reviewed_by = models.TextField(null=True)
-    reviewed_on = models.DateTimeField(default=datetime.date.today, null=True)
+    reviewed_on = models.DateField(default=datetime.date.today, null=True)
     # CopyRight Permission for curator's content
     copyright_approved = models.BooleanField(default=1)
     copyright_by = models.TextField(null=True)

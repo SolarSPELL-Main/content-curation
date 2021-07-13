@@ -2,6 +2,7 @@ import React from 'react';
 import Box from '@material-ui/core/Box';
 import { GridColDef } from '@material-ui/data-grid';
 
+import ShowForPermission from '../ShowForPermission';
 import Add from './Add';
 import ColumnSelection from './ColumnSelection';
 import { Content, Metadata, MetadataType } from 'js/types';
@@ -29,15 +30,21 @@ function Toolbar({
 }: ToolbarProps): React.ReactElement {
     return (
         <Box mb={2} display={'flex'} justifyContent={'space-between'}>
-            <Add
-                metadata={metadata}
-                metadataTypes={metadataTypes}
-                onAdd={actions.onAdd}
-            />
-            <ColumnSelection
-                metadataTypes={metadataTypes}
-                onClose={actions.onColumnSelect}
-            />
+            <Box>
+                <ShowForPermission slice={'content'} permission={'create'}>
+                    <Add
+                        metadata={metadata}
+                        metadataTypes={metadataTypes}
+                        onAdd={actions.onAdd}
+                    />
+                </ShowForPermission>
+            </Box>
+            <Box>
+                <ColumnSelection
+                    metadataTypes={metadataTypes}
+                    onClose={actions.onColumnSelect}
+                />
+            </Box>
         </Box>
     );
 }
