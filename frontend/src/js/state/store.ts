@@ -272,18 +272,6 @@ const addContentEpic: MyEpic = action$ =>
         ),
     )
 
-const errorCatcher = (epic: MyEpic) => (...args: Parameters<MyEpic>) =>
-    epic(...args).pipe(
-        catchError(error => {
-            console.error(error)
-            return of(show_toast({
-                message: `${error.name} - ${error.message}`,
-                key: Math.random(),
-                severity: "error"
-            }))
-        })
-    )
-
 const deleteContentEpic: MyEpic = action$ =>
     action$.pipe(
         filter(delete_content.match),
@@ -349,6 +337,18 @@ const editContentEpic: MyEpic = action$ =>
                 }
             },
         ),
+    )
+
+const errorCatcher = (epic: MyEpic) => (...args: Parameters<MyEpic>) =>
+    epic(...args).pipe(
+        catchError(error => {
+            console.error(error)
+            return of(show_toast({
+                message: `${error.name} - ${error.message}`,
+                key: Math.random(),
+                severity: "error"
+            }))
+        })
     )
 
 const epics = combineEpics(...[

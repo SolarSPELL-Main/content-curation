@@ -2,7 +2,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 //Importing from other files in the project
-import type { User, Toast } from "js/types"
+import type { User, Toast, AuthGroup } from "js/types"
 
 export const globalSlice = createSlice({
     name: 'global',
@@ -13,7 +13,7 @@ export const globalSlice = createSlice({
             username: "",
             email: "",
             token: "",
-            groups: [],
+            groups: [] as AuthGroup[],
         } as User
     },
     reducers: {
