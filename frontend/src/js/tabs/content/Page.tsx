@@ -59,11 +59,11 @@ function Page(_: PageProps): React.ReactElement {
         [dispatch],
     );
 
-    const onQueryChange_ = React.useCallback(
+    const onQueryChange = React.useCallback(
         (query: Query) => {
-            console.log(query);
+            dispatch(ContentActions.update_filters(query));
         },
-        [],
+        [dispatch],
     );
 
     return (
@@ -81,7 +81,7 @@ function Page(_: PageProps): React.ReactElement {
                     onAdd: onAdd_,
                 },
                 Search: {
-                    onQueryChange: onQueryChange_,
+                    onQueryChange: onQueryChange,
                 }
             }}
         />

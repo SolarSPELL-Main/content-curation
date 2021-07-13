@@ -26,6 +26,7 @@ import {
     add_content,
     delete_content,
     edit_content,
+    update_filters
 } from './content'
 import {
     api,
@@ -199,11 +200,11 @@ const updateMetadataTypeEpic: MyEpic = action$ =>
     )
 
 /** CONTENT EPICS */
-const fetchContentEpic: MyEpic = action$ =>
+const fetchContentEpic: MyEpic = (action$, state$) =>
     action$.pipe(
         filter(fetch_content.match),
         mergeMap(_ =>
-            from(api.get(APP_URLS.CONTENT_LIST)).pipe(
+            from(api.get(APP_URLS.CONTENT_LIST(state$.value.content.filters))).pipe(
                 map(({ data }) => 
                     update_content(
                         // Maps API response to Content array
@@ -264,7 +265,7 @@ const addContentEpic: MyEpic = action$ =>
             {
                 const content = action.payload;
                 const data = contentToFormData(content);
-                const req = api.post(APP_URLS.CONTENT_LIST, data);
+                const req = api.post(APP_URLS.CONTENT_LIST(), data);
                 return from(req).pipe(
                     map(_ => fetch_content())
                 );
@@ -351,6 +352,12 @@ const editContentEpic: MyEpic = action$ =>
         ),
     )
 
+const updateFiltersEpic: MyEpic = action$ =>
+    action$.pipe(
+        filter(update_filters.match),
+        mapTo(fetch_content())
+    )
+
 const epics = combineEpics(...[
     addMetaEpic,
     fetchMetadataEpic,
@@ -367,6 +374,7 @@ const epics = combineEpics(...[
     addContentEpic,
     deleteContentEpic,
     editContentEpic,
+    updateFiltersEpic,
     logoutEpic,
     showToastEpic,
 ].map(epic => errorCatcher(epic)))

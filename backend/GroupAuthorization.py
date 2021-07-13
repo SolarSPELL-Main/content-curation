@@ -35,20 +35,20 @@ GROUPS = {
 
 # Creates Groups and permission
 def handle(self, *args, **options):
-    print("Handle _ GroupAuthorization")
+    #print("Handle _ GroupAuthorization")
     for group_name in GROUPS:
-        print("Group Name ", group_name)
+        #print("Group Name ", group_name)
         new_group, created = Group.objects.get_or_create(name=group_name)
 
         # Loop models in group
         for app_model in GROUPS[group_name]:
-            print("App Model", app_model)
+            #print("App Model", app_model)
             # Loop permissions in group/model
             for permission_name in GROUPS[group_name][app_model]:
 
                 # Generate permission name as Django would generate it
                 name = "Can {} {}".format(permission_name, app_model)
-                print("Creating {}".format(name))
+                #print("Creating {}".format(name))
 
                 try:
                     model_add_perm = Permission.objects.get(name=name)

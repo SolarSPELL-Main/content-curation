@@ -8,6 +8,7 @@ from django.utils.text import get_valid_filename
 
 '''Importing from other files in the project'''
 from backend.validators import validate_unique_filename,validate_unique_file
+from content_curation import settings
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +37,7 @@ class Metadata(models.Model):
    
 class Content(models.Model):
     def set_file_name(self, file_name):
-        path = os.path.join("contents", file_name)
+        path = "media/contents/" + file_name
         # get file size if this content was saved individually
         if(self.content_file):
             self.filesize = self.content_file.size

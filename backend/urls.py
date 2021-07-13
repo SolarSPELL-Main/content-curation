@@ -7,6 +7,7 @@ from rest_framework import routers
 '''Importing from other files in the project'''
 from .views import MetadataTypeViewSet, MetadataViewSet, \
     ContentViewSet, get_user, search
+from content_curation import settings
 
 router = routers.DefaultRouter()
 router.register(r'metadata', MetadataViewSet,basename='metadata')

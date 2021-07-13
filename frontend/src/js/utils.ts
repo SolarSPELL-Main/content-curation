@@ -86,3 +86,4 @@ export const contentToFormData = (content: Content): FormData => {
 export const api = axios.create({
     headers: { 'X-CSRFToken': getCookie("csrftoken") }
 })
+

@@ -42,8 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'django.contrib.sites',
+
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -133,8 +133,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media', 'contents')
+
 STATICFILES_DIRS=[
-    BASE_DIR + "frontend/static"
+    BASE_DIR + "frontend/static",
 ]
 
 # Needed so the frontend can properly display images
@@ -160,3 +163,9 @@ SOCIALACCOUNT_PROVIDERS = {
 
 
 LOGIN_REDIRECT_URL = '/static/index.html#/profile'
+
+REST_FRAMEWORK = {
+    "DEFAULT_FILTER_BACKENDS": (
+        "django_filters.rest_framework.DjangoFilterBackend",
+    )
+}

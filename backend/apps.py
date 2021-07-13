@@ -9,6 +9,5 @@ class GroupPermissionsConfig(AppConfig):
     name = 'backend'
 
     def ready(self):
-        print("Ready method in AppConfig")
         from .GroupAuthorization import handle
         handle(self)

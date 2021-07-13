@@ -11,6 +11,7 @@ from django.views.generic import TemplateView
 from allauth.socialaccount.models import SocialToken
 from django.contrib.auth.models import Group
 from rest_framework.permissions import DjangoModelPermissions
+from django_filters import rest_framework as filters
 
 '''Importing from other files in the project'''
 from backend.models import MetadataType, Metadata, Content
@@ -114,6 +115,8 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions]
     queryset = Content.objects.all()
     serializer_class = ContentSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = ContentFilter
 
     @api_view(['PATCH'])
     def patch(self, request, pk=None):
