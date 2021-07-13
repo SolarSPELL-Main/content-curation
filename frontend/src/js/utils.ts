@@ -75,6 +75,12 @@ export const api = axios.create({
         '0001-01-01'
     );
 
+    data.append('reviewed', content.reviewed?.toString() ?? 'false');
+    
+    if (content.reviewed && content.reviewedDate) {
+        data.append('reviewed_on', content.reviewedDate);
+    }
+
     // Unused fields
     // data.append('active', 'true');
     // data.append('created_by', content.creator ?? 'admin');

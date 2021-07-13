@@ -51,10 +51,6 @@ function ColumnSelection({
                         title: 'Created On',
                     },
                     {
-                        field: 'copyrighter',
-                        title: 'Copyrighted By',
-                    },
-                    {
                         field: 'copyrightApproved',
                         title: 'Copyright Approved',
                         column: (field, hidden) => ({
@@ -70,8 +66,31 @@ function ColumnSelection({
                         }),
                     },
                     {
+                        field: 'copyrighter',
+                        title: 'Copyrighted By',
+                    },
+                    {
+                        field: 'reviewed',
+                        title: 'Reviewed',
+                        column: (field, hidden) => ({
+                            field: field.field,
+                            headerName: field.title,
+                            flex: 1,
+                            disableColumnMenu: true,
+                            filterable: false,
+                            hide: hidden,
+                            valueFormatter: (params) => 
+                                params.getValue(params.id, field.field) ?
+                                    'Yes' : 'No'
+                        }),
+                    },
+                    {
                         field: 'reviewer',
                         title: 'Reviewed By',
+                    },
+                    {
+                        field: 'reviewedDate',
+                        title: 'Reviewed On',
                     },
                     {
                         field: 'fileURL',

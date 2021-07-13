@@ -19,7 +19,9 @@ type Content = {
     copyrightApproved: boolean
     creator: string
     createdDate: string
+    reviewed: boolean
     reviewer?: string
+    reviewedDate?: string
     file?: File
     fileURL?: string
     notes?: string
