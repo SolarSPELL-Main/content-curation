@@ -1,9 +1,10 @@
 //Importing from outside the project
 import React from 'react';
 import Box from '@material-ui/core/Box';
+import { GridColDef } from '@material-ui/data-grid';
 
 //Importing from other files in the project
-import Add from './Add';
+import Toolbar, { ToolbarActionProps } from './Toolbar';
 import SearchBar from './SearchBar';
 import Display, { DisplayActionProps } from './Display';
 import { Content, Metadata, MetadataType, Query } from 'js/types';
@@ -14,9 +15,7 @@ type ModalProps = {
     content: Content[]
     actions: {
         Display: DisplayActionProps
-        Toolbar: {
-            onAdd: (content: Content) => void
-        }
+        Toolbar: Omit<ToolbarActionProps,'onColumnSelect'>
         Search: {
             onQueryChange: (query: Query) => void
         }
@@ -29,12 +28,17 @@ function Modal({
     content,
     actions,
 }: ModalProps): React.ReactElement {
+    const [cols, setCols] = React.useState<GridColDef[]>([]);
+
     return (
         <Box p={2}>
-            <Add
+            <Toolbar
                 metadata={metadata}
                 metadataTypes={metadataTypes}
-                onAdd={actions.Toolbar.onAdd}
+                actions={{
+                    ...actions.Toolbar,
+                    onColumnSelect: setCols,
+                }}
             />
             <SearchBar
                 metadata={metadata}
@@ -46,6 +50,7 @@ function Modal({
                 metadataTypes={metadataTypes}
                 content={content}
                 actions={actions.Display}
+                additionalColumns={cols}
             />
         </Box>
     );
