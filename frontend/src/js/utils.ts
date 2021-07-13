@@ -148,6 +148,8 @@ export const createCRUDPermissions = (
  * @param permissions The permissions object.
  * @param slice Which slice to check.
  * @param permission The specific CRUD permission.
+ * @param mode If permission is an array, whether to check every single
+ *             permission is present, or only if some are present.
  * @returns Whether the permissions object includes that permission.
  */
 export const hasPermission = (
