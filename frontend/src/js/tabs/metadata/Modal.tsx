@@ -37,10 +37,14 @@ function Modal({
     actions,
 }: ModalProps): React.ReactElement {
     const permissions = useCCSelector(state => state.global.user.permissions);
+
+    // Users who do not have any of these permissions should not see the
+    // empty Actions column.
     const showActionPanel = hasPermission(
         permissions,
         'metadata',
         ['update', 'delete'],
+        'some',
     );
 
     return (

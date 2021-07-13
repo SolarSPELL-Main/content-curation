@@ -46,6 +46,11 @@ function ContentForm({
 }: ContentFormProps): React.ReactElement {
     const groups = useCCSelector(state => state.global.user.groups);
 
+    // Admin / Library Specialist should be able to modify
+    // reviewed fields
+    const showReviewed = groups.includes('Library Specialist')
+        || groups.includes('Admin');
+
     let dialogStyle: any = { title: '' };
 
     switch (type) {
@@ -276,7 +281,7 @@ function ContentForm({
         },
     ];
 
-    if (groups.includes('Library Specialist') || groups.includes('Admin')) {
+    if (showReviewed) {
         // This will NEVER be null, considering fields is defined above
         const notesField = fields.pop()!;
         const reviewedField: FormFieldDescriptor<Content> = {

@@ -154,9 +154,14 @@ export const hasPermission = (
     permissions: Permissions,
     slice: keyof Permissions,
     permission: keyof CRUD|string[],
+    mode: 'every'|'some'='every',
 ): boolean => {
     if (Array.isArray(permission)) {
-        return permission.every(p => permissions[slice][p as keyof CRUD]);
+        if (mode === 'every') {
+            return permission.every(p => permissions[slice][p as keyof CRUD]);
+        } else {
+            return permission.some(p => permissions[slice][p as keyof CRUD]);
+        }
     } else {
         return permissions[slice][permission as keyof CRUD];
     }

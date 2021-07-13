@@ -44,12 +44,17 @@ function Display({
 }: DisplayProps): React.ReactElement {
   const permissions = useCCSelector(state => state.global.user.permissions);
 
+  // Users who do not have any of these permissions should not see
+  // the empty Actions column.
   const showActionPanel = hasPermission(
     permissions,
     'content',
     ['read', 'update', 'delete'],
+    'some',
   );
-
+  
+  // Users who cannot delete should both not see the 'Delete Selected' button
+  // nor be able to select content from the content table.
   const showDeleteSelection = hasPermission(
     permissions,
     'content',
