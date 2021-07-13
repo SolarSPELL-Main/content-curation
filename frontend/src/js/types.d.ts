@@ -29,7 +29,7 @@ interface User {
     username: string
     email: string
     token: string
-    groups: string[]
+    groups: AuthGroup[]
 }
 
 type Range<T> = {
@@ -54,3 +54,9 @@ type Toast = {
     severity: "success" | "warning" | "error"
     message: string
 }
+
+type AuthGroup = 
+    'Admin' |
+    'Library Specialist' |
+    'Metadata Specialist' |
+    'Content Specialist'

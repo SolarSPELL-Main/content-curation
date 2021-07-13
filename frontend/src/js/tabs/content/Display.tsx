@@ -1,6 +1,9 @@
 //Importing from outside the project
 import React from 'react';
-import { GridSelectionModelChangeParams } from '@material-ui/data-grid';
+import {
+  GridSelectionModelChangeParams,
+  GridColDef,
+} from '@material-ui/data-grid';
 
 //Importing from other files in the project
 import { ContentTable } from 'solarspell-react-lib';
@@ -21,6 +24,7 @@ type DisplayProps = {
   metadataTypes: MetadataType[]
   content: Content[]
   actions: DisplayActionProps
+  additionalColumns: GridColDef[]
 }
 
 /**
@@ -33,6 +37,7 @@ function Display({
   metadataTypes,
   content,
   actions,
+  additionalColumns,
 }: DisplayProps): React.ReactElement {
   const [editedContent, setEditedContent] = React.useState<Content|undefined>();
   const [viewedContent, setViewedContent] = React.useState<Content|undefined>();
@@ -116,6 +121,7 @@ function Display({
             onView: onView_,
           },
         }}
+        additionalColumns={additionalColumns}
       />
     </>
   )
