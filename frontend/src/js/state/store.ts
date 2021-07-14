@@ -387,9 +387,12 @@ const store = configureStore({
         ...getDefaultMiddleware({
             thunk: false,
             serializableCheck: {
-                // File required for upload, hence serialization check
+                // May include Files, hence serialization check
                 // should be ignored for these actions
-                ignoredActions: [add_content.type, edit_content.type],
+                ignoredActions: [
+                    add_content.type,
+                    edit_content.type,
+                ],
             },
         }),
         epicMiddleware,
