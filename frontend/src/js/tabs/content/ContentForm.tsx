@@ -296,7 +296,19 @@ function ContentForm({
                     />}
                 </>
             ),
-            propFactory: (state, _r, setter, genericSetter) => {
+            propFactory: (state_, _r, setter, genericSetter_) => {
+                // Because of how KeyboardDatePicker works,
+                // we need another temp variable in the state
+                // to store the raw string value (not the formatted value).
+                // This enables the user to edit however they like.
+                const state = state_ as Partial<Content> & {
+                    rawReviewedDate?: string
+                };
+                const genericSetter = genericSetter_ as (
+                    field: string,
+                    val: any,
+                ) => void;
+
                 return {
                     checkbox: {
                         checked: state['reviewed'] ?? false,
@@ -312,14 +324,26 @@ function ContentForm({
                         variant: 'inline',
                         format: 'MM/dd/yyyy',
                         label: 'Reviewed On',
-                        onChange: (date: Date) => genericSetter(
-                            'reviewedDate',
-                            format(date, 'yyyy-MM-dd',
-                        )),
-                        value: state['reviewedDate'] ? 
+                        onChange: (date: Date, val?: string) => {
+                            genericSetter('reviewedDate',
+                                (oldState: Date) => {
+                                    return val ?
+                                        date && !isNaN(date.getTime()) ?
+                                            format(date, 'yyyy-MM-dd')
+                                            :
+                                            oldState
+                                        :
+                                        null;
+                                }
+                            );
+
+                            genericSetter('rawReviewedDate', val);
+                        },
+                        value: state['reviewedDate'] ?
                             parseISO(state['reviewedDate'])
                             :
-                            Date.now(),
+                            null,
+                        inputValue: state['rawReviewedDate'] ?? '',
                     },
                 };
             },
