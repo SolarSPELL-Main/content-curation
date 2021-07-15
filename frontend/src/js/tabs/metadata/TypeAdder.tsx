@@ -38,7 +38,13 @@ function TypeAdder({
                 label={'New Metadata Type name'}
             />
             <Box mb={1}>
-                <Button onClick={open} variant={'contained'} color={'primary'}>Add Type</Button>
+                <Button
+                    onClick={open}
+                    variant={'contained'}
+                    color={'primary'}
+                >
+                    Add Type
+                </Button>
             </Box>
         </>
     );

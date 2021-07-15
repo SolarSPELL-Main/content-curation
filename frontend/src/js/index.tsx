@@ -7,11 +7,13 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { SnackbarProvider } from 'notistack'
+import { MuiThemeProvider } from "@material-ui/core/styles"
 
 //Importing from other files in the project
 import store from './state/store'
 import Main from './main'
 import './styles.css';
+import theme from "./theme"
 
 /*
 * Load main screen
@@ -22,7 +24,9 @@ ReactDOM.render(
             <HashRouter>
                 <CssBaseline />
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <Main />
+                    <MuiThemeProvider theme={theme}>
+                        <Main />
+                    </MuiThemeProvider>
                 </MuiPickersUtilsProvider>
             </HashRouter>
         </SnackbarProvider>
