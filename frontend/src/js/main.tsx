@@ -49,7 +49,7 @@ function Main(): React.ReactElement {
             oldToasts.forEach(toast => closeSnackbar(toast.key))
         }
 
-    }, [dispatch, toasts, prevToasts, dispatch])
+    }, [dispatch, toasts, prevToasts])
 
     useEffect(() => {
         dispatch(fetch_user())
