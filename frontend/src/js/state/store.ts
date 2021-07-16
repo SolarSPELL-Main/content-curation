@@ -3,7 +3,7 @@ import {
     configureStore, getDefaultMiddleware, AnyAction, combineReducers
 } from '@reduxjs/toolkit'
 import { combineEpics, createEpicMiddleware, Epic } from "redux-observable"
-import { from, of } from 'rxjs'
+import { from, of, concat } from 'rxjs'
 import {
     filter, map, mergeMap, mapTo, delay, catchError 
 } from 'rxjs/operators'
@@ -13,7 +13,11 @@ import globalReducer from './global'
 import metadataReducer from './metadata'
 import contentReducer from './content'
 import {
-    fetch_user, update_user, show_toast, logout, close_toast
+    fetch_user,
+    update_user,
+    show_toast,
+    close_toast,
+    logout,
 } from './global'
 import {
     fetch_metadata, update_metadata, add_metadata, delete_metadata, 
@@ -52,7 +56,7 @@ const fetchUserEpic: MyEpic = action$ =>
         filter(fetch_user.match),
         mergeMap(_ =>
             from(api.get(APP_URLS.USER_INFO)).pipe(
-                map(({ data }) => update_user(data.data))
+                map(({ data }) => update_user(data.data)),
             ),
         ),
     )
@@ -71,6 +75,7 @@ const logoutEpic: MyEpic = action$ =>
 const showToastEpic: MyEpic = action$ =>
     action$.pipe(
         filter(show_toast.match),
+        filter(action => action.payload.severity !== 'error'),
         delay(6000),
         map(action => close_toast(action.payload.key)),
     )
@@ -352,13 +357,13 @@ const updateFiltersEpic: MyEpic = action$ =>
 
 const errorCatcher = (epic: MyEpic) => (...args: Parameters<MyEpic>) =>
     epic(...args).pipe(
-        catchError(error => {
+        catchError((error, source) => {
             console.error(error)
-            return of(show_toast({
+            return concat(of(show_toast({
                 message: `${error.name} - ${error.message}`,
                 key: Math.random(),
                 severity: "error"
-            }))
+            })), source)
         })
     )
 
