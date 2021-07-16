@@ -7,6 +7,7 @@ import Chip from "@material-ui/core/Chip"
 
 import { useCCSelector, useCCDispatch } from '../../hooks';
 import { logout } from "../../state/global"
+import { AuthGroup } from '../../enums';
 
 export default () => {
     const dispatch = useCCDispatch()
@@ -32,7 +33,7 @@ export default () => {
                 <Button onClick={_ => dispatch(logout())}>
                     LOGOUT
                 </Button>
-                {user.groups.includes("Admin") ?
+                {user.groups.includes(AuthGroup.ADMIN) ?
                     <Button href="/admin/">
                         Admin Site
                     </Button> : <></>

@@ -1,10 +1,11 @@
-
 //Importing from other files in the project
 import type {
     BaseMetadata,
     BaseMetadataType,
     BaseContent
 } from "solarspell-react-lib"
+
+import type { AuthGroup } from './enums';
 
 type MetadataType = {
 
@@ -70,9 +71,3 @@ type Permissions = {
     content: CRUD
     metadata: CRUD
 }
-
-type AuthGroup = 
-    'Admin' |
-    'Library Specialist' |
-    'Metadata Specialist' |
-    'Content Specialist'

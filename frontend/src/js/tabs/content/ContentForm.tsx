@@ -14,6 +14,7 @@ import {
     FormFieldDescriptor,
 } from 'solarspell-react-lib';
 import { useCCSelector } from '../../hooks';
+import { AuthGroup } from '../../enums';
 import { Metadata, MetadataType, Content } from 'js/types';
 
 type TypeProps = {
@@ -45,11 +46,8 @@ function ContentForm({
     type,
 }: ContentFormProps): React.ReactElement {
     const groups = useCCSelector(state => state.global.user.groups);
-
-    // Admin / Library Specialist should be able to modify
-    // reviewed fields
-    const showReviewed = groups.includes('Library Specialist')
-        || groups.includes('Admin');
+    const canReview = groups.includes(AuthGroup.LIB_SPECIALIST)
+        || groups.includes(AuthGroup.ADMIN);
 
     let dialogStyle: any = { title: '' };
 
@@ -263,30 +261,9 @@ function ContentForm({
             initialValue: {},
         },
         {
-            component: TextField,
-            propFactory: (state, _r, setter) => {
-                return {
-                    fullWidth: true,
-                    label: 'Additional Notes',
-                    onChange: (
-                        e: React.SyntheticEvent<HTMLInputElement>
-                    ) => {
-                        setter(e.currentTarget.value);
-                    },
-                    value: state['notes'] ?? '',
-                };
-            },
-            field: 'notes',
-            initialValue: '',
-        },
-    ];
-
-    if (showReviewed) {
-        // This will NEVER be null, considering fields is defined above
-        const notesField = fields.pop()!;
-        const reviewedField: FormFieldDescriptor<Content> = {
             component: (props) => (
-                <>
+                // Only show up for eligible groups
+                canReview ? <>
                     <Typography>Reviewed</Typography>
                     <Checkbox
                         {...props.checkbox}
@@ -294,7 +271,7 @@ function ContentForm({
                     {props.checkbox.checked && <KeyboardDatePicker
                         {...props.datePicker}
                     />}
-                </>
+                </> : null
             ),
             propFactory: (state_, _r, setter, genericSetter_) => {
                 // Because of how KeyboardDatePicker works,
@@ -349,11 +326,25 @@ function ContentForm({
             },
             field: 'reviewed',
             initialValue: false,
-        };
-
-        // Push them out-of-order for aesthetic purposes
-        fields.push(reviewedField, notesField);
-    }
+        },
+        {
+            component: TextField,
+            propFactory: (state, _r, setter) => {
+                return {
+                    fullWidth: true,
+                    label: 'Additional Notes',
+                    onChange: (
+                        e: React.SyntheticEvent<HTMLInputElement>
+                    ) => {
+                        setter(e.currentTarget.value);
+                    },
+                    value: state['notes'] ?? '',
+                };
+            },
+            field: 'notes',
+            initialValue: '',
+        },
+    ];
 
     return (
         <ContentModal<Content>

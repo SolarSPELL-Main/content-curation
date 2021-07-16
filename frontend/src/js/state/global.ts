@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 //Importing from other files in the project
 import { createCRUDPermissions, updateCRUDPermissions } from '../utils';
+import { AuthGroup } from '../enums';
 import type { User, Toast } from "js/types"
 
 export const globalSlice = createSlice({
@@ -35,7 +36,7 @@ export const globalSlice = createSlice({
             };
             
             // Assign permissions for all 4 groups
-            if (groups.includes('Admin')) {
+            if (groups.includes(AuthGroup.ADMIN)) {
                 permissions.content = updateCRUDPermissions(
                     permissions.content,
                     'CRUD',
@@ -46,7 +47,7 @@ export const globalSlice = createSlice({
                 );
             }
 
-            if (groups.includes('Library Specialist')) {
+            if (groups.includes(AuthGroup.LIB_SPECIALIST)) {
                 permissions.content = updateCRUDPermissions(
                     permissions.content,
                     'CRUD',
@@ -56,22 +57,13 @@ export const globalSlice = createSlice({
                     'CRUD',
                 );
             }
-
-            if (groups.includes('Content Specialist')) {
+            
+            // TODO: Remove these two groups, combine into 'Student'
+            if (groups.includes(AuthGroup.STUDENT1)
+                || groups.includes(AuthGroup.STUDENT2)) {
                 permissions.content = updateCRUDPermissions(
                     permissions.content,
                     'CRUD',
-                );
-                permissions.metadata = updateCRUDPermissions(
-                    permissions.metadata,
-                    'R',
-                );
-            }
-
-            if (groups.includes('Metadata Specialist')) {
-                permissions.content = updateCRUDPermissions(
-                    permissions.content,
-                    'RU',
                 );
                 permissions.metadata = updateCRUDPermissions(
                     permissions.metadata,
