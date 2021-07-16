@@ -208,6 +208,8 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                 map(({ data }) => 
                     update_content(
                         // Maps API response to Content array
+                        // TODO: Add stage/originalSource/copyrightSite properties
+                        // from backend into Content constructor
                         data.data.map(
                             (val: any) => <Content>({
                                 id: Number(val.id),

@@ -81,6 +81,10 @@ export const api = axios.create({
         data.append('reviewed_on', content.reviewedDate);
     }
 
+    // TODO: Add 'stage' property to request bodies
+    // Should be one of Stage enum values
+    // Also add 'copyrightSite' + 'originalSource' properties
+
     // Unused fields
     // data.append('active', 'true');
     // data.append('created_by', content.creator ?? 'admin');

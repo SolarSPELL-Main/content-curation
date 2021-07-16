@@ -4,6 +4,8 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import { format, parseISO } from 'date-fns';
 
@@ -14,7 +16,7 @@ import {
     FormFieldDescriptor,
 } from 'solarspell-react-lib';
 import { useCCSelector } from '../../hooks';
-import { AuthGroup } from '../../enums';
+import { AuthGroup, Stage } from '../../enums';
 import { Metadata, MetadataType, Content } from 'js/types';
 
 type TypeProps = {
@@ -169,6 +171,23 @@ function ContentForm({
             propFactory: (state, _r, setter) => {
                 return {
                     fullWidth: true,
+                    label: 'Original Source',
+                    onChange: (
+                        e: React.SyntheticEvent<HTMLInputElement>
+                    ) => {
+                        setter(e.currentTarget.value);
+                    },
+                    value: state['originalSource'] ?? '',
+                };
+            },
+            field: 'originalSource',
+            initialValue: '',
+        },
+        {
+            component: TextField,
+            propFactory: (state, _r, setter) => {
+                return {
+                    fullWidth: true,
                     label: 'Year of Publication',
                     onChange: (
                         e: React.SyntheticEvent<HTMLInputElement>
@@ -180,6 +199,23 @@ function ContentForm({
                 };
             },
             field: 'datePublished',
+            initialValue: '',
+        },
+        {
+            component: TextField,
+            propFactory: (state, _r, setter) => {
+                return {
+                    fullWidth: true,
+                    label: 'Copyright Site',
+                    onChange: (
+                        e: React.SyntheticEvent<HTMLInputElement>
+                    ) => {
+                        setter(e.currentTarget.value);
+                    },
+                    value: state['copyrightSite'] ?? '',
+                };
+            },
+            field: 'copyrightSite',
             initialValue: '',
         },
         {
@@ -259,6 +295,33 @@ function ContentForm({
             },
             field: 'metadata',
             initialValue: {},
+        },
+        {
+            component: (props) => (
+                canReview ? <>
+                    <Typography>Stage</Typography>
+                    <Select
+                        label={'Stage'}
+                        {...props}
+                    >
+                        {Object.values(Stage).map(v => (
+                            <MenuItem key={v} value={v}>
+                                {v}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </> : null
+            ),
+            propFactory: (state, _r, setter) => {
+                return {
+                    value: state['stage'] ?? Stage.ACTIVE,
+                    onChange: (
+                        e: React.ChangeEvent<HTMLInputElement>
+                    ) => setter(e.target.value),
+                };
+            },
+            field: 'stage',
+            initialValue: Stage.ACTIVE,
         },
         {
             component: (props) => (

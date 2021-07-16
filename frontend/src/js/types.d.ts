@@ -5,7 +5,7 @@ import type {
     BaseContent
 } from "solarspell-react-lib"
 
-import type { AuthGroup } from './enums';
+import type { AuthGroup, Stage } from './enums';
 
 type MetadataType = {
 
@@ -18,6 +18,7 @@ type Metadata = {
 type Content = {
     active: boolean
     copyrighter?: string
+    copyrightSite?: string
     copyrightApproved: boolean
     creator: string
     createdDate: string
@@ -26,7 +27,9 @@ type Content = {
     reviewedDate?: string
     file?: File
     fileURL?: string
+    originalSource?: string
     notes?: string
+    stage: Stage
 } & BaseContent<Metadata>
 
 type Range<T> = {
