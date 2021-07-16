@@ -17,7 +17,7 @@ function Main(): React.ReactElement {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
     useEffect(() => {
-        const new_toasts = prevToasts === undefined ? 
+        const new_toasts = prevToasts == null ? 
             [] :
             toasts.filter(toast =>
                 prevToasts.every(lastToast => lastToast.key !== toast.key)
@@ -32,7 +32,7 @@ function Main(): React.ReactElement {
             }
         ))
 
-        if (prevToasts !== undefined) {
+        if (prevToasts != null) {
             const old_toasts = prevToasts.filter(toast =>
                 toasts.every(lastToast => lastToast.key !== toast.key)
             )
