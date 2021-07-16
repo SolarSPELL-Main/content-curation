@@ -79,12 +79,25 @@ export const globalSlice = createSlice({
         },
         close_toast: (state, action: PayloadAction<number>) => {
             state.toasts = state.toasts.filter(n => n.key != action.payload)
-        }
+        },
+
+        start_loader: () => {
+            console.log('Started loading!');
+        },
+        stop_loader: () => {
+            console.log('Finished loading!');
+        },
     },
 })
 
 export const {
-    update_current_tab, fetch_user, update_user, show_toast, close_toast,
-    logout
+    update_current_tab,
+    fetch_user,
+    update_user,
+    show_toast,
+    close_toast,
+    logout,
+    start_loader,
+    stop_loader,
 } = globalSlice.actions
 export default globalSlice.reducer
