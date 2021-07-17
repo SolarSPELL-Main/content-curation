@@ -19,7 +19,7 @@ from backend.serializers import MetadataTypeSerializer, MetadataSerializer, \
     ContentSerializer
 from backend.standardize_format import build_response
 from .filters import ContentFilter
-
+import csv
 
 class StandardDataView:
     # permission_classes = (IsAdminUser,)
@@ -78,43 +78,25 @@ class MetadataTypeViewSet(StandardDataView, viewsets.ModelViewSet):
         return build_response(MetadataSerializer(
             Metadata.objects.filter(type_id=pk), many=True
         ).data)
-    
-    # Download MetadataType as CSV file
-    @action(methods=['get'], detail=False)
-    def downloadAsCSV(self, request):
-        output = io.BytesIO()
 
-        workbook = xlsxwriter.Workbook(output, {'remove_timezone': True})
-        worksheet = workbook.add_worksheet()
+        # Download MetadataType as CSV file
+        @action(methods=['get'], detail=True)
+        def downloadAsCSV(self, request, pk=None):
+            response = HttpResponse(content_type='text/csv')
+            filename = 'content-curation_metadatatype-{}.csv'.format(
+                datetime.datetime.now()
+                    .strftime("%m-%d-%Y"))
+            response['Content-Disposition'] = 'attachment; filename={}'. \
+                format(filename)
+            metadattype = self.get_queryset().order_by("name")
 
-        metadatatype_fields = ["name"]
-
-        for col_num, field_name in enumerate(metadatatype_fields):
-            worksheet.write(0, col_num, field_name)
-
-        for row_num, metadatatype in enumerate(self.get_queryset().order_by
-                                                   ("name")):
-            for col_num, field_name in enumerate(metadatatype_fields):
-                attr = getattr(metadatatype, field_name, "")
-                to_write = str(attr) if not isinstance(attr, datetime.date) \
-                    else attr. \
-                    strftime("%m/%d/%Y, %H:%M:%S")
-                worksheet.write(row_num + 1, col_num, to_write)
-
-        workbook.close()
-        output.seek(0)
-
-        filename = 'content-curation_metadatatype-{}.xlsx'.format(
-            datetime.datetime.now()
-                .strftime("%m-%d-%Y"))
-        response = HttpResponse(
-            output,
-            content_type='application/vnd.openxmlformats-officedocument'
-                         '.spreadsheetml.sheet',
-        )
-        response['Content-Disposition'] = 'attachment; filename={}'.format(
-            filename)
-        return response
+            writer = csv.DictWriter(response, ['name', 'metadata'])
+            writer.writeheader()
+            for mdt in metadattype:
+                metadata = Metadata.objects.filter(type=mdt, type_id=pk)
+                for mta in metadata:
+                    writer.writerow({'name': mdt.name, 'metadata': mta.name})
+            return response
 
 
 @api_view(('GET',))
