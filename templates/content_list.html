@@ -10,14 +10,22 @@
           {{ filter.form.title.label_tag }}
           {% render_field filter.form.title class="form-control" %}
         </div>
-        <div class="form-group col-sm-4 col-md-3">
-          {{ filter.form.created_by.label_tag }}
-          {% render_field filter.form.created_by class="form-control" %}
-        </div>
+
         <div class="form-group col-sm-4 col-md-3">
           {{ filter.form.filename.label_tag }}
           {% render_field filter.form.filename class="form-control" %}
         </div>
+
+        <div class="form-group col-sm-4 col-md-3">
+          {{ filter.form.description.label_tag }}
+          {% render_field filter.form.description class="form-control" %}
+        </div>
+
+        <div class="form-group col-sm-4 col-md-3">
+          {{ filter.form.filesize.label_tag }}
+          {% render_field filter.form.filesize class="form-control" %}
+        </div>
+
         <div class="form-group col-sm-8 col-md-6">
           {{ filter.form.metadata.label_tag }}
           <div>
@@ -28,6 +36,63 @@
             {% endfor %}
           </div>
         </div>
+
+
+        <div class="form-group col-sm-4 col-md-3">
+          {{ filter.form.created_by.label_tag }}
+          {% render_field filter.form.created_by class="form-control" %}
+        </div>
+        <div class="form-group col-sm-4 col-md-3">
+          {{ filter.form.created_on.label_tag }}
+          {% render_field filter.form.created_on class="form-control" %}
+        </div>
+
+        <div class="form-group col-sm-4 col-md-3">
+          {{ filter.form.modified_by.label_tag }}
+          {% render_field filter.form.modified_by class="form-control" %}
+        </div>
+        <div class="form-group col-sm-4 col-md-3">
+          {{ filter.form.modified_on.label_tag }}
+          {% render_field filter.form.modified_on class="form-control" %}
+        </div>
+
+
+        <div class="form-group col-sm-4 col-md-3">
+          {{ filter.form.reviewed_by.label_tag }}
+          {% render_field filter.form.reviewed_by class="form-control" %}
+        </div>
+        <div class="form-group col-sm-4 col-md-3">
+          {{ filter.form.reviewed_on.label_tag }}
+          {% render_field filter.form.reviewed_on class="form-control" %}
+        </div>
+
+
+        <div class="form-group col-sm-4 col-md-3">
+          {{ filter.form.published_date.label_tag }}
+          {% render_field filter.form.published_date class="form-control" %}
+        </div>
+
+        <div class="form-group col-sm-4 col-md-3">
+          {{ filter.form.active.label_tag }}
+          {% render_field filter.form.active class="form-control" %}
+        </div>
+
+        <div class="form-group col-sm-4 col-md-3">
+          {{ filter.form.copyright_approved.label_tag }}
+          {% render_field filter.form.copyright_approved class="form-control" %}
+        </div>
+
+        <div class="form-group col-sm-8 col-md-6">
+          {{ filter.form.status.label_tag }}
+          <div>
+            {% for choice in filter.form.status %}
+              <label class="checkbox-inline">
+                {{ choice.tag }} {{ choice.choice_label }}
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+
       </div>
       <button type="submit" class="btn btn-primary">
         <span class="glyphicon glyphicon-search"></span> Search
@@ -39,17 +104,32 @@
     <thead>
       <tr>
         <th>Title</th>
-        <th>Created By </th>
         <th>File name</th>
+        <th>Description</th>
+        <th>File size</th>
         <th>Metadata</th>
+        <th>Created By </th>
+        <th>Created On </th>
+        <th>Modified By</th>
+        <th>Modified On</th>
+        <th>Reviewed By</th>
+        <th>Reviewed On</th>
+        <th>Published Date</th>
+        <th>Active</th>
+        <th>Copyright Approved</th>
+
+        <th>Status</th>
       </tr>
     </thead>
     <tbody>
       {% for content in filter.qs %}
         <tr>
           <td>{{ content.title }}</td>
-          <td>{{ content.created_by }}</td>
+
           <td>{{ content.filename }}</td>
+          <td>{{ content.description }}</td>
+          <td>{{ content.filesize }}</td>
+
           <td>
             {% for group in content.metadata.all %}
               {{ group }}
@@ -57,6 +137,18 @@
               <em class="text-muted">No group</em>
             {% endfor %}
           </td>
+          <td>{{ content.created_by }}</td>
+          <td>{{ content.created_on }}</td>
+          <td>{{ content.modified_by }}</td>
+          <td>{{ content.modified_on }}</td>
+          <td>{{ content.reviewed_by }}</td>
+          <td>{{ content.reviewed_on }}</td>
+
+          <td>{{ content.published_date }}</td>
+          <td>{{ content.active }}</td>
+          <td>{{ content.copyright_approved }}</td>
+          <td>{{ content.status }}</td>
+
         </tr>
       {% empty %}
         <tr>
