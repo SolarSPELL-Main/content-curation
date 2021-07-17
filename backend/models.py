@@ -4,6 +4,7 @@ import datetime
 from django.db import models
 from django.dispatch import receiver
 import logging
+from hashlib import sha256
 from django.utils.text import get_valid_filename
 
 '''Importing from other files in the project'''
@@ -40,6 +41,7 @@ class Content(models.Model):
         path = "media/contents/" + file_name
         # get file size if this content was saved individually
         if(self.content_file):
+            self.hash = sha256(self.content_file.read()).hexdigest()
             self.filesize = self.content_file.size
             self.file_name = get_valid_filename(file_name)
         return path
@@ -55,6 +57,7 @@ class Content(models.Model):
     file_name = models.CharField(max_length=500, null=True)
     title = models.CharField(max_length=300)
     description = models.TextField(null=True)
+    hash = models.CharField(max_length=128, null=True)
     #modified_on = models.DateTimeField(default=datetime.now)
     metadata = models.ManyToManyField(Metadata, blank=True)
     copyright_notes = models.TextField(null=True)

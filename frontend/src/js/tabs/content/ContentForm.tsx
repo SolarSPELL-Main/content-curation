@@ -15,6 +15,8 @@ import {
 } from 'solarspell-react-lib';
 import { useCCSelector } from '../../hooks';
 import { Metadata, MetadataType, Content } from 'js/types';
+import APP_URLS from "../../urls"
+import { api } from "../../utils"
 
 type TypeProps = {
     type: 'add'
@@ -137,7 +139,7 @@ function ContentForm({
                     </Typography>
                 </>
             ),
-            propFactory: (state, reasons, setter, genericSetter) => {
+            propFactory: (state, reasons, setter, genericSetter, setReason) => {
                 return {
                     onChange: (
                         e: React.SyntheticEvent<HTMLInputElement>
@@ -145,24 +147,39 @@ function ContentForm({
                         const target = e.target as HTMLInputElement;
                         const file = target.files?.[0];
                         if (file) {
+                            (async () => {
+                                setReason("file", "Checking if duplicate...")
+
+                                const arrayBuffer = await file.arrayBuffer()
+                                const result = await crypto.subtle
+                                    .digest("SHA-256", arrayBuffer)
+                                const sha256 = Array.from(new Uint8Array(result))
+                                    .map(c => c.toString(16).padStart(2, "0")).join("")
+                                api.get(APP_URLS.CHECK_DUPLICATE(sha256))
+                                    .then(({ data: data }) => {
+                                        setReason("file", data.data ?
+                                            "File is already in the system." :
+                                            ""
+                                        )
+                                    })
+                            })()
                             setter(file);
                             genericSetter('fileName', file.name);
                         }
                     },
                     text: state['fileName'] ?
-                        `Existing file: ${state['fileName']}`
-                        :
+                        `Existing file: ${state['fileName']}` :
                         'No file chosen',
                     error: reasons['file'],
                 };
             },
             field: 'file',
             initialValue: undefined,
-            validator: (state) => {
+            validator: async (state) => {
                 if (!state['file'] && !state['fileURL']) {
                     return 'A file must be uploaded';
                 } else {
-                    return null;
+                    return null
                 }
             },
         },

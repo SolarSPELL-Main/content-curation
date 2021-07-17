@@ -27,6 +27,7 @@ const APP_URLS = {
             "?" + query_params.join(",") : "")
     },
     CONTENT: (id: number) => `/api/content/${id}/`,
+    CHECK_DUPLICATE: (hash: string) => `/api/check_duplicate?hash=${hash}`,
     TOAST_MESSAGE: ``,
     USER_INFO: `/api/get_user/`,
 }

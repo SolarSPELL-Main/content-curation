@@ -1,7 +1,9 @@
 import { createMuiTheme } from "@material-ui/core/styles/"
 
-const ocean_blue = "#00A3E0"
+//SolarSPELL brand approved colors
+//const ocean_blue = "#00A3E0"
 const bright_blue = "#0676D8"
+const maroon = "#8C1D40"
 
 export default createMuiTheme({
     typography: {
@@ -28,7 +30,7 @@ export default createMuiTheme({
             main: bright_blue
         },
         secondary: {
-            main: ocean_blue
+            main: maroon
         }
     }
 })

@@ -182,3 +182,15 @@ def search(request):
     content_filter = ContentFilter(request.GET, queryset=content_list)
     return render(request, 'content_list.html',
                   {'filter': content_filter})
+
+@api_view(('GET',))
+@renderer_classes((JSONRenderer,))
+def check_duplicate(request):
+    hash = request.GET.get("hash", None)
+    if hash is not None:
+        return build_response(Content.objects.filter(hash=hash).exists())
+    else:
+        return build_response(
+            status=status.HTTP_400_BAD_REQUEST,
+            error="Must Specify Hash"
+        )

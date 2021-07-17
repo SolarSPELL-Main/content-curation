@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'backend',
     'django_filters',
     'widget_tweaks',
+    'sslserver'
 ]
 
 MIDDLEWARE = [

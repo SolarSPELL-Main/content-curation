@@ -6,7 +6,7 @@ from rest_framework import routers
 
 '''Importing from other files in the project'''
 from .views import MetadataTypeViewSet, MetadataViewSet, \
-    ContentViewSet, get_user, search
+    ContentViewSet, get_user, search, check_duplicate
 from content_curation import settings
 
 router = routers.DefaultRouter()
@@ -18,5 +18,6 @@ router.register(r'content', ContentViewSet, basename='content')
 urlpatterns = [
     path(r'get_user/', get_user),
     path(r'search',search),
+    path("check_duplicate/", check_duplicate),
     path('', include(router.urls)),
 ]

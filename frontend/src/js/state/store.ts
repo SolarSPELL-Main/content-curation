@@ -379,7 +379,7 @@ const epics = combineEpics(...[
     updateFiltersEpic,
     logoutEpic,
     showToastEpic,
-].map(epic => errorCatcher(epic)))
+].map(errorCatcher))
 
 const store = configureStore({
     reducer,
