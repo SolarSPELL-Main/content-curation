@@ -6,13 +6,19 @@ import ProfileImpact from "../../../assets/profileimpact.jpg"
 import Chip from "@material-ui/core/Chip"
 
 import { useCCSelector, useCCDispatch } from '../../hooks';
-import { logout } from "../../state/global"
+import { logout, update_current_tab } from "../../state/global"
 import { AuthGroup } from '../../enums';
 
 export default () => {
     const dispatch = useCCDispatch()
     const user = useCCSelector(state => state.global.user)
     
+    React.useEffect(
+        () => {
+            dispatch(update_current_tab('profile'));
+        },
+        [dispatch],
+    );
 
     return <Grid container spacing={2}>
         <Grid item xs={6} style={{padding: "2em"}}>
