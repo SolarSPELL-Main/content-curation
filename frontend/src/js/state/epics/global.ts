@@ -1,4 +1,4 @@
-import { from } from 'rxjs';
+import { from, of, concat } from 'rxjs';
 import { filter, map, mergeMap, mapTo, delay } from 'rxjs/operators';
 
 import {
@@ -7,6 +7,8 @@ import {
     show_toast,
     close_toast,
     logout,
+    start_loader,
+    stop_loader,
 } from '../global';
 
 import APP_URLS from '../../urls';
@@ -18,8 +20,12 @@ const fetchUserEpic: MyEpic = action$ =>
     action$.pipe(
         filter(fetch_user.match),
         mergeMap(_ =>
-            from(api.get(APP_URLS.USER_INFO)).pipe(
-                map(({ data }) => update_user(data.data)),
+            concat(
+                of(start_loader()),
+                from(api.get(APP_URLS.USER_INFO)).pipe(
+                    map(({ data }) => update_user(data.data)),
+                ),
+                of(stop_loader()),
             ),
         ),
     )
