@@ -145,6 +145,9 @@ function SearchBar({
                                 })
                             ),
                         },
+                        width: 6,
+                        spacing: 2,
+                        mb: 0,
                     }),
                   },
             ]}

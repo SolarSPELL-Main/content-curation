@@ -117,6 +117,7 @@ function ContentForm({
             },
             field: 'description',
             initialValue: '',
+            mb: '20px',
         },
         {
             component: (props) => (
@@ -182,6 +183,7 @@ function ContentForm({
                     return null
                 }
             },
+            mb: 0,
         },
         {
             component: TextField,
@@ -252,12 +254,12 @@ function ContentForm({
             field: 'copyright',
             initialValue: '',
         },
-        {
+        (canReview ? {
             component: (props) => (
-                canReview ? <>
+                <>
                     <Typography>Copyright Approved</Typography>
                     <Checkbox {...props} />
-                </> : null
+                </>
             ),
             propFactory: (state, _r, setter) => {
                 return {
@@ -272,7 +274,11 @@ function ContentForm({
             },
             field: 'copyrightApproved',
             initialValue: false,
-        },
+            mb: 0,
+        } : {
+            field: 'copyrightApproved',
+            initialValue: false,
+        }),
         {
             component: TextField,
             propFactory: (state, _r, setter) => {
@@ -312,10 +318,11 @@ function ContentForm({
             },
             field: 'metadata',
             initialValue: {},
+            mb: 0,
         },
-        {
+        (canReview ? {
             component: (props) => (
-                canReview ? <>
+                <>
                     <Typography>Stage</Typography>
                     <Select
                         label={'Stage'}
@@ -327,7 +334,7 @@ function ContentForm({
                             </MenuItem>
                         ))}
                     </Select>
-                </> : null
+                </>
             ),
             propFactory: (state, _r, setter) => {
                 return {
@@ -339,11 +346,14 @@ function ContentForm({
             },
             field: 'stage',
             initialValue: Stage.ACTIVE,
-        },
-        {
+            mb: '20px',
+        } : {
+            field: 'stage',
+            initialValue: Stage.ACTIVE,
+        }),
+        (canReview ? {
             component: (props) => (
-                // Only show up for eligible groups
-                canReview ? <>
+                <>
                     <Typography>Reviewed</Typography>
                     <Checkbox
                         {...props.checkbox}
@@ -351,7 +361,7 @@ function ContentForm({
                     {props.checkbox.checked && <KeyboardDatePicker
                         {...props.datePicker}
                     />}
-                </> : null
+                </>
             ),
             propFactory: (state_, _r, setter, genericSetter_) => {
                 // Because of how KeyboardDatePicker works,
@@ -406,7 +416,11 @@ function ContentForm({
             },
             field: 'reviewed',
             initialValue: false,
-        },
+            mb: 0,
+        } : {
+            field: 'reviewed',
+            initialValue: false,
+        }),
         {
             component: TextField,
             propFactory: (state, _r, setter) => {
