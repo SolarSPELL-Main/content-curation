@@ -8,6 +8,7 @@ type ShowForPermissionProps = {
     slice: keyof Permissions
     permission: keyof CRUD|string[]
     mode?: 'some'|'every'
+    children?: React.ReactElement
 }
 
 /**
@@ -20,7 +21,7 @@ function ShowForPermission({
     permission,
     mode='every',
     children,
-}: React.PropsWithChildren<ShowForPermissionProps>): React.ReactElement {
+}: ShowForPermissionProps): React.ReactElement {
     const permissions = useCCSelector(state => state.global.user.permissions);
     const canShow = hasPermission(
         permissions,
@@ -36,4 +37,10 @@ function ShowForPermission({
     );
 }
 
-export default ShowForPermission;
+const ForwardedShowForPermission = React.forwardRef(
+    (props: ShowForPermissionProps, _ref) => (
+        <ShowForPermission {...props} />
+    ),
+);
+
+export default ForwardedShowForPermission;
