@@ -9,6 +9,7 @@ import ContentPage, { Icon as ContentIcon } from './content';
 import ProfilePage from './profile';
 import Logo from '../../assets/logo.png';
 import CCNavBar from './NavBar';
+import { Tabs } from '../enums';
 
 // Style for the logo itself
 const logoStyle: React.CSSProperties = {
@@ -25,9 +26,10 @@ const logoTabStyle: React.CSSProperties = {
 };
 
 // Add Icon assets here if you would like it to appear in the homepage
+// Key values should be corresponding paths
 const icons = {
-    'metadata': MetadataIcon,
-    'content': ContentIcon,
+    '/metadata': MetadataIcon,
+    '/content': ContentIcon,
 };
 
 // Add tab props here for it to show up on the NavBar
@@ -39,25 +41,25 @@ const tabDescriptors = [
         label: (
             <img src={Logo} style={logoStyle} />
         ),
-        value: 'home',
+        value: Tabs.HOME,
     },
     {
         component: RouterLink,
         to: '/metadata',
         label: 'Metadata',
-        value: 'metadata',
+        value: Tabs.METADATA,
     },
     {
         component: RouterLink,
         to: '/content',
         label: 'Content',
-        value: 'content',
+        value: Tabs.CONTENT,
     },
     {
         component: RouterLink,
         to: "/profile",
         label: "Profile",
-        value: "profile",
+        value: Tabs.PROFILE,
     },
 ];
 
