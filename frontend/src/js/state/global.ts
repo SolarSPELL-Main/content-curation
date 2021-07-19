@@ -19,6 +19,10 @@ export const globalSlice = createSlice({
             permissions: {
                 content: createCRUDPermissions(),
                 metadata: createCRUDPermissions(),
+                special: {
+                    export: false,
+                    review: false,
+                },
             },
         } as User
     },
@@ -33,10 +37,16 @@ export const globalSlice = createSlice({
             const permissions = {
                 content: createCRUDPermissions(),
                 metadata: createCRUDPermissions(),
+                special: {
+                    export: false,
+                    review: false,
+                }
             };
             
-            // Assign permissions for all 4 groups
-            if (groups.includes(AuthGroup.ADMIN)) {
+            // Assign permissions for all groups
+            // TODO: Remove these two groups, combine into 'Student'
+            if (groups.includes(AuthGroup.STUDENT1)
+                || groups.includes(AuthGroup.STUDENT2)) {
                 permissions.content = updateCRUDPermissions(
                     permissions.content,
                     'CRUD',
@@ -56,11 +66,11 @@ export const globalSlice = createSlice({
                     permissions.metadata,
                     'CRUD',
                 );
+                permissions.special.export = true;
+                permissions.special.review = true;
             }
-            
-            // TODO: Remove these two groups, combine into 'Student'
-            if (groups.includes(AuthGroup.STUDENT1)
-                || groups.includes(AuthGroup.STUDENT2)) {
+
+            if (groups.includes(AuthGroup.ADMIN)) {
                 permissions.content = updateCRUDPermissions(
                     permissions.content,
                     'CRUD',
@@ -69,6 +79,8 @@ export const globalSlice = createSlice({
                     permissions.metadata,
                     'CRUD',
                 );
+                permissions.special.export = true;
+                permissions.special.review = true;
             }
 
             state.user.permissions = permissions;
