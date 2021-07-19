@@ -71,6 +71,7 @@ type CRUD = {
 }
 
 type SpecialPermissions = {
+    admin: boolean
     export: boolean
     review: boolean
 }

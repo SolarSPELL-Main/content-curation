@@ -20,6 +20,7 @@ export const globalSlice = createSlice({
                 content: createCRUDPermissions(),
                 metadata: createCRUDPermissions(),
                 special: {
+                    admin: false,
                     export: false,
                     review: false,
                 },
@@ -38,6 +39,7 @@ export const globalSlice = createSlice({
                 content: createCRUDPermissions(),
                 metadata: createCRUDPermissions(),
                 special: {
+                    admin: false,
                     export: false,
                     review: false,
                 }
@@ -79,6 +81,7 @@ export const globalSlice = createSlice({
                     permissions.metadata,
                     'CRUD',
                 );
+                permissions.special.admin = true;
                 permissions.special.export = true;
                 permissions.special.review = true;
             }

@@ -8,6 +8,7 @@ import Chip from "@material-ui/core/Chip"
 import { useCCSelector, useCCDispatch } from '../../hooks';
 import { logout, update_current_tab } from "../../state/global"
 import { AuthGroup, Tabs } from '../../enums';
+import { hasPermission } from '../../utils';
 
 export default () => {
     const dispatch = useCCDispatch()
@@ -39,7 +40,7 @@ export default () => {
                 <Button onClick={_ => dispatch(logout())}>
                     LOGOUT
                 </Button>
-                {user.groups.includes(AuthGroup.ADMIN) ?
+                {hasPermission(user.permissions, 'special', 'admin') ?
                     <Button href="/admin/">
                         Admin Site
                     </Button> : <></>
