@@ -3,13 +3,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 //Importing from other files in the project
 import { createCRUDPermissions, updateCRUDPermissions } from '../utils';
-import { AuthGroup } from '../enums';
+import { AuthGroup, Tabs } from '../enums';
 import type { User, Toast } from "js/types"
 
 export const globalSlice = createSlice({
     name: 'global',
     initialState: {
-        current_tab: 'home',
+        current_tab: Tabs.HOME,
         toasts: [] as Toast[],
         user: {
             username: "",
@@ -23,7 +23,7 @@ export const globalSlice = createSlice({
         } as User
     },
     reducers: {
-        update_current_tab: (state, action: PayloadAction<string>) => {
+        update_current_tab: (state, action: PayloadAction<Tabs>) => {
             state.current_tab = action.payload;
         },
         fetch_user: () => {},

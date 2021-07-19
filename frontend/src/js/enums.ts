@@ -13,3 +13,10 @@ export enum Stage {
     DEACCESSION='Deaccession',
     REVIEW='Review',
 }
+
+export enum Tabs {
+    HOME='home',
+    METADATA='metadata',
+    CONTENT='content',
+    PROFILE='profile',
+}

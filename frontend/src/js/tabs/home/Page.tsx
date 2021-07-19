@@ -5,6 +5,7 @@ import React from 'react';
 import Icons from './Icons';
 import { useCCDispatch } from '../../hooks';
 import { update_current_tab } from '../../state/global';
+import { Tabs } from '../../enums';
 
 type PageProps = {
     icons: Record<string,any>
@@ -22,7 +23,7 @@ function Page({
 
     React.useEffect(
         () => {
-            dispatch(update_current_tab('home'));
+            dispatch(update_current_tab(Tabs.HOME));
         },
         [dispatch],
     );

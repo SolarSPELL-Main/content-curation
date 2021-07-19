@@ -8,7 +8,7 @@ import MetadataPage, { Icon as MetadataIcon } from './metadata';
 import ContentPage, { Icon as ContentIcon } from './content';
 import ProfilePage from './profile';
 import Logo from '../../assets/logo.png';
-import NavBar from './NavBar';
+import CCNavBar from './NavBar';
 
 // Style for the logo itself
 const logoStyle: React.CSSProperties = {
@@ -61,12 +61,15 @@ const tabDescriptors = [
     },
 ];
 
-export default function Tabs(): React.ReactElement {
+export function NavBar(): React.ReactElement {
+    return <CCNavBar tabDescriptors={tabDescriptors} />;
+}
+
+export function PageBody(): React.ReactElement {
     // Add route paths down here to make them accessible on the page
     // The home path ['/'] is all-consuming, so any unmatched URLs
     // will redirect to that Route.
-    return (<>
-        <NavBar tabDescriptors={tabDescriptors} />
+    return (
         <Switch>
             <Route path={'/content'}>
                 <ContentPage />
@@ -81,5 +84,5 @@ export default function Tabs(): React.ReactElement {
                 <HomePage icons={icons} />
             </Route>
         </Switch>
-    </>);
+    );
 }

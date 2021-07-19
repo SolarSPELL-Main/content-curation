@@ -6,6 +6,7 @@ import Modal from './Modal';
 import * as Actions from '../../state/metadata';
 import { useCCDispatch, useCCSelector } from '../../hooks';
 import { update_current_tab } from '../../state/global';
+import { Tabs } from '../../enums';
 
 type PageProps = {
 
@@ -22,7 +23,7 @@ function Page(_: PageProps): React.ReactElement {
     const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
 
     useEffect(() => {
-        dispatch(update_current_tab('metadata'));
+        dispatch(update_current_tab(Tabs.METADATA));
         dispatch(Actions.fetch_metadatatype());
     }, [dispatch]);
 

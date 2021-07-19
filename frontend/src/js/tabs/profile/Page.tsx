@@ -7,7 +7,7 @@ import Chip from "@material-ui/core/Chip"
 
 import { useCCSelector, useCCDispatch } from '../../hooks';
 import { logout, update_current_tab } from "../../state/global"
-import { AuthGroup } from '../../enums';
+import { AuthGroup, Tabs } from '../../enums';
 
 export default () => {
     const dispatch = useCCDispatch()
@@ -15,7 +15,7 @@ export default () => {
     
     React.useEffect(
         () => {
-            dispatch(update_current_tab('profile'));
+            dispatch(update_current_tab(Tabs.PROFILE));
         },
         [dispatch],
     );
