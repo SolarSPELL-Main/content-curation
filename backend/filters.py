@@ -1,4 +1,5 @@
 from django_filters import rest_framework as filters
+from django_filters import widgets
 from .models import Content, Metadata
 from django import forms
 
@@ -22,9 +23,9 @@ class ContentFilter(filters.FilterSet):
                                           widget=forms.CheckboxSelectMultiple)
     published_date = filters.DateFilter(widget=forms.SelectDateWidget)
     active = filters.BooleanFilter(
-        widget=filters.widgets.BooleanWidget())
+        widget=widgets.BooleanWidget())
     copyright_approved = filters.BooleanFilter(
-        widget=filters.widgets.BooleanWidget())
+        widget=widgets.BooleanWidget())
 
     class Meta:
         model = Content

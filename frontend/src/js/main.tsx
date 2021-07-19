@@ -1,10 +1,12 @@
 //Importing from outside the project
 import React, { useEffect } from "react";
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 import { useSnackbar } from "notistack"
 
 //Importing from other files in the project
 import Tabs from './tabs';
-import { fetch_user } from "./state/global"
+import { fetch_user, close_toast } from "./state/global"
 import { useCCDispatch, useCCSelector, usePrevious } from './hooks';
 
 /*
@@ -14,32 +16,40 @@ function Main(): React.ReactElement {
     const dispatch = useCCDispatch();
     const toasts = useCCSelector(state => state.global.toasts)
     const prevToasts = usePrevious(toasts)
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     useEffect(() => {
-        const new_toasts = prevToasts === undefined ? 
+        const newToasts = prevToasts == null ? 
             [] :
             toasts.filter(toast =>
                 prevToasts.every(lastToast => lastToast.key !== toast.key)
             )
 
-        new_toasts.forEach(toast => enqueueSnackbar(
+        newToasts.forEach(toast => enqueueSnackbar(
             toast.message,
             {
+                key: toast.key,
                 variant: toast.severity,
-                // Errors should be dismissed by hand
-                persist: toast.severity === 'error',
+                // Dismissal is handled by RxJs / user interaction
+                autoHideDuration: null,
+                action: (key: number) => (
+                    <IconButton
+                        onClick={() => dispatch(close_toast(key))}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                )
             }
         ))
 
-        if (prevToasts !== undefined) {
-            const old_toasts = prevToasts.filter(toast =>
+        if (prevToasts != null) {
+            const oldToasts = prevToasts.filter(toast =>
                 toasts.every(lastToast => lastToast.key !== toast.key)
             )
-            old_toasts.forEach(toast => closeSnackbar(toast.key))
+            oldToasts.forEach(toast => closeSnackbar(toast.key))
         }
 
-    }, [toasts, prevToasts])
+    }, [dispatch, toasts, prevToasts])
 
     useEffect(() => {
         dispatch(fetch_user())
