@@ -5,7 +5,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { useSnackbar } from "notistack"
 
 //Importing from other files in the project
-import { NavBar, PageBody } from './tabs';
+import { NavBar, PageBody } from './pages';
 import { fetch_user, close_toast } from "./state/global"
 import { useCCDispatch, useCCSelector, usePrevious } from './hooks';
 
