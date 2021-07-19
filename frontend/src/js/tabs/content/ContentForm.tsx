@@ -254,10 +254,10 @@ function ContentForm({
         },
         {
             component: (props) => (
-                <>
+                canReview ? <>
                     <Typography>Copyright Approved</Typography>
                     <Checkbox {...props} />
-                </>
+                </> : null
             ),
             propFactory: (state, _r, setter) => {
                 return {

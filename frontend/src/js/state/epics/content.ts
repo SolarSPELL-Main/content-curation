@@ -24,15 +24,15 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                 map(({ data }) => 
                     update_content(
                         // Maps API response to Content array
-                        // TODO: Add stage/originalSource/copyrightSite properties
-                        // from backend into Content constructor
                         data.data.map(
                             (val: any) => <Content>({
                                 id: Number(val.id),
                                 notes: val.additional_notes,
                                 active: val.active,
                                 fileURL: val.content_file,
+                                originalSource: val.original_source,
                                 copyrighter: val.copyright_by,
+                                copyrightSite: val.copyright_site,
                                 copyright: val.copyright_notes,
                                 copyrightApproved: val.copyright_approved,
                                 creator: val.created_by,
@@ -44,6 +44,7 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                                 fileName: val.file_name,
                                 datePublished: val.published_year,
                                 rightsStatement: val.rights_statement,
+                                stage: val.status,
                                 title: val.title,
                                 // Turns API Metadata array into Record
                                 metadata: val.metadata_info.reduce(
