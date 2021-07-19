@@ -2,11 +2,11 @@ import React from 'react';
 
 import { useCCSelector } from '../hooks';
 import { hasPermission } from '../utils';
-import { Permissions, CRUD } from 'js/types';
+import type { Permissions, CRUD, SpecialPermissions } from 'js/types';
 
 type ShowForPermissionProps = {
     slice: keyof Permissions
-    permission: keyof CRUD|string[]
+    permission: keyof CRUD|keyof SpecialPermissions|string[]
     mode?: 'some'|'every'
     children?: React.ReactElement
 }

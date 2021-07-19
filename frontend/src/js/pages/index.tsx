@@ -6,9 +6,10 @@ import { Link as RouterLink, Route, Switch } from 'react-router-dom';
 import HomePage from './home';
 import MetadataPage, { Icon as MetadataIcon } from './metadata';
 import ContentPage, { Icon as ContentIcon } from './content';
+import ExportPage from './export';
 import ProfilePage from './profile';
 import Logo from '../../assets/logo.png';
-import CCNavBar from './NavBar';
+import CCNavBar, { TabDescriptor } from './NavBar';
 import { Tabs } from '../enums';
 
 // Style for the logo itself
@@ -33,33 +34,52 @@ const icons = {
 };
 
 // Add tab props here for it to show up on the NavBar
-const tabDescriptors = [
+const tabDescriptors: TabDescriptor[] = [
     {
-        component: RouterLink,
-        style: logoTabStyle,
-        to: '/home',
-        label: (
-            <img src={Logo} style={logoStyle} />
-        ),
-        value: Tabs.HOME,
+        props: {
+            component: RouterLink,
+            style: logoTabStyle,
+            to: '/home',
+            label: (
+                <img src={Logo} style={logoStyle} />
+            ),
+            value: Tabs.HOME,
+        },
     },
     {
-        component: RouterLink,
-        to: '/metadata',
-        label: 'Metadata',
-        value: Tabs.METADATA,
+        props: {
+            component: RouterLink,
+            to: '/metadata',
+            label: 'Metadata',
+            value: Tabs.METADATA,
+        },
     },
     {
-        component: RouterLink,
-        to: '/content',
-        label: 'Content',
-        value: Tabs.CONTENT,
+        props: {
+            component: RouterLink,
+            to: '/content',
+            label: 'Content',
+            value: Tabs.CONTENT,
+        },
     },
     {
-        component: RouterLink,
-        to: "/profile",
-        label: "Profile",
-        value: Tabs.PROFILE,
+        props: {
+            component: RouterLink,
+            to: '/export',
+            label: 'Export',
+            value: Tabs.EXPORT,
+        },
+        // Only show this tab in NavBar if user has 'export' permission
+        slice: 'special',
+        permission: 'export',
+    },
+    {
+        props: {
+            component: RouterLink,
+            to: "/profile",
+            label: "Profile",
+            value: Tabs.PROFILE,
+        },
     },
 ];
 
@@ -81,6 +101,9 @@ export function PageBody(): React.ReactElement {
             </Route>
             <Route path={'/profile'}>
                 <ProfilePage />
+            </Route>
+            <Route path={'/export'}>
+                <ExportPage />
             </Route>
             <Route path={['/home', '/']}>
                 <HomePage icons={icons} />
