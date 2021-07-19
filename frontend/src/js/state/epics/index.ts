@@ -48,6 +48,6 @@ const epics = combineEpics(...[
     deleteContentEpic,
     editContentEpic,
     updateFiltersEpic,
-].map(epic => Utils.errorCatcher(epic)));
+].map(Utils.errorCatcher));
 
 export default epics;
