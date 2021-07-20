@@ -1,10 +1,7 @@
-// TODO: Remove 'Metadata Specialist' / 'Content Specialist'
-// Replace with 'Student'
 export enum AuthGroup {
     ADMIN='Admin',
     LIB_SPECIALIST='Library Specialist',
-    STUDENT1='Content Specialist',
-    STUDENT2='Metadata Specialist',
+    STUDENT='Student',
 }
 
 export enum Stage {

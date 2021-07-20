@@ -45,6 +45,10 @@ function Modal({
         'metadata',
         ['update', 'delete'],
         'some',
+    ) || hasPermission(
+        permissions,
+        'special',
+        'export',
     );
 
     return (
