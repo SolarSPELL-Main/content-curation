@@ -1,5 +1,5 @@
 import React from 'react';
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 
 import {
     ContentSearch,
@@ -67,7 +67,6 @@ function SearchBar({
                     type: 'date',
                     width: 2,
                     stringifier: date => format(date, 'yyyy-MM-dd'),
-                    parser: val => parseISO(val),
                 },
                 {
                     field: 'active',

@@ -24,12 +24,23 @@ function Page(_: PageProps): React.ReactElement {
     const metadata = useCCSelector(state => state.metadata.metadata);
     const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
     const content = useCCSelector(state => state.content.content);
+    const total = useCCSelector(state => state.content.total);
+    const loading = useCCSelector(state => state.content.loading);
+
+    const [page, setPage] = React.useState(0);
+    const [pageSize, setPageSize] = React.useState(5);
 
     React.useEffect(() => {
         dispatch(GlobalActions.update_current_tab(Tabs.CONTENT));
         dispatch(MetadataActions.fetch_metadatatype());
-        dispatch(ContentActions.fetch_content());
     }, [dispatch]);
+
+    React.useEffect(() => {
+        dispatch(ContentActions.fetch_content({
+            pageSize,
+            page: page + 1, // Django starts from 1
+        }));
+    }, [dispatch, page, pageSize]);
 
     const onEdit_ = React.useCallback(
         (content: Content, vals: Partial<Content>) => {
@@ -79,6 +90,13 @@ function Page(_: PageProps): React.ReactElement {
                     onEdit: onEdit_,
                     onDelete: onDelete_,
                     onSelectedDelete: onSelectedDelete_,
+                    onPageSizeChange: params => {
+                        setPageSize(params.pageSize);
+                        setPage(params.page);
+                    },
+                    onPageChange: params => {
+                        setPage(params.page);
+                    },
                 },
                 Toolbar: {
                     onAdd: onAdd_,
@@ -86,6 +104,12 @@ function Page(_: PageProps): React.ReactElement {
                 Search: {
                     onQueryChange: onQueryChange,
                 }
+            }}
+            pageProps={{
+                rowCount: total,
+                page: page,
+                pageSize: pageSize,
+                loading: loading,
             }}
         />
     );

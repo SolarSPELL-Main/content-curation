@@ -14,6 +14,8 @@ from django.contrib.auth.models import Group
 from rest_framework.permissions import DjangoModelPermissions
 from django_filters import rest_framework as filters
 
+from django.core.paginator import QuerySetPaginator
+
 '''Importing from other files in the project'''
 from backend.models import MetadataType, Metadata, Content
 from backend.serializers import MetadataTypeSerializer, MetadataSerializer, \
@@ -26,6 +28,8 @@ import csv
 class StandardDataView:
     # permission_classes = (IsAdminUser,)
     print("StandardDataView")
+
+    page_size_query_param = "page_size"
 
     def create(self, request, *args, **kwargs):
         print("create Standard View")
@@ -54,13 +58,21 @@ class StandardDataView:
         print("list")
         queryset = self.filter_queryset(self.get_queryset())
         # print("list ",queryset)
-        page = self.paginate_queryset(queryset)
+        # page = self.paginate_queryset(queryset)
+        page = request.GET.get('page')
         if page != None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
+            paginator = QuerySetPaginator(queryset, per_page=request.GET.get('page_size'))
+            serializer = self.get_serializer(paginator.page(page), many=True)
+            return build_response({
+                'total': queryset.count(),
+                'items': serializer.data,
+            })
 
         serializer = self.get_serializer(queryset, many=True)
-        return build_response(serializer.data)
+        return build_response({
+            'total': queryset.count(),
+            'items': serializer.data,
+        })
 
 
 class MetadataViewSet(StandardDataView, viewsets.ModelViewSet):
