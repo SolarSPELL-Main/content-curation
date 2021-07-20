@@ -26,9 +26,8 @@ function Page(_: PageProps): React.ReactElement {
     const content = useCCSelector(state => state.content.content);
     const total = useCCSelector(state => state.content.total);
     const loading = useCCSelector(state => state.content.loading);
-
-    const [page, setPage] = React.useState(0);
-    const [pageSize, setPageSize] = React.useState(5);
+    const page = useCCSelector(state => state.content.page);
+    const pageSize = useCCSelector(state => state.content.pageSize);
 
     React.useEffect(() => {
         dispatch(GlobalActions.update_current_tab(Tabs.CONTENT));
@@ -36,10 +35,7 @@ function Page(_: PageProps): React.ReactElement {
     }, [dispatch]);
 
     React.useEffect(() => {
-        dispatch(ContentActions.fetch_content({
-            pageSize,
-            page: page + 1, // Django starts from 1
-        }));
+        dispatch(ContentActions.fetch_content());
     }, [dispatch, page, pageSize]);
 
     const onEdit_ = React.useCallback(
@@ -52,6 +48,10 @@ function Page(_: PageProps): React.ReactElement {
 
     const onDelete_ = React.useCallback(
         (content: Content) => {
+            // To avoid dealing with pages that no longer exist
+            dispatch(ContentActions.update_pagination({
+                page: 0,
+            }));
             dispatch(ContentActions.delete_content(content.id));
         },
         [dispatch],
@@ -59,6 +59,10 @@ function Page(_: PageProps): React.ReactElement {
 
     const onSelectedDelete_ = React.useCallback(
         (content: Content[]) => {
+            // To avoid dealing with pages that no longer exist
+            dispatch(ContentActions.update_pagination({
+                page: 0,
+            }));
             dispatch(ContentActions.delete_content(content.map(c => c.id)));
         },
         [dispatch],
@@ -75,6 +79,9 @@ function Page(_: PageProps): React.ReactElement {
 
     const onQueryChange = React.useCallback(
         (query: Query) => {
+            dispatch(ContentActions.update_pagination({
+                page: 0,
+            }));
             dispatch(ContentActions.update_filters(query));
         },
         [dispatch],
@@ -91,11 +98,15 @@ function Page(_: PageProps): React.ReactElement {
                     onDelete: onDelete_,
                     onSelectedDelete: onSelectedDelete_,
                     onPageSizeChange: params => {
-                        setPageSize(params.pageSize);
-                        setPage(params.page);
+                        dispatch(ContentActions.update_pagination({
+                            pageSize: params.pageSize,
+                            page: params.page,
+                        }));
                     },
                     onPageChange: params => {
-                        setPage(params.page);
+                        dispatch(ContentActions.update_pagination({
+                            page: params.page,
+                        }));
                     },
                 },
                 Toolbar: {

@@ -10,14 +10,13 @@ export const contentSlice = createSlice({
         content: [] as Content[],
         total: 0,
         loading: false,
-        filters: {} as Query
+        pageSize: 5,
+        page: 0,
+        filters: {} as Query,
     },
     reducers: {
         // Fetches list of content from backend
-        fetch_content: (_state, _action: PayloadAction<{
-            pageSize: number
-            page: number
-        }|undefined>) => {},
+        fetch_content: () => {},
 
         // Updates content in state
         update_content: (state, action: PayloadAction<{
@@ -26,6 +25,19 @@ export const contentSlice = createSlice({
         }>) => {
             state.content = action.payload.content;
             state.total = action.payload.total;
+        },
+
+        // For pagination
+        update_pagination: (state, action: PayloadAction<{
+            pageSize?: number
+            page?: number
+        }>) => {
+            if (action.payload.pageSize != null) {
+                state.pageSize = action.payload.pageSize;
+            }
+            if (action.payload.page != null) {
+                state.page = action.payload.page;
+            }
         },
 
         start_loading: (state) => {
@@ -60,6 +72,7 @@ export const {
     delete_content,
     edit_content,
     update_filters,
+    update_pagination,
     start_loading,
     stop_loading,
 } = contentSlice.actions;

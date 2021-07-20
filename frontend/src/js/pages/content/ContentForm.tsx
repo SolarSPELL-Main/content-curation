@@ -157,7 +157,7 @@ function ContentForm({
                                     .map(c => c.toString(16).padStart(2, "0")).join("")
                                 api.get(APP_URLS.CHECK_DUPLICATE(sha256))
                                     .then(({ data: data }) => {
-                                        setReason("file", data.data.items ?
+                                        setReason("file", data.data ?
                                             "File is already in the system." :
                                             ""
                                         )
@@ -175,9 +175,21 @@ function ContentForm({
             },
             field: 'file',
             initialValue: undefined,
-            validator: (state) => {
+            validator: async (state) => {
                 if (!state['file'] && !state['fileURL']) {
                     return 'A file must be uploaded';
+                } else if (state['file']) {
+                    const file = state['file'];
+
+                    const arrayBuffer = await file.arrayBuffer()
+                    const result = await crypto.subtle
+                        .digest("SHA-256", arrayBuffer)
+                    const sha256 = Array.from(new Uint8Array(result))
+                        .map(c => c.toString(16).padStart(2, "0")).join("")
+                    const res = await api.get(APP_URLS.CHECK_DUPLICATE(sha256));
+                    return res.data.data ?
+                        "File is already in the system." :
+                        "";
                 } else {
                     return null
                 }
