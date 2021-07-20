@@ -1,5 +1,6 @@
 from django_filters import rest_framework as filters
 from django_filters import widgets
+from django_filters.widgets import RangeWidget
 from .models import Content, Metadata
 from django import forms
 from django_filters.widgets import BooleanWidget
@@ -10,19 +11,22 @@ class ContentFilter(filters.FilterSet):
     title = filters.CharFilter(lookup_expr='icontains')
     file_name = filters.CharFilter(lookup_expr='icontains')
     description = filters.CharFilter(lookup_expr='icontains')
-    filesize = filters.NumberFilter()
+    filesize = filters.RangeFilter()
     metadata = filters.ModelMultipleChoiceFilter(
         queryset=Metadata.objects.all(),
         widget=forms.CheckboxSelectMultiple)
-    created_on = filters.DateFilter(widget=forms.SelectDateWidget)
+    created_on = filters.DateFromToRangeFilter(
+        widget=RangeWidget(attrs={'type': 'date'}))
     created_by = filters.CharFilter(lookup_expr='icontains')
-    modified_on = filters.DateFilter(widget=forms.SelectDateWidget)
+    modified_on = filters.DateFromToRangeFilter(
+        widget=RangeWidget(attrs={'type': 'date'}))
     modified_by = filters.CharFilter(lookup_expr='icontains')
-    reviewed_on = filters.DateFilter(widget=forms.SelectDateWidget)
+    reviewed_on = filters.DateFromToRangeFilter(
+        widget=RangeWidget(attrs={'type': 'date'}))
     reviewed_by = filters.CharFilter(lookup_expr='icontains')
-    status = filters.MultipleChoiceFilter(choices=Content.STATUS,
-                                          widget=forms.CheckboxSelectMultiple)
-    published_date = filters.DateFilter(widget=forms.SelectDateWidget)
+    status = filters.AllValuesFilter()
+    published_date = filters.DateFromToRangeFilter(
+        widget=RangeWidget(attrs={'type': 'date'}))
     active = filters.BooleanFilter(
         widget=BooleanWidget())
     copyright_approved = filters.BooleanFilter(

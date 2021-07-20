@@ -13,6 +13,7 @@ type KebabMenuActionProps = {
     onAdd: (type: MetadataType, val: string) => void
     onEditType: (type: MetadataType, val: string) => void
     onDeleteType: (type: MetadataType) => void
+    onExport: (type: MetadataType) => void
 }
 
 type KebabMenuProps = {
@@ -30,6 +31,7 @@ function KebabMenu({
     onAdd,
     onEditType,
     onDeleteType,
+    onExport,
     metadataType,
 }: KebabMenuProps): React.ReactElement {
     const onAdd_ = React.useCallback(
@@ -91,6 +93,13 @@ function KebabMenu({
                         submitButtonColor={'secondary'}
                         cancelButtonColor={'primary'}
                         textInputSize={'md'}
+                    />
+                </ShowForPermission>
+                <ShowForPermission slice={'special'} permission={'export'}>
+                    <KebabMenuItem
+                        type={'button'}
+                        label={'Export as CSV'}
+                        onAction={() => onExport(metadataType)}
                     />
                 </ShowForPermission>
             </SolarSPELLKebabMenu>

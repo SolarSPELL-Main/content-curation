@@ -6,6 +6,7 @@ import Modal from './Modal';
 import * as Actions from '../../state/metadata';
 import { useCCDispatch, useCCSelector } from '../../hooks';
 import { update_current_tab } from '../../state/global';
+import APP_URLS from '../../urls';
 import { Tabs } from '../../enums';
 
 type PageProps = {
@@ -45,7 +46,8 @@ function Page(_: PageProps): React.ReactElement {
                         dispatch(Actions.delete_metadatatype({
                             type_id: metadataType.id
                         })),
-
+                    onExport: (metadataType) =>
+                        window.open(APP_URLS.METADATA_TYPE_EXPORT(metadataType.id)),
                 },
                 ActionPanel: {
                     onEdit: (metadata, name) => 

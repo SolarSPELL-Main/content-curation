@@ -82,15 +82,9 @@
           {% render_field filter.form.copyright_approved class="form-control" %}
         </div>
 
-        <div class="form-group col-sm-8 col-md-6">
+        <div class="form-group col-sm-4 col-md-3">
           {{ filter.form.status.label_tag }}
-          <div>
-            {% for choice in filter.form.status %}
-              <label class="checkbox-inline">
-                {{ choice.tag }} {{ choice.choice_label }}
-              </label>
-            {% endfor %}
-          </div>
+          {% render_field filter.form.status class="form-control" %}
         </div>
 
       </div>

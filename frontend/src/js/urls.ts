@@ -12,6 +12,7 @@ const APP_URLS = {
     METADATA_LIST: `/api/metadata/`,
     METADATA_TYPES: `/api/metadata_types/`,
     METADATA_TYPE: (id: number) => `/api/metadata_types/${id}/`,
+    METADATA_TYPE_EXPORT: (id: number) => `/api/metadata_types/${id}/downloadAsCSV`,
     CONTENT_LIST: (params?: Query) => {
         if (params === undefined) {
             return "/api/content/"
@@ -26,15 +27,32 @@ const APP_URLS = {
                 return undefined
             }
 
-            const backend_key = key === "fileName" ?
-                "file_name" : key
+            const backend_key = key === "fileName" ?  "file_name" :
+                key === "years" ? "published_date" :
+                key === "reviewed" ? "reviewed_on" :
+                key
 
             if (isPlainObject(param)) {
                 if ("from" in (param as Object)) {
-                    return `${param}_from=${(param as { from: any }).from}`
+                    const from = (param as { from: any }).from
+                    if (from === null) return undefined
+                    if (key === "years") {
+                        return `${backend_key}_min=${
+                            ("" + from).padStart(4, "0")
+                        }-01-01`
+                    }
+                    return `${backend_key}_min=${from}`
                 }
                 if ("to" in (param as Object)) {
-                    return `${param}_to=${(param as { from: any }).from}`
+                    const to = (param as { to: any }).to
+                    if (to === null) return undefined
+                    if (key === "years") {
+                        return `${backend_key}_max=${
+                            ("" + to).padStart(4, "0")
+                        }-12-31`
+                    }
+
+                    return `${backend_key}_max=${to}`
                 }
                 const metadata = [].concat(...Object.values(param)) as Metadata[];
                 return metadata.length > 0 ?

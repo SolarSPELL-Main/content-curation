@@ -16,7 +16,7 @@ import {
     FormFieldDescriptor,
 } from 'solarspell-react-lib';
 import { useCCSelector } from '../../hooks';
-import { AuthGroup, Stage } from '../../enums';
+import { AuthGroup, Status } from '../../enums';
 import { Metadata, MetadataType, Content } from 'js/types';
 import APP_URLS from "../../urls"
 import { api, hasPermission } from "../../utils"
@@ -322,12 +322,12 @@ function ContentForm({
         (canReview ? {
             component: (props) => (
                 <>
-                    <Typography>Stage</Typography>
+                    <Typography>Status</Typography>
                     <Select
-                        label={'Stage'}
+                        label={'Status'}
                         {...props}
                     >
-                        {Object.values(Stage).map(v => (
+                        {Object.values(Status).map(v => (
                             <MenuItem key={v} value={v}>
                                 {v}
                             </MenuItem>
@@ -337,18 +337,18 @@ function ContentForm({
             ),
             propFactory: (state, _r, setter) => {
                 return {
-                    value: state['stage'] ?? Stage.ACTIVE,
+                    value: state['status'] ?? Status.ACTIVE,
                     onChange: (
                         e: React.ChangeEvent<HTMLInputElement>
                     ) => setter(e.target.value),
                 };
             },
-            field: 'stage',
-            initialValue: Stage.ACTIVE,
+            field: 'status',
+            initialValue: Status.ACTIVE,
             mb: '20px',
         } : {
-            field: 'stage',
-            initialValue: Stage.ACTIVE,
+            field: 'status',
+            initialValue: Status.ACTIVE,
         }),
         (canReview ? {
             component: (props) => (

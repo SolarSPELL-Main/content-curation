@@ -64,7 +64,7 @@ class Content(models.Model):
     copyright_notes = models.TextField(null=True)
     rights_statement = models.TextField(null=True)
     additional_notes = models.TextField(null=True)
-    published_date = models.DateField(null=True)
+    published_date = models.DateField(default=None, null=True)
     # reviewed_on = models.DateField(null=True)
     active = models.BooleanField(default=1)
     # duplicatable = models.BooleanField(default=0)
