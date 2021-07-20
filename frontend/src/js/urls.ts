@@ -1,5 +1,6 @@
 import isString from "lodash/isString"
-import type { Query } from "js/types"
+import type { Query, Metadata } from "js/types"
+import {isArray, isNumber, isPlainObject} from "lodash"
 //All hardcoded end-points live in this file
 const APP_URLS = {
     LOGOUT: `/accounts/logout/`,
@@ -18,13 +19,37 @@ const APP_URLS = {
         const query_params = Object.keys(params).map(_key => {
             const key = _key as keyof Query
             const param = params[key]
-            if (isString(param) && param != "") {
-                return `${key}=${param}`
+            if (
+                param === undefined || param === null ||
+                isNumber(param) || isArray(param)
+            ) {
+                return undefined
             }
+
+            const backend_key = key === "fileName" ?
+                "file_name" : key
+
+            if (isPlainObject(param)) {
+                if ("from" in (param as Object)) {
+                    return `${param}_from=${(param as { from: any }).from}`
+                }
+                if ("to" in (param as Object)) {
+                    return `${param}_to=${(param as { from: any }).from}`
+                }
+                const metadata = [].concat(...Object.values(param)) as Metadata[];
+                return metadata.length > 0 ?
+                    metadata.map(m => `metadata=${m.id}`).join("&") :
+                    undefined
+            }
+
+            if (isString(param) && param !== "") {
+                return `${backend_key}=${param}`
+            }
+
             return undefined
         }).filter(x => x !== undefined)
         return `/api/content/` + (query_params.length > 0 ?
-            "?" + query_params.join(",") : "")
+            "?" + query_params.join("&") : "")
     },
     CONTENT: (id: number) => `/api/content/${id}/`,
     CHECK_DUPLICATE: (hash: string) => `/api/check_duplicate?hash=${hash}`,

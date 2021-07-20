@@ -1,6 +1,7 @@
 from django_filters import rest_framework as filters
 from .models import Content, Metadata
 from django import forms
+from django_filters.widgets import BooleanWidget
 
 
 # Search Content Filter criteria
@@ -22,15 +23,15 @@ class ContentFilter(filters.FilterSet):
                                           widget=forms.CheckboxSelectMultiple)
     published_date = filters.DateFilter(widget=forms.SelectDateWidget)
     active = filters.BooleanFilter(
-        widget=filters.widgets.BooleanWidget())
+        widget=BooleanWidget())
     copyright_approved = filters.BooleanFilter(
-        widget=filters.widgets.BooleanWidget())
+        widget=BooleanWidget())
 
     class Meta:
         model = Content
-        fields = ['title', 'file_name', 'description', 'filesize',
-                  'metadata', 'created_on', 'created_by', 'modified_on',
-                  'modified_by',
-                  'reviewed_on', 'reviewed_by', 'status', 'published_date',
-                  'active', 'copyright_approved',
-                  ]
+        fields = [
+            'title', 'file_name', 'description', 'filesize',
+            'metadata', 'created_on', 'created_by', 'modified_on',
+            'modified_by', 'reviewed_on', 'reviewed_by', 'status',
+            'published_date', 'active', 'copyright_approved',
+        ]

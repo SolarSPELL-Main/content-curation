@@ -40,12 +40,6 @@ function SearchBar({
                     width: 4,
                 },
                 {
-                    field: 'copyright',
-                    title: 'Copyright Notes',
-                    type: 'string',
-                    width: 4,
-                },
-                {
                     field: 'years',
                     title: 'Years',
                     type: 'numeric',
@@ -85,27 +79,6 @@ function SearchBar({
                         {
                             value: 'inactive',
                             title: 'Inactive',
-                        },
-                    ],
-                    initialValue: 'all',
-                },
-                {
-                    field: 'duplicatable',
-                    title: 'Duplicatable',
-                    type: 'enum',
-                    width: 2,
-                    options: [
-                        {
-                            value: 'all',
-                            title: 'All',
-                        },
-                        {
-                            value: 'duplicatable',
-                            title: 'Duplicatable',
-                        },
-                        {
-                            value: 'nonduplicatable',
-                            title: 'Non-Duplicatable',
                         },
                     ],
                     initialValue: 'all',
