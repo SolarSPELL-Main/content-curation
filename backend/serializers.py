@@ -32,5 +32,6 @@ class ContentSerializer(ModelSerializer):
             'metadata', 'active', 'copyright_notes', 'rights_statement',
             'additional_notes', 'published_date', 'created_by', 'created_on',
             'reviewed_by', 'reviewed_on', 'reviewed', 'copyright_approved',
-            'copyright_by', 'published_year', 'hash',
+            'copyright_by', 'published_year', 'hash', 'original_source',
+            'copyright_site', 'status',
         )

@@ -6,6 +6,7 @@ import {
     ContentMetadataDisplay,
 } from 'solarspell-react-lib';
 
+import { Stage } from '../../enums';
 import { Metadata, MetadataType, Query } from 'js/types';
 
 type SearchBarProps = {
@@ -73,15 +74,49 @@ function SearchBar({
                             title: 'All',
                         },
                         {
-                            value: 'active',
+                            value: 'true',
                             title: 'Active',
                         },
                         {
-                            value: 'inactive',
+                            value: 'false',
                             title: 'Inactive',
                         },
                     ],
                     initialValue: 'all',
+                },
+                {
+                    field: 'stage',
+                    title: 'Stage',
+                    type: 'enum',
+                    width: 2,
+                    options: [
+                        {
+                            value: 'all',
+                            title: 'All',
+                        },
+                        ...Object.values(Stage).map(v => ({
+                            value: v,
+                            title: v,
+                        })),
+                    ],
+                    initialValue: 'all',
+                },
+                {
+                    field: 'createdBy',
+                    title: 'Created By',
+                    type: 'enum',
+                    width: 2,
+                    options: [
+                        {
+                            value: 'false',
+                            title: 'All Content',
+                        },
+                        {
+                            value: 'true',
+                            title: 'Created by Me',
+                        },
+                    ],
+                    initialValue: 'false',
                 },
                 {
                     field: 'metadata',
@@ -104,6 +139,9 @@ function SearchBar({
                                 })
                             ),
                         },
+                        width: 6,
+                        spacing: 2,
+                        mb: 0,
                     }),
                   },
             ]}

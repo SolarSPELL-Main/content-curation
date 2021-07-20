@@ -3,9 +3,11 @@ import React from 'react';
 
 //Importing from other files in the project
 import Modal from './Modal';
+import * as GlobalActions from '../../state/global';
 import * as MetadataActions from '../../state/metadata';
 import * as ContentActions from '../../state/content';
 import { useCCDispatch, useCCSelector } from '../../hooks';
+import { Tabs } from '../../enums';
 import { Content, Query } from 'js/types';
 
 type PageProps = {
@@ -24,6 +26,7 @@ function Page(_: PageProps): React.ReactElement {
     const content = useCCSelector(state => state.content.content);
 
     React.useEffect(() => {
+        dispatch(GlobalActions.update_current_tab(Tabs.CONTENT));
         dispatch(MetadataActions.fetch_metadatatype());
         dispatch(ContentActions.fetch_content());
     }, [dispatch]);

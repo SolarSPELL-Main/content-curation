@@ -4,6 +4,8 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import { format, parseISO } from 'date-fns';
 
@@ -14,9 +16,10 @@ import {
     FormFieldDescriptor,
 } from 'solarspell-react-lib';
 import { useCCSelector } from '../../hooks';
+import { AuthGroup, Stage } from '../../enums';
 import { Metadata, MetadataType, Content } from 'js/types';
 import APP_URLS from "../../urls"
-import { api } from "../../utils"
+import { api, hasPermission } from "../../utils"
 
 type TypeProps = {
     type: 'add'
@@ -46,12 +49,8 @@ function ContentForm({
     content,
     type,
 }: ContentFormProps): React.ReactElement {
-    const groups = useCCSelector(state => state.global.user.groups);
-
-    // Admin / Library Specialist should be able to modify
-    // reviewed fields
-    const showReviewed = groups.includes('Library Specialist')
-        || groups.includes('Admin');
+    const permissions = useCCSelector(state => state.global.user.permissions);
+    const canReview = hasPermission(permissions, 'special', 'review');
 
     let dialogStyle: any = { title: '' };
 
@@ -117,6 +116,7 @@ function ContentForm({
             },
             field: 'description',
             initialValue: '',
+            mb: '20px',
         },
         {
             component: (props) => (
@@ -175,13 +175,31 @@ function ContentForm({
             },
             field: 'file',
             initialValue: undefined,
-            validator: async (state) => {
+            validator: (state) => {
                 if (!state['file'] && !state['fileURL']) {
                     return 'A file must be uploaded';
                 } else {
                     return null
                 }
             },
+            mb: 0,
+        },
+        {
+            component: TextField,
+            propFactory: (state, _r, setter) => {
+                return {
+                    fullWidth: true,
+                    label: 'Original Source',
+                    onChange: (
+                        e: React.SyntheticEvent<HTMLInputElement>
+                    ) => {
+                        setter(e.currentTarget.value);
+                    },
+                    value: state['originalSource'] ?? '',
+                };
+            },
+            field: 'originalSource',
+            initialValue: '',
         },
         {
             component: TextField,
@@ -206,6 +224,23 @@ function ContentForm({
             propFactory: (state, _r, setter) => {
                 return {
                     fullWidth: true,
+                    label: 'Copyright Site',
+                    onChange: (
+                        e: React.SyntheticEvent<HTMLInputElement>
+                    ) => {
+                        setter(e.currentTarget.value);
+                    },
+                    value: state['copyrightSite'] ?? '',
+                };
+            },
+            field: 'copyrightSite',
+            initialValue: '',
+        },
+        {
+            component: TextField,
+            propFactory: (state, _r, setter) => {
+                return {
+                    fullWidth: true,
                     label: 'Copyright Notes',
                     onChange: (
                         e: React.SyntheticEvent<HTMLInputElement>
@@ -218,7 +253,7 @@ function ContentForm({
             field: 'copyright',
             initialValue: '',
         },
-        {
+        (canReview ? {
             component: (props) => (
                 <>
                     <Typography>Copyright Approved</Typography>
@@ -238,7 +273,11 @@ function ContentForm({
             },
             field: 'copyrightApproved',
             initialValue: false,
-        },
+            mb: 0,
+        } : {
+            field: 'copyrightApproved',
+            initialValue: false,
+        }),
         {
             component: TextField,
             propFactory: (state, _r, setter) => {
@@ -278,30 +317,40 @@ function ContentForm({
             },
             field: 'metadata',
             initialValue: {},
+            mb: 0,
         },
-        {
-            component: TextField,
+        (canReview ? {
+            component: (props) => (
+                <>
+                    <Typography>Stage</Typography>
+                    <Select
+                        label={'Stage'}
+                        {...props}
+                    >
+                        {Object.values(Stage).map(v => (
+                            <MenuItem key={v} value={v}>
+                                {v}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </>
+            ),
             propFactory: (state, _r, setter) => {
                 return {
-                    fullWidth: true,
-                    label: 'Additional Notes',
+                    value: state['stage'] ?? Stage.ACTIVE,
                     onChange: (
-                        e: React.SyntheticEvent<HTMLInputElement>
-                    ) => {
-                        setter(e.currentTarget.value);
-                    },
-                    value: state['notes'] ?? '',
+                        e: React.ChangeEvent<HTMLInputElement>
+                    ) => setter(e.target.value),
                 };
             },
-            field: 'notes',
-            initialValue: '',
-        },
-    ];
-
-    if (showReviewed) {
-        // This will NEVER be null, considering fields is defined above
-        const notesField = fields.pop()!;
-        const reviewedField: FormFieldDescriptor<Content> = {
+            field: 'stage',
+            initialValue: Stage.ACTIVE,
+            mb: '20px',
+        } : {
+            field: 'stage',
+            initialValue: Stage.ACTIVE,
+        }),
+        (canReview ? {
             component: (props) => (
                 <>
                     <Typography>Reviewed</Typography>
@@ -366,11 +415,29 @@ function ContentForm({
             },
             field: 'reviewed',
             initialValue: false,
-        };
-
-        // Push them out-of-order for aesthetic purposes
-        fields.push(reviewedField, notesField);
-    }
+            mb: 0,
+        } : {
+            field: 'reviewed',
+            initialValue: false,
+        }),
+        {
+            component: TextField,
+            propFactory: (state, _r, setter) => {
+                return {
+                    fullWidth: true,
+                    label: 'Additional Notes',
+                    onChange: (
+                        e: React.SyntheticEvent<HTMLInputElement>
+                    ) => {
+                        setter(e.currentTarget.value);
+                    },
+                    value: state['notes'] ?? '',
+                };
+            },
+            field: 'notes',
+            initialValue: '',
+        },
+    ];
 
     return (
         <ContentModal<Content>

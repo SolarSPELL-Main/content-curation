@@ -3,12 +3,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 //Importing from other files in the project
 import { createCRUDPermissions, updateCRUDPermissions } from '../utils';
+import { AuthGroup, Tabs } from '../enums';
 import type { User, Toast } from "js/types"
 
 export const globalSlice = createSlice({
     name: 'global',
     initialState: {
-        current_tab: 'home',
+        current_tab: Tabs.HOME,
         toasts: [] as Toast[],
         user: {
             username: "",
@@ -18,11 +19,16 @@ export const globalSlice = createSlice({
             permissions: {
                 content: createCRUDPermissions(),
                 metadata: createCRUDPermissions(),
+                special: {
+                    admin: false,
+                    export: false,
+                    review: false,
+                },
             },
         } as User
     },
     reducers: {
-        update_current_tab: (state, action: PayloadAction<string>) => {
+        update_current_tab: (state, action: PayloadAction<Tabs>) => {
             state.current_tab = action.payload;
         },
         fetch_user: () => {},
@@ -32,10 +38,17 @@ export const globalSlice = createSlice({
             const permissions = {
                 content: createCRUDPermissions(),
                 metadata: createCRUDPermissions(),
+                special: {
+                    admin: false,
+                    export: false,
+                    review: false,
+                }
             };
             
-            // Assign permissions for all 4 groups
-            if (groups.includes('Admin')) {
+            // Assign permissions for all groups
+            // TODO: Remove these two groups, combine into 'Student'
+            if (groups.includes(AuthGroup.STUDENT1)
+                || groups.includes(AuthGroup.STUDENT2)) {
                 permissions.content = updateCRUDPermissions(
                     permissions.content,
                     'CRUD',
@@ -46,7 +59,7 @@ export const globalSlice = createSlice({
                 );
             }
 
-            if (groups.includes('Library Specialist')) {
+            if (groups.includes(AuthGroup.LIB_SPECIALIST)) {
                 permissions.content = updateCRUDPermissions(
                     permissions.content,
                     'CRUD',
@@ -55,28 +68,22 @@ export const globalSlice = createSlice({
                     permissions.metadata,
                     'CRUD',
                 );
+                permissions.special.export = true;
+                permissions.special.review = true;
             }
 
-            if (groups.includes('Content Specialist')) {
+            if (groups.includes(AuthGroup.ADMIN)) {
                 permissions.content = updateCRUDPermissions(
                     permissions.content,
                     'CRUD',
                 );
                 permissions.metadata = updateCRUDPermissions(
                     permissions.metadata,
-                    'R',
-                );
-            }
-
-            if (groups.includes('Metadata Specialist')) {
-                permissions.content = updateCRUDPermissions(
-                    permissions.content,
-                    'RU',
-                );
-                permissions.metadata = updateCRUDPermissions(
-                    permissions.metadata,
                     'CRUD',
                 );
+                permissions.special.admin = true;
+                permissions.special.export = true;
+                permissions.special.review = true;
             }
 
             state.user.permissions = permissions;
@@ -87,12 +94,25 @@ export const globalSlice = createSlice({
         },
         close_toast: (state, action: PayloadAction<number>) => {
             state.toasts = state.toasts.filter(n => n.key != action.payload)
-        }
+        },
+
+        start_loader: () => {
+            console.log('Started loading!');
+        },
+        stop_loader: () => {
+            console.log('Finished loading!');
+        },
     },
 })
 
 export const {
-    update_current_tab, fetch_user, update_user, show_toast, close_toast,
-    logout
+    update_current_tab,
+    fetch_user,
+    update_user,
+    show_toast,
+    close_toast,
+    logout,
+    start_loader,
+    stop_loader,
 } = globalSlice.actions
 export default globalSlice.reducer

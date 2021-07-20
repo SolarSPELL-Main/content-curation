@@ -5,6 +5,8 @@ import React, { useEffect } from 'react';
 import Modal from './Modal';
 import * as Actions from '../../state/metadata';
 import { useCCDispatch, useCCSelector } from '../../hooks';
+import { update_current_tab } from '../../state/global';
+import { Tabs } from '../../enums';
 
 type PageProps = {
 
@@ -21,6 +23,7 @@ function Page(_: PageProps): React.ReactElement {
     const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
 
     useEffect(() => {
+        dispatch(update_current_tab(Tabs.METADATA));
         dispatch(Actions.fetch_metadatatype());
     }, [dispatch]);
 
@@ -31,11 +34,18 @@ function Page(_: PageProps): React.ReactElement {
             actions={{
                 KebabMenu: {
                     onAdd: (metadataType, name) => 
-                        dispatch(Actions.add_metadata({ name: name, type_id: metadataType.id })),
+                        dispatch(Actions.add_metadata({
+                            name: name, type_id: metadataType.id
+                        })),
                     onEditType: (metadataType, name) => 
-                        dispatch(Actions.edit_metadatatype({ name: name, type_id: metadataType.id })),
+                        dispatch(Actions.edit_metadatatype({
+                            name: name, type_id: metadataType.id
+                        })),
                     onDeleteType: (metadataType) => 
-                        dispatch(Actions.delete_metadatatype({ type_id: metadataType.id })),
+                        dispatch(Actions.delete_metadatatype({
+                            type_id: metadataType.id
+                        })),
+
                 },
                 ActionPanel: {
                     onEdit: (metadata, name) => 

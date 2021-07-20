@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Content, CRUD, Permissions } from 'js/types';
+import { Content, CRUD, Permissions, SpecialPermissions } from 'js/types';
 
 /*
  * Taken from Django documentation https://docs.djangoproject.com/en/3.2/ref/csrf/
@@ -48,12 +48,6 @@ export const api = axios.create({
 
     // For many-to-many fields
     // Django expects FormData with repeated fields
-    // TODO: Currently cannot delete all metadata tags on a piece of content.
-    // This is because when there is no metadata on a piece of content,
-    // the PATCH request sends nothing in the 'metadata' field. The backend
-    // therefore does not update the metadata field to be empty, since it
-    // assumes no modifications are to be made. Find a way to explicitly
-    // specify that the metadata array should be empty.
     Object.values(content.metadata ?? {}).forEach(
         val => val.forEach(metadata => {
             data.append('metadata', metadata.id.toString());
@@ -66,13 +60,10 @@ export const api = axios.create({
     data.append('additional_notes', content.notes ?? '');
 
     // Same format as DLMS, default to Jan. 1st
-    // TODO: published_date should no longer be required on
-    // the backend. Until then, a very improbable date will be
-    // assigned as a placeholder (0001-01-01).
     data.append('published_date', content.datePublished ? 
         `${content.datePublished.padStart(4, '0')}-01-01`
         :
-        '0001-01-01'
+        ''
     );
 
     data.append('reviewed', content.reviewed?.toString() ?? 'false');
@@ -80,6 +71,10 @@ export const api = axios.create({
     if (content.reviewed && content.reviewedDate) {
         data.append('reviewed_on', content.reviewedDate);
     }
+
+    data.append('original_source', content.originalSource ?? '');
+    data.append('copyright_site', content.copyrightSite ?? '');
+    data.append('status', content.stage);
 
     // Unused fields
     // data.append('active', 'true');
@@ -156,16 +151,20 @@ export const createCRUDPermissions = (
 export const hasPermission = (
     permissions: Permissions,
     slice: keyof Permissions,
-    permission: keyof CRUD|string[],
+    permission: string|string[]=[],
     mode: 'every'|'some'='every',
 ): boolean => {
-    if (Array.isArray(permission)) {
-        if (mode === 'every') {
-            return permission.every(p => permissions[slice][p as keyof CRUD]);
+    if (slice !== 'special') {
+        if (Array.isArray(permission)) {
+            if (mode === 'every') {
+                return permission.every(p => permissions[slice][p as keyof CRUD]);
+            } else {
+                return permission.some(p => permissions[slice][p as keyof CRUD]);
+            }
         } else {
-            return permission.some(p => permissions[slice][p as keyof CRUD]);
+            return permissions[slice][permission as keyof CRUD];
         }
     } else {
-        return permissions[slice][permission as keyof CRUD];
+        return permissions[slice][permission as keyof SpecialPermissions];
     }
 }

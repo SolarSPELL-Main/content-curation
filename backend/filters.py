@@ -1,4 +1,5 @@
 from django_filters import rest_framework as filters
+from django_filters import widgets
 from .models import Content, Metadata
 from django import forms
 from django_filters.widgets import BooleanWidget

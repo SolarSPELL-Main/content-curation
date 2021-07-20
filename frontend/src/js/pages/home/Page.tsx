@@ -3,6 +3,9 @@ import React from 'react';
 
 //Importing from other files in the project
 import Icons from './Icons';
+import { useCCDispatch } from '../../hooks';
+import { update_current_tab } from '../../state/global';
+import { Tabs } from '../../enums';
 
 type PageProps = {
     icons: Record<string,any>
@@ -16,6 +19,15 @@ type PageProps = {
 function Page({
     icons,
 }: PageProps): React.ReactElement {
+    const dispatch = useCCDispatch();
+
+    React.useEffect(
+        () => {
+            dispatch(update_current_tab(Tabs.HOME));
+        },
+        [dispatch],
+    );
+
     return (
         <Icons icons={icons} />
     );
