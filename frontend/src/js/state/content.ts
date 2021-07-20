@@ -8,15 +8,32 @@ export const contentSlice = createSlice({
     name: 'content',
     initialState: {
         content: [] as Content[],
+        total: 0,
+        loading: false,
         filters: {} as Query
     },
     reducers: {
         // Fetches list of content from backend
-        fetch_content: () => {},
+        fetch_content: (_state, _action: PayloadAction<{
+            pageSize: number
+            page: number
+        }|undefined>) => {},
 
         // Updates content in state
-        update_content: (state, action: PayloadAction<Content[]>) => {
-            state.content = action.payload;
+        update_content: (state, action: PayloadAction<{
+            content: Content[]
+            total: number
+        }>) => {
+            state.content = action.payload.content;
+            state.total = action.payload.total;
+        },
+
+        start_loading: (state) => {
+            state.loading = true;
+        },
+
+        stop_loading: (state) => {
+            state.loading = false;
         },
         
         // Posts content to backend
@@ -43,6 +60,8 @@ export const {
     delete_content,
     edit_content,
     update_filters,
+    start_loading,
+    stop_loading,
 } = contentSlice.actions;
 
 export default contentSlice.reducer;

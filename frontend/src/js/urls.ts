@@ -11,11 +11,22 @@ const APP_URLS = {
     METADATA_LIST: `/api/metadata/`,
     METADATA_TYPES: `/api/metadata_types/`,
     METADATA_TYPE: (id: number) => `/api/metadata_types/${id}/`,
-    METADATA_TYPE_EXPORT: (id: number) => `/api/metadata_types/${id}/downloadAsCSV`,
-    CONTENT_LIST: (params?: Query) => {
-        if (params === undefined) {
-            return "/api/content/"
+    METADATA_TYPE_EXPORT: (id: number) => `/api/metadata_types/${id}/downloadAsCSV/`,
+    CONTENT_LIST: (params?: Query, pageSize?: number, page?: number) => {
+        let page_params: string[] = [];
+
+        if (pageSize != null && page != null) {
+            page_params = [`page_size=${pageSize}`, `page=${page}`]
         }
+
+        if (params == null) {
+            if (page_params.length === 0) {
+                return "/api/content/"
+            } else {
+                return "/api/content/?" + page_params.join("&")
+            }
+        }
+
         const query_params = Object.keys(params).map(_key => {
             const key = _key as keyof Query
             const param = params[key]
@@ -23,13 +34,20 @@ const APP_URLS = {
                 return `${key}=${param}`
             }
             return undefined
-        }).filter(x => x !== undefined)
-        return `/api/content/` + (query_params.length > 0 ?
-            "?" + query_params.join(",") : "")
+        }).filter(x => x !== undefined).concat(page_params);
+        const filterUrl = `/api/content/` + (query_params.length > 0 ?
+            "?" + query_params.join("&") : "")
+        
+        return filterUrl
     },
-    CONTENT: (id: number) => `/api/content/${id}/`,
+    CONTENT: (id: number, pageSize?: number, page?: number) => {
+        if (pageSize == null) {
+            return `/api/content/${id}/`;
+        } else {
+            return `/api/content/${id}/?page_size=${pageSize}&page=${page}`
+        }
+    },
     CHECK_DUPLICATE: (hash: string) => `/api/check_duplicate?hash=${hash}`,
-    TOAST_MESSAGE: ``,
     USER_INFO: `/api/get_user/`,
 }
 
