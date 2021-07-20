@@ -6,13 +6,20 @@ import ProfileImpact from "../../../assets/profileimpact.jpg"
 import Chip from "@material-ui/core/Chip"
 
 import { useCCSelector, useCCDispatch } from '../../hooks';
-import { logout } from "../../state/global"
-import { AuthGroup } from '../../enums';
+import { logout, update_current_tab } from "../../state/global"
+import { AuthGroup, Tabs } from '../../enums';
+import { hasPermission } from '../../utils';
 
 export default () => {
     const dispatch = useCCDispatch()
     const user = useCCSelector(state => state.global.user)
     
+    React.useEffect(
+        () => {
+            dispatch(update_current_tab(Tabs.PROFILE));
+        },
+        [dispatch],
+    );
 
     return <Grid container spacing={2}>
         <Grid item xs={6} style={{padding: "2em"}}>
@@ -33,7 +40,7 @@ export default () => {
                 <Button onClick={_ => dispatch(logout())}>
                     LOGOUT
                 </Button>
-                {user.groups.includes(AuthGroup.ADMIN) ?
+                {hasPermission(user.permissions, 'special', 'admin') ?
                     <Button href="/admin/">
                         Admin Site
                     </Button> : <></>

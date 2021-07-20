@@ -70,7 +70,14 @@ type CRUD = {
     delete: boolean
 }
 
+type SpecialPermissions = {
+    admin: boolean
+    export: boolean
+    review: boolean
+}
+
 type Permissions = {
     content: CRUD
     metadata: CRUD
+    special: SpecialPermissions
 }

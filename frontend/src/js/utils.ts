@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Content, CRUD, Permissions } from 'js/types';
+import { Content, CRUD, Permissions, SpecialPermissions } from 'js/types';
 
 /*
  * Taken from Django documentation https://docs.djangoproject.com/en/3.2/ref/csrf/
@@ -151,16 +151,20 @@ export const createCRUDPermissions = (
 export const hasPermission = (
     permissions: Permissions,
     slice: keyof Permissions,
-    permission: keyof CRUD|string[],
+    permission: string|string[]=[],
     mode: 'every'|'some'='every',
 ): boolean => {
-    if (Array.isArray(permission)) {
-        if (mode === 'every') {
-            return permission.every(p => permissions[slice][p as keyof CRUD]);
+    if (slice !== 'special') {
+        if (Array.isArray(permission)) {
+            if (mode === 'every') {
+                return permission.every(p => permissions[slice][p as keyof CRUD]);
+            } else {
+                return permission.some(p => permissions[slice][p as keyof CRUD]);
+            }
         } else {
-            return permission.some(p => permissions[slice][p as keyof CRUD]);
+            return permissions[slice][permission as keyof CRUD];
         }
     } else {
-        return permissions[slice][permission as keyof CRUD];
+        return permissions[slice][permission as keyof SpecialPermissions];
     }
 }

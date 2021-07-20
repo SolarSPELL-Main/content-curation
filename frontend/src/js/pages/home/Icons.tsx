@@ -27,7 +27,7 @@ function Icons({
         <Grid container spacing={5} justify={'center'} style={containerStyle}>
             {Object.entries(icons).map((entry, idx: number) => (
                 <Grid item key={idx} xs>
-                    <Link to={`/${entry[0]}`} style={iconStyle} >
+                    <Link to={entry[0]} style={iconStyle} >
                         <img src={entry[1]} style={iconStyle} />
                     </Link>
                 </Grid>

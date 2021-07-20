@@ -19,7 +19,7 @@ import { useCCSelector } from '../../hooks';
 import { AuthGroup, Stage } from '../../enums';
 import { Metadata, MetadataType, Content } from 'js/types';
 import APP_URLS from "../../urls"
-import { api } from "../../utils"
+import { api, hasPermission } from "../../utils"
 
 type TypeProps = {
     type: 'add'
@@ -49,9 +49,8 @@ function ContentForm({
     content,
     type,
 }: ContentFormProps): React.ReactElement {
-    const groups = useCCSelector(state => state.global.user.groups);
-    const canReview = groups.includes(AuthGroup.LIB_SPECIALIST)
-        || groups.includes(AuthGroup.ADMIN);
+    const permissions = useCCSelector(state => state.global.user.permissions);
+    const canReview = hasPermission(permissions, 'special', 'review');
 
     let dialogStyle: any = { title: '' };
 

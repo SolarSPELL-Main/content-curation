@@ -6,7 +6,6 @@ import Tab from '@material-ui/core/Tab';
 type TabsProps<T> = {
     tabs: React.ComponentProps<typeof Tab>[]
     currentTab: T
-    updateTab: (tab: T) => void
     indicatorStyle?: React.CSSProperties
 }
 
@@ -25,17 +24,13 @@ const defaultIndicatorStyle: React.CSSProperties = {
 function Tabs<T>({
     tabs,
     currentTab,
-    updateTab,
     indicatorStyle = defaultIndicatorStyle,
 }: TabsProps<T>): React.ReactElement {
-    const updateTab_ = React.useCallback((_, tab: T) => updateTab(tab), [updateTab]);
-
     return (
         <MUITabs
             value={currentTab}
             TabIndicatorProps={{style: indicatorStyle}}
             variant={'scrollable'}
-            onChange={updateTab_}
         >
             {tabs.map((props, idx) => (
                 <Tab {...props} key={idx} />
