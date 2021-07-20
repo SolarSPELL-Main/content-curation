@@ -2,6 +2,7 @@
 from django.db.utils import IntegrityError, Error
 from django.shortcuts import render
 from django.http.response import JsonResponse
+from django.http import HttpResponse
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view, renderer_classes, action
 from rest_framework.renderers import JSONRenderer
@@ -19,6 +20,7 @@ from backend.serializers import MetadataTypeSerializer, MetadataSerializer, \
     ContentSerializer
 from backend.standardize_format import build_response
 from .filters import ContentFilter
+import datetime
 import csv
 
 class StandardDataView:
@@ -79,24 +81,24 @@ class MetadataTypeViewSet(StandardDataView, viewsets.ModelViewSet):
             Metadata.objects.filter(type_id=pk), many=True
         ).data)
 
-        # Download MetadataType as CSV file
-        @action(methods=['get'], detail=True)
-        def downloadAsCSV(self, request, pk=None):
-            response = HttpResponse(content_type='text/csv')
-            filename = 'content-curation_metadatatype-{}.csv'.format(
-                datetime.datetime.now()
-                    .strftime("%m-%d-%Y"))
-            response['Content-Disposition'] = 'attachment; filename={}'. \
-                format(filename)
-            metadattype = self.get_queryset().order_by("name")
+    # Download MetadataType as CSV file
+    @action(methods=['get'], detail=True)
+    def downloadAsCSV(self, request, pk=None):
+        response = HttpResponse(content_type='text/csv')
+        filename = 'content-curation_metadatatype-{}.csv'.format(
+            datetime.datetime.now()
+                .strftime("%m-%d-%Y"))
+        response['Content-Disposition'] = 'attachment; filename={}'. \
+            format(filename)
+        metadattype = self.get_queryset().order_by("name")
 
-            writer = csv.DictWriter(response, ['name', 'metadata'])
-            writer.writeheader()
-            for mdt in metadattype:
-                metadata = Metadata.objects.filter(type=mdt, type_id=pk)
-                for mta in metadata:
-                    writer.writerow({'name': mdt.name, 'metadata': mta.name})
-            return response
+        writer = csv.DictWriter(response, ['name', 'metadata'])
+        writer.writeheader()
+        for mdt in metadattype:
+            metadata = Metadata.objects.filter(type=mdt, type_id=pk)
+            for mta in metadata:
+                writer.writerow({'name': mdt.name, 'metadata': mta.name})
+        return response
 
 
 @api_view(('GET',))

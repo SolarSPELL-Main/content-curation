@@ -45,10 +45,7 @@ export const globalSlice = createSlice({
                 }
             };
             
-            // Assign permissions for all groups
-            // TODO: Remove these two groups, combine into 'Student'
-            if (groups.includes(AuthGroup.STUDENT1)
-                || groups.includes(AuthGroup.STUDENT2)) {
+            if (groups.includes(AuthGroup.STUDENT)) {
                 permissions.content = updateCRUDPermissions(
                     permissions.content,
                     'CRUD',

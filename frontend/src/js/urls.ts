@@ -11,6 +11,7 @@ const APP_URLS = {
     METADATA_LIST: `/api/metadata/`,
     METADATA_TYPES: `/api/metadata_types/`,
     METADATA_TYPE: (id: number) => `/api/metadata_types/${id}/`,
+    METADATA_TYPE_EXPORT: (id: number) => `/api/metadata_types/${id}/downloadAsCSV`,
     CONTENT_LIST: (params?: Query) => {
         if (params === undefined) {
             return "/api/content/"
