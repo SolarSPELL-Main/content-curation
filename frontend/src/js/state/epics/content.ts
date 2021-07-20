@@ -21,10 +21,10 @@ import type { MyEpic } from './types';
 const fetchContentEpic: MyEpic = (action$, state$) =>
     action$.pipe(
         filter(fetch_content.match),
-        mergeMap(action =>
+        mergeMap(_ =>
             concat(
                 of(start_loading()),
-                from(api.get(APP_URLS.CONTENT_LIST(state$.value.content.filters, action.payload?.pageSize, action.payload?.page))).pipe(
+                from(api.get(APP_URLS.CONTENT_LIST(state$.value.content.filters, state$.value.content.pageSize, state$.value.content.page + 1))).pipe(
                     map(({ data }) => 
                         update_content(
                             // Maps API response to Content array

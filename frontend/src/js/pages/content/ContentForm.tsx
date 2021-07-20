@@ -157,7 +157,7 @@ function ContentForm({
                                     .map(c => c.toString(16).padStart(2, "0")).join("")
                                 api.get(APP_URLS.CHECK_DUPLICATE(sha256))
                                     .then(({ data: data }) => {
-                                        setReason("file", data.data.items ?
+                                        setReason("file", data.data ?
                                             "File is already in the system." :
                                             ""
                                         )
