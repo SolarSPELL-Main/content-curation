@@ -19,16 +19,11 @@ GROUPS = {
         "content": ["add", "delete", "change", "view"],
     },
 
-    "Content Specialist": {
-        "metadata type": ["view"],
-        "metadata": ["view"],
-        "content": ["add", "delete", "change", "view"],
-    },
-    "Metadata Specialist": {
+    "Student": {
         # django app model specific permissions
         "metadata type": ["add", "delete", "change", "view"],
         "metadata": ["add", "delete", "change", "view"],
-        "content": ["change", "view"],
+        "content": ["add", "delete", "change", "view"],
     },
 }
 
