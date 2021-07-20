@@ -29,6 +29,7 @@ type Content = {
     fileURL?: string
     originalSource?: string
     notes?: string
+    filesize?: number
     stage: Stage
 } & BaseContent<Metadata>
 

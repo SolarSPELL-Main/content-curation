@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import { GridColDef } from '@material-ui/data-grid';
+import PrettyBytes from 'pretty-bytes';
 
 import { ContentColumnSelection } from 'solarspell-react-lib';
 import { MetadataType, Content } from 'js/types';
@@ -95,6 +96,30 @@ function ColumnSelection({
                     {
                         field: 'fileURL',
                         title: 'File URL',
+                    },
+                    {
+                        field: 'filesize',
+                        title: 'File Size',
+                        column: (field, hidden) => ({
+                            field: field.field,
+                            headerName: field.title,
+                            flex: 1,
+                            disableColumnMenu: true,
+                            filterable: false,
+                            hide: hidden,
+                            valueFormatter: (params) => {
+                                const filesize = params.getValue(
+                                    params.id,
+                                    field.field
+                                ) as number;
+
+                                if (filesize != null) {
+                                    return PrettyBytes(filesize);
+                                } else {
+                                    return null;
+                                }
+                            },
+                        }),
                     },
                 ]}
                 metadataTypes={metadataTypes}
