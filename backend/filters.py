@@ -4,6 +4,7 @@ from django_filters.widgets import RangeWidget
 from .models import Content, Metadata
 from django import forms
 from django_filters.widgets import BooleanWidget
+from .enums import STATUS
 
 
 # Search Content Filter criteria
@@ -24,7 +25,7 @@ class ContentFilter(filters.FilterSet):
     reviewed_on = filters.DateFromToRangeFilter(
         widget=RangeWidget(attrs={'type': 'date'}))
     reviewed_by = filters.CharFilter(lookup_expr='icontains')
-    status = filters.AllValuesFilter()
+    status = filters.ChoiceFilter(choices=STATUS)
     published_date = filters.DateFromToRangeFilter(
         widget=RangeWidget(attrs={'type': 'date'}))
     active = filters.BooleanFilter(

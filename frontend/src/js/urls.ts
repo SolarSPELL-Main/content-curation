@@ -43,6 +43,10 @@ const APP_URLS = {
                 key === "reviewed" ? "reviewed_on" :
                 key
 
+            if (key === "status" && param === "all") {
+                return undefined
+            }
+
             if (isPlainObject(param)) {
                 if ("from" in (param as Object)) {
                     const from = (param as { from: any }).from

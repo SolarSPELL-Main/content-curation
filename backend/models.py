@@ -9,6 +9,7 @@ from django.utils.text import get_valid_filename
 
 '''Importing from other files in the project'''
 from backend.validators import validate_unique_filename, validate_unique_file
+from backend.enums import STATUS
 from content_curation import settings
 
 logger = logging.getLogger(__name__)
@@ -84,12 +85,6 @@ class Content(models.Model):
     copyright_on = models.DateField(default=datetime.date.today, null=True)
     copyright_site = models.TextField(null=True)
     original_source = models.TextField(null=True)
-    STATUS = (
-        ('Active', 'Active'),
-        ('Archive', 'Archive'),
-        ('Deaccession', 'Deaccession'),
-        ('Review', 'Review'),
-    )
     status = models.CharField(
         max_length=32,
         choices=STATUS,

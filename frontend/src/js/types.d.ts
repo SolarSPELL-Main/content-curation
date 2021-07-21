@@ -48,6 +48,7 @@ type Query = Partial<{
     active: 'all' | 'active' | 'inactive'
     duplicatable: 'all' | 'duplicatable' | 'nonduplicatable'
     metadata: Record<number,Metadata[]>
+    status: string
 }>
 
 type Toast = {
