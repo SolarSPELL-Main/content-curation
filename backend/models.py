@@ -93,7 +93,7 @@ class Content(models.Model):
     status = models.CharField(
         max_length=32,
         choices=STATUS,
-        default='Active',
+        default='Review',
     )
 
     def published_year(self):
