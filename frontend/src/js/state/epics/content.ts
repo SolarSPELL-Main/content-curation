@@ -1,4 +1,4 @@
-import { from } from 'rxjs'
+import { from, of, concat } from 'rxjs'
 import { filter, map, mergeMap, mapTo } from 'rxjs/operators'
 
 import {
@@ -7,7 +7,9 @@ import {
     add_content,
     delete_content,
     edit_content,
-    update_filters
+    update_filters,
+    start_loading,
+    stop_loading,
 } from '../content';
 
 import APP_URLS from '../../urls';
@@ -20,61 +22,69 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
     action$.pipe(
         filter(fetch_content.match),
         mergeMap(_ =>
-            from(api.get(APP_URLS.CONTENT_LIST(state$.value.content.filters))).pipe(
-                map(({ data }) => 
-                    update_content(
-                        // Maps API response to Content array
-                        data.data.map(
-                            (val: any) => <Content>({
-                                id: Number(val.id),
-                                notes: val.additional_notes,
-                                active: val.active,
-                                fileURL: val.content_file,
-                                originalSource: val.original_source,
-                                copyrighter: val.copyright_by,
-                                copyrightSite: val.copyright_site,
-                                copyright: val.copyright_notes,
-                                copyrightApproved: val.copyright_approved,
-                                creator: val.created_by,
-                                createdDate: val.created_on,
-                                reviewed: val.reviewed,
-                                reviewer: val.reviewed_by,
-                                reviewedDate: val.reviewed_on,
-                                description: val.description,
-                                fileName: val.file_name,
-                                datePublished: val.published_year,
-                                rightsStatement: val.rights_statement,
-                                status: val.status,
-                                title: val.title,
-                                // Turns API Metadata array into Record
-                                metadata: val.metadata_info.reduce(
-                                    (
-                                        accum: Record<number,Metadata[]>,
-                                        val: any,
-                                    ) => {
-                                        const key: number = val.type;
-                                        const metadata: Metadata = {
-                                            id: val.id,
-                                            name: val.name,
-                                            creator: '',
-                                            metadataType: {
-                                                name: val.type_name,
-                                                id: key,
+            concat(
+                of(start_loading()),
+                from(api.get(APP_URLS.CONTENT_LIST(state$.value.content.filters, state$.value.content.pageSize, state$.value.content.page + 1))).pipe(
+                    map(({ data }) => 
+                        update_content(
+                            // Maps API response to Content array
+                            {
+                                content: data.data.items.map(
+                                    (val: any) => <Content>({
+                                        id: Number(val.id),
+                                        notes: val.additional_notes,
+                                        active: val.active,
+                                        fileURL: val.content_file,
+                                        originalSource: val.original_source,
+                                        copyrighter: val.copyright_by,
+                                        copyrightSite: val.copyright_site,
+                                        copyright: val.copyright_notes,
+                                        copyrightApproved: val.copyright_approved,
+                                        creator: val.created_by,
+                                        createdDate: val.created_on,
+                                        reviewed: val.reviewed,
+                                        reviewer: val.reviewed_by,
+                                        reviewedDate: val.reviewed_on,
+                                        description: val.description,
+                                        fileName: val.file_name,
+                                        datePublished: val.published_year,
+                                        rightsStatement: val.rights_statement,
+                                        filesize: val.filesize,
+                                        status: val.status,
+                                        title: val.title,
+                                        // Turns API Metadata array into Record
+                                        metadata: val.metadata_info.reduce(
+                                            (
+                                                accum: Record<number,Metadata[]>,
+                                                val: any,
+                                            ) => {
+                                                const key: number = val.type;
+                                                const metadata: Metadata = {
+                                                    id: val.id,
+                                                    name: val.name,
+                                                    creator: '',
+                                                    metadataType: {
+                                                        name: val.type_name,
+                                                        id: key,
+                                                    },
+                                                };
+                                                return {
+                                                    ...accum,
+                                                    [key]: key in accum ?
+                                                        accum[key].concat(metadata)
+                                                        : [metadata]
+                                                };
                                             },
-                                        };
-                                        return {
-                                            ...accum,
-                                            [key]: key in accum ?
-                                                accum[key].concat(metadata)
-                                                : [metadata]
-                                        };
-                                    },
-                                    {} as Record<number,Metadata[]>,
+                                            {} as Record<number,Metadata[]>,
+                                        ),
+                                    }),
                                 ),
-                            }),
+                                total: data.data.total,
+                            },
                         ),
                     ),
                 ),
+                of(stop_loading()),
             ),
         ),
     )

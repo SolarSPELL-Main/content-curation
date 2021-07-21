@@ -3,6 +3,7 @@ import React from 'react';
 import {
   GridSelectionModelChangeParams,
   GridColDef,
+  GridPageChangeParams,
 } from '@material-ui/data-grid';
 
 //Importing from other files in the project
@@ -20,6 +21,15 @@ type DisplayActionProps = {
   onEdit: (item: Content, vals: Partial<Content>) => void
   onDelete: (item: Content) => void
   onSelectedDelete: (content: Content[]) => void
+  onPageSizeChange: (params: GridPageChangeParams) => void
+  onPageChange: (params: GridPageChangeParams) => void
+}
+
+type PaginationProps = {
+  pageSize: number
+  page: number
+  rowCount: number
+  loading: boolean
 }
 
 type DisplayProps = {
@@ -27,6 +37,7 @@ type DisplayProps = {
   metadataTypes: MetadataType[]
   content: Content[]
   actions: DisplayActionProps
+  pageProps: PaginationProps
   additionalColumns: GridColDef[]
 }
 
@@ -40,6 +51,7 @@ function Display({
   metadataTypes,
   content,
   actions,
+  pageProps,
   additionalColumns,
 }: DisplayProps): React.ReactElement {
   const permissions = useCCSelector(state => state.global.user.permissions);
@@ -150,10 +162,17 @@ function Display({
           },
         }}
         additionalColumns={additionalColumns}
+        additionalProps={{
+          rowsPerPageOptions: [5, 10, 25],
+          onPageSizeChange: actions.onPageSizeChange,
+          onPageChange: actions.onPageChange,
+          paginationMode: 'server',
+          ...pageProps,
+        }}
       />
     </>
   )
 }
 
-export type { DisplayActionProps };
+export type { DisplayActionProps, PaginationProps };
 export default Display;

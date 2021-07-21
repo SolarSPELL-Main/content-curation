@@ -24,12 +24,19 @@ function Page(_: PageProps): React.ReactElement {
     const metadata = useCCSelector(state => state.metadata.metadata);
     const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
     const content = useCCSelector(state => state.content.content);
+    const total = useCCSelector(state => state.content.total);
+    const loading = useCCSelector(state => state.content.loading);
+    const page = useCCSelector(state => state.content.page);
+    const pageSize = useCCSelector(state => state.content.pageSize);
 
     React.useEffect(() => {
         dispatch(GlobalActions.update_current_tab(Tabs.CONTENT));
         dispatch(MetadataActions.fetch_metadatatype());
-        dispatch(ContentActions.fetch_content());
     }, [dispatch]);
+
+    React.useEffect(() => {
+        dispatch(ContentActions.fetch_content());
+    }, [dispatch, page, pageSize]);
 
     const onEdit_ = React.useCallback(
         (content: Content, vals: Partial<Content>) => {
@@ -41,6 +48,10 @@ function Page(_: PageProps): React.ReactElement {
 
     const onDelete_ = React.useCallback(
         (content: Content) => {
+            // To avoid dealing with pages that no longer exist
+            dispatch(ContentActions.update_pagination({
+                page: 0,
+            }));
             dispatch(ContentActions.delete_content(content.id));
         },
         [dispatch],
@@ -48,6 +59,10 @@ function Page(_: PageProps): React.ReactElement {
 
     const onSelectedDelete_ = React.useCallback(
         (content: Content[]) => {
+            // To avoid dealing with pages that no longer exist
+            dispatch(ContentActions.update_pagination({
+                page: 0,
+            }));
             dispatch(ContentActions.delete_content(content.map(c => c.id)));
         },
         [dispatch],
@@ -64,6 +79,9 @@ function Page(_: PageProps): React.ReactElement {
 
     const onQueryChange = React.useCallback(
         (query: Query) => {
+            dispatch(ContentActions.update_pagination({
+                page: 0,
+            }));
             dispatch(ContentActions.update_filters(query));
         },
         [dispatch],
@@ -79,6 +97,17 @@ function Page(_: PageProps): React.ReactElement {
                     onEdit: onEdit_,
                     onDelete: onDelete_,
                     onSelectedDelete: onSelectedDelete_,
+                    onPageSizeChange: params => {
+                        dispatch(ContentActions.update_pagination({
+                            pageSize: params.pageSize,
+                            page: params.page,
+                        }));
+                    },
+                    onPageChange: params => {
+                        dispatch(ContentActions.update_pagination({
+                            page: params.page,
+                        }));
+                    },
                 },
                 Toolbar: {
                     onAdd: onAdd_,
@@ -86,6 +115,12 @@ function Page(_: PageProps): React.ReactElement {
                 Search: {
                     onQueryChange: onQueryChange,
                 }
+            }}
+            pageProps={{
+                rowCount: total,
+                page: page,
+                pageSize: pageSize,
+                loading: loading,
             }}
         />
     );
