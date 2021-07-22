@@ -6,7 +6,6 @@ import { Link as RouterLink, Route, Switch } from 'react-router-dom';
 import HomePage from './home';
 import MetadataPage, { Icon as MetadataIcon } from './metadata';
 import ContentPage, { Icon as ContentIcon } from './content';
-import ExportPage from './export';
 import ProfilePage from './profile';
 import Logo from '../../assets/logo.png';
 import CCNavBar, { TabDescriptor } from './NavBar';
@@ -65,17 +64,6 @@ const tabDescriptors: TabDescriptor[] = [
     {
         props: {
             component: RouterLink,
-            to: '/export',
-            label: 'Export',
-            value: Tabs.EXPORT,
-        },
-        // Only show this tab in NavBar if user has 'export' permission
-        slice: 'special',
-        permission: 'export',
-    },
-    {
-        props: {
-            component: RouterLink,
             to: "/profile",
             label: "Profile",
             value: Tabs.PROFILE,
@@ -101,9 +89,6 @@ export function PageBody(): React.ReactElement {
             </Route>
             <Route path={'/profile'}>
                 <ProfilePage />
-            </Route>
-            <Route path={'/export'}>
-                <ExportPage />
             </Route>
             <Route path={['/home', '/']}>
                 <HomePage icons={icons} />

@@ -15,6 +15,5 @@ export enum Tabs {
     HOME='home',
     METADATA='metadata',
     CONTENT='content',
-    EXPORT='export',
     PROFILE='profile',
 }
