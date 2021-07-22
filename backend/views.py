@@ -24,6 +24,10 @@ from .filters import ContentFilter
 import datetime
 import csv
 import datetime
+import zipfile
+import io
+
+
 
 class StandardDataView:
     # permission_classes = (IsAdminUser,)
@@ -61,7 +65,8 @@ class StandardDataView:
         # page = self.paginate_queryset(queryset)
         page = request.GET.get('page')
         if page != None:
-            paginator = QuerySetPaginator(queryset, per_page=request.GET.get('page_size'))
+            paginator = QuerySetPaginator(queryset,
+                                          per_page=request.GET.get('page_size'))
             serializer = self.get_serializer(paginator.page(page), many=True)
             return build_response({
                 'total': queryset.count(),
@@ -170,6 +175,65 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK,
                         headers=headers)
 
+    # Export content as CSV file
+    @action(methods=['get'], detail=True)
+    def zipdownloadcsv(self, request, pk=None):
+        print("zipdownloadcssv")
+        filename = 'content-curation_webapp_Content-{}.zip'.format(
+            datetime.datetime.now().strftime("%m-%d-%Y"))
+        csvfilename = 'content-curation_webapp_Content-{}.csv'.format(
+            datetime.datetime.now().strftime("%m-%d-%Y"))
+        response = HttpResponse(content_type='application/zip')
+        response['Content-Disposition'] = 'attachment; filename={}'. \
+            format(filename)
+        metadataname = ""
+        field_names = ['file_name', 'title', 'description', 'metadata_info',
+                       'active', 'copyright_notes',
+                       'rights_statement',
+                       'additional_notes', 'published_date', 'created_by',
+                       'created_on',
+                       'reviewed_by', 'reviewed_on', 'reviewed',
+                       'copyright_approved',
+                       'copyright_by', 'published_year',
+                       'original_source', 'copyright_site', 'status',
+                       'filesize']
+
+        string_buffer = io.StringIO()
+        writer = csv.DictWriter(string_buffer,fieldnames=field_names)
+        writer.writeheader()
+        content = Content.objects.filter(id=pk)
+        for con in content:
+            for obj in con.metadata_info():
+                metadataname += obj["name"] + "|" + metadataname
+            print("metadata name ", metadataname)
+            writer.writerow({'file_name': con.file_name,
+                             'title': con.title,
+                             'description': con.description,
+                             'metadata_info': metadataname,
+                             'active': con.active,
+                             'copyright_notes': con.copyright_notes,
+                             'rights_statement': con.rights_statement,
+                             'additional_notes': con.additional_notes,
+                             'published_date': con.published_date,
+                             'created_by': con.created_by,
+                             'created_on': con.created_on,
+                             'reviewed_by': con.reviewed_by,
+                             'reviewed_on': con.reviewed_on,
+                             'reviewed': con.reviewed,
+                             'copyright_approved': con.copyright_approved,
+                             'copyright_by': con.copyright_by,
+                             'published_year': con.published_year(),
+                             'original_source': con.original_source,
+                             'copyright_site': con.copyright_site,
+                             'status': con.status,
+                             'filesize': con.filesize
+                             })
+
+        with zipfile.ZipFile(response, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            zip_file.writestr(csvfilename,string_buffer.getvalue())
+
+        return response
+
 
 # Search Content Queryset
 def search(request):
@@ -178,6 +242,7 @@ def search(request):
     content_filter = ContentFilter(request.GET, queryset=content_list)
     return render(request, 'content_list.html',
                   {'filter': content_filter})
+
 
 @api_view(('GET',))
 @renderer_classes((JSONRenderer,))
