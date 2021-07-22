@@ -36,6 +36,7 @@ function Modal({
     metadataTypes,
     actions,
 }: ModalProps): React.ReactElement {
+    const [pageSize, setPageSize] = React.useState(5);
     const permissions = useCCSelector(state => state.global.user.permissions);
 
     // Users who do not have any of these permissions should not see the
@@ -69,6 +70,11 @@ function Modal({
                     componentProps: {
                         KebabMenu: actions.KebabMenu,
                         ActionPanel: actions.ActionPanel,
+                    },
+                    additionalProps: {
+                        pageSize: pageSize,
+                        onPageSizeChange: params => setPageSize(params.pageSize),
+                        rowsPerPageOptions: [5, 10, 25],
                     },
                 }}
             />
