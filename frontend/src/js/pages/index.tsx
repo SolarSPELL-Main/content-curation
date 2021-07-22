@@ -7,7 +7,7 @@ import HomePage from './home';
 import MetadataPage, { Icon as MetadataIcon } from './metadata';
 import ContentPage, { Icon as ContentIcon } from './content';
 import ExportPage from './export';
-import ProfilePage from './profile';
+import ProfilePage, { Icon as ProfileIcon } from './profile';
 import Logo from '../../assets/logo.png';
 import CCNavBar, { TabDescriptor } from './NavBar';
 import { Tabs } from '../enums';
@@ -31,6 +31,7 @@ const logoTabStyle: React.CSSProperties = {
 const icons = {
     '/metadata': MetadataIcon,
     '/content': ContentIcon,
+    '/profile': ProfileIcon,
 };
 
 // Add tab props here for it to show up on the NavBar
