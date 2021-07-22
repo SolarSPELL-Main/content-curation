@@ -50,7 +50,7 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                                         datePublished: val.published_year,
                                         rightsStatement: val.rights_statement,
                                         filesize: val.filesize,
-                                        stage: val.status,
+                                        status: val.status,
                                         title: val.title,
                                         // Turns API Metadata array into Record
                                         metadata: val.metadata_info.reduce(

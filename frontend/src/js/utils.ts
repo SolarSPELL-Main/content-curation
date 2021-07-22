@@ -74,7 +74,7 @@ export const api = axios.create({
 
     data.append('original_source', content.originalSource ?? '');
     data.append('copyright_site', content.copyrightSite ?? '');
-    data.append('status', content.stage);
+    data.append('status', content.status);
 
     // Unused fields
     // data.append('active', 'true');

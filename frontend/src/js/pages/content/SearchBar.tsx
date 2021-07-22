@@ -6,7 +6,7 @@ import {
     ContentMetadataDisplay,
 } from 'solarspell-react-lib';
 
-import { Stage } from '../../enums';
+import { Status } from '../../enums';
 import { Metadata, MetadataType, Query } from 'js/types';
 
 type SearchBarProps = {
@@ -41,12 +41,6 @@ function SearchBar({
                     width: 4,
                 },
                 {
-                    field: 'copyright',
-                    title: 'Copyright Notes',
-                    type: 'string',
-                    width: 4,
-                },
-                {
                     field: 'years',
                     title: 'Years',
                     type: 'numeric',
@@ -69,8 +63,8 @@ function SearchBar({
                     stringifier: date => format(date, 'yyyy-MM-dd'),
                 },
                 {
-                    field: 'active',
-                    title: 'Active',
+                    field: 'status',
+                    title: 'Status',
                     type: 'enum',
                     width: 2,
                     options: [
@@ -78,28 +72,7 @@ function SearchBar({
                             value: 'all',
                             title: 'All',
                         },
-                        {
-                            value: 'true',
-                            title: 'Active',
-                        },
-                        {
-                            value: 'false',
-                            title: 'Inactive',
-                        },
-                    ],
-                    initialValue: 'all',
-                },
-                {
-                    field: 'stage',
-                    title: 'Stage',
-                    type: 'enum',
-                    width: 2,
-                    options: [
-                        {
-                            value: 'all',
-                            title: 'All',
-                        },
-                        ...Object.values(Stage).map(v => ({
+                        ...Object.values(Status).map(v => ({
                             value: v,
                             title: v,
                         })),

@@ -5,7 +5,7 @@ import type {
     BaseContent
 } from "solarspell-react-lib"
 
-import type { AuthGroup, Stage } from './enums';
+import type { AuthGroup, Status } from './enums';
 
 type MetadataType = {
 
@@ -30,7 +30,7 @@ type Content = {
     originalSource?: string
     notes?: string
     filesize?: number
-    stage: Stage
+    status: Status
 } & BaseContent<Metadata>
 
 type Range<T> = {
@@ -48,6 +48,7 @@ type Query = Partial<{
     active: 'all' | 'active' | 'inactive'
     duplicatable: 'all' | 'duplicatable' | 'nonduplicatable'
     metadata: Record<number,Metadata[]>
+    status: string
 }>
 
 type Toast = {

@@ -35,11 +35,17 @@ function Page(_: PageProps): React.ReactElement {
             actions={{
                 KebabMenu: {
                     onAdd: (metadataType, name) => 
-                        dispatch(Actions.add_metadata({ name: name, type_id: metadataType.id })),
+                        dispatch(Actions.add_metadata({
+                            name: name, type_id: metadataType.id
+                        })),
                     onEditType: (metadataType, name) => 
-                        dispatch(Actions.edit_metadatatype({ name: name, type_id: metadataType.id })),
+                        dispatch(Actions.edit_metadatatype({
+                            name: name, type_id: metadataType.id
+                        })),
                     onDeleteType: (metadataType) => 
-                        dispatch(Actions.delete_metadatatype({ type_id: metadataType.id })),
+                        dispatch(Actions.delete_metadatatype({
+                            type_id: metadataType.id
+                        })),
                     onExport: (metadataType) =>
                         window.open(APP_URLS.METADATA_TYPE_EXPORT(metadataType.id)),
                 },

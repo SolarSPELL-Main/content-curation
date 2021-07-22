@@ -4,7 +4,7 @@ export enum AuthGroup {
     STUDENT='Student',
 }
 
-export enum Stage {
+export enum Status {
     ACTIVE='Active',
     ARCHIVE='Archive',
     DEACCESSION='Deaccession',
