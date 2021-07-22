@@ -6,9 +6,9 @@ export enum AuthGroup {
 
 export enum Status {
     ACTIVE='Active',
+    REVIEW='Review',
     ARCHIVE='Archive',
     DEACCESSION='Deaccession',
-    REVIEW='Review',
 }
 
 export enum Tabs {
