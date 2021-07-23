@@ -7,6 +7,8 @@ import * as GlobalActions from '../../state/global';
 import * as MetadataActions from '../../state/metadata';
 import * as ContentActions from '../../state/content';
 import { useCCDispatch, useCCSelector } from '../../hooks';
+import { api } from '../../utils';
+import APP_URLS from '../../urls';
 import { Tabs } from '../../enums';
 import { Content, Query, Metadata, MetadataType } from 'js/types';
 
@@ -90,16 +92,36 @@ function Page(_: PageProps): React.ReactElement {
 
     const onCreate = React.useCallback(
         (metadataType: MetadataType, newTags: Metadata[]) => {
-            newTags.forEach(tag =>
-                dispatch(MetadataActions.add_metadata({
-                    name: tag.name,
-                    type_id: metadataType.id,
-                }))
-            );
+            // A bit of a janky solution to make adding metadata in content
+            // metadata taggers work. Avoids complex state management, but
+            // brings in much of the epic logic into this component.
 
-            // Ideally, async action would return newly selected metadata
-            // Rxjs complicates this, though
-            return (async () => [])();
+            return new Promise<Metadata[]>(async res => {
+                try {
+                    // Simulates addMetadata epic
+                    const newMetadata = (await Promise.all(
+                        newTags.map(tag => api.post(APP_URLS.METADATA_LIST, {
+                            name: tag.name,
+                            type: metadataType.id,
+                        }))
+                    )).map(v => v.data);
+
+                    dispatch(MetadataActions.fetch_metadata({
+                        type_id: metadataType.id,
+                    }));
+
+                    res(newMetadata);
+                } catch(error) {
+                    // Simulates catchError epic
+                    dispatch(GlobalActions.show_toast({
+                        message: `${error.name} - ${error.message}`,
+                        key: Math.random(),
+                        severity: "error"
+                    }));
+                    dispatch(GlobalActions.clear_loaders());
+                    res([]);
+                }
+            });
         },
         [dispatch],
     );

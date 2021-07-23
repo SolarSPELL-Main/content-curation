@@ -76,8 +76,16 @@ export const metadataSlice = createSlice({
 
 //export these variables as consts so it can be used in the file store.ts
 export const {
-    delete_metadata, add_metadata, fetch_metadata, update_metadata,
-    edit_metadata, delete_metadatatype, add_metadatatype, fetch_metadatatype,
-    update_metadatatype, edit_metadatatype, preload_all_metadata
+    delete_metadata,
+    add_metadata,
+    fetch_metadata,
+    update_metadata,
+    edit_metadata,
+    delete_metadatatype,
+    add_metadatatype,
+    fetch_metadatatype,
+    update_metadatatype,
+    edit_metadatatype,
+    preload_all_metadata,
 } = metadataSlice.actions
 export default metadataSlice.reducer
