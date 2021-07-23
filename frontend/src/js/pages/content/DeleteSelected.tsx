@@ -1,10 +1,7 @@
 import React from 'react';
-import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import Collapse from '@material-ui/core/Collapse';
 
 import { ConfirmationDialog } from 'solarspell-react-lib';
-import { Content } from 'js/types';
 
 type DeleteSelectedProps = {
     selected: number[]
@@ -40,23 +37,23 @@ function DeleteSelected({
     );
 
     return (
-        <Collapse in={selected.length > 0}>
-            <Box mb={2} mt={2}>
-                <ConfirmationDialog
-                    open={open}
-                    title={`Delete ${selected.length} selected ${
-                        selected.length == 1 ? 'item' : 'items'
-                    }?`}
-                    size={'xs'}
-                    onClose={closeDialog}
-                />
-                <Button
-                    variant={'contained'}
-                    color={'secondary'}
-                    onClick={openDialog}
-                >Delete selected</Button>
-            </Box>
-        </Collapse>
+        <>
+            <ConfirmationDialog
+                open={open}
+                title={`Delete ${selected.length} selected ${
+                    selected.length == 1 ? 'item' : 'items'
+                }?`}
+                size={'xs'}
+                onClose={closeDialog}
+            />
+            <Button
+                variant={'contained'}
+                color={'secondary'}
+                onClick={openDialog}
+            >
+                Delete selected
+            </Button>
+        </>
     );
 }
 

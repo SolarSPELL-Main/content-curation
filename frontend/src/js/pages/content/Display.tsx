@@ -11,7 +11,6 @@ import { ContentTable } from 'solarspell-react-lib';
 import { useCCSelector } from '../../hooks';
 import { hasPermission } from '../../utils';
 import ShowForPermission from '../ShowForPermission';
-import DeleteSelected from './DeleteSelected';
 import ActionPanel from './ActionPanel';
 import ContentForm from './ContentForm';
 import Viewer from './Viewer';
@@ -20,7 +19,6 @@ import { Content, Metadata, MetadataType } from 'js/types';
 type DisplayActionProps = {
   onEdit: (item: Content, vals: Partial<Content>) => void
   onDelete: (item: Content) => void
-  onSelectedDelete: (ids: number[]) => void
   onPageSizeChange: (params: GridPageChangeParams) => void
   onPageChange: (params: GridPageChangeParams) => void
   onCreate: (
@@ -111,12 +109,6 @@ function Display({
 
   return (
     <>
-      <ShowForPermission slice={'content'} permission={'delete'}>
-        <DeleteSelected
-          selected={selected}
-          onDelete={actions.onSelectedDelete}
-        />
-      </ShowForPermission>
       <ShowForPermission slice={'content'} permission={'update'}>
         {editedContent && <ContentForm
           metadata={metadata}

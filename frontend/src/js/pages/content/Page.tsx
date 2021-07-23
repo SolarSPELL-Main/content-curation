@@ -114,7 +114,6 @@ function Page(_: PageProps): React.ReactElement {
                 Display: {
                     onEdit: onEdit_,
                     onDelete: onDelete_,
-                    onSelectedDelete: onSelectedDelete_,
                     onPageSizeChange: params => {
                         dispatch(ContentActions.update_pagination({
                             pageSize: params.pageSize,
@@ -140,6 +139,18 @@ function Page(_: PageProps): React.ReactElement {
                                 params.selectionModel as number[],
                             ));
                         }
+                    },
+                },
+                SelectedToolbar: {
+                    onDelete: ids => {
+                        // To avoid dealing with pages that no longer exist
+                        dispatch(ContentActions.update_pagination({
+                            page: 0,
+                        }));
+                        dispatch(ContentActions.delete_content(ids));
+                    },
+                    onClear: _ => {
+                        dispatch(ContentActions.clear_selected());
                     },
                 },
                 Toolbar: {

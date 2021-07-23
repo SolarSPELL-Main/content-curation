@@ -47,6 +47,16 @@ export const contentSlice = createSlice({
             state.selected = selectionDraft;
         },
 
+        clear_selected: (state, action: PayloadAction<number[]|undefined>) => {
+            const ids = action.payload;
+
+            if (ids) {
+                state.selected = state.selected.filter(id => !ids.includes(id));
+            } else {
+                state.selected = [];
+            }
+        },
+
         // For pagination
         update_pagination: (state, action: PayloadAction<{
             pageSize?: number
@@ -103,6 +113,7 @@ export const {
     update_filters,
     update_pagination,
     update_selected,
+    clear_selected,
     start_loading,
     stop_loading,
 } = contentSlice.actions;

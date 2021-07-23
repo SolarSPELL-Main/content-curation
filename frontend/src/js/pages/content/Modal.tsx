@@ -6,6 +6,7 @@ import { GridColDef } from '@material-ui/data-grid';
 //Importing from other files in the project
 import Toolbar, { ToolbarActionProps } from './Toolbar';
 import SearchBar from './SearchBar';
+import SelectedToolbar, { SelectedToolbarActions } from './SelectedToolbar';
 import Display, { DisplayActionProps, PaginationProps } from './Display';
 import { Content, Metadata, MetadataType, Query } from 'js/types';
 
@@ -16,6 +17,7 @@ type ModalProps = {
     actions: {
         Display: DisplayActionProps
         Toolbar: Omit<ToolbarActionProps,'onColumnSelect'>
+        SelectedToolbar: SelectedToolbarActions
         Search: {
             onQueryChange: (query: Query) => void
         }
@@ -48,6 +50,10 @@ function Modal({
                 metadata={metadata}
                 metadataTypes={metadataTypes}
                 onQueryChange={actions.Search.onQueryChange}
+            />
+            <SelectedToolbar
+                actions={actions.SelectedToolbar}
+                selected={selected}
             />
             <Display
                 metadata={metadata}
