@@ -94,9 +94,13 @@ class MetadataTypeViewSet(StandardDataView, viewsets.ModelViewSet):
 
     @action(detail=True, methods=["GET"])
     def metadata(self, request, pk=None):
-        return build_response(MetadataSerializer(
-            Metadata.objects.filter(type_id=pk), many=True
-        ).data)
+        queryset = Metadata.objects.filter(type_id=pk)
+        return build_response({
+            'total': queryset.count(),
+            'items': MetadataSerializer(
+                queryset, many=True
+            ).data,
+        })
 
     # Download MetadataType as CSV file
     @action(methods=['get'], detail=True)

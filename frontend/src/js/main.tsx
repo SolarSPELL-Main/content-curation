@@ -5,6 +5,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { useSnackbar } from "notistack"
 
 //Importing from other files in the project
+import Loader from './Loader';
 import { NavBar, PageBody } from './pages';
 import { fetch_user, close_toast } from "./state/global"
 import { useCCDispatch, useCCSelector, usePrevious } from './hooks';
@@ -58,6 +59,7 @@ function Main(): React.ReactElement {
     return (<>
         <NavBar />
         <PageBody />
+        <Loader />
     </>)
 }
 

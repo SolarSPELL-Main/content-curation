@@ -32,7 +32,6 @@ type PaginationProps = {
   pageSize: number
   page: number
   rowCount: number
-  loading: boolean
 }
 
 type DisplayProps = {

@@ -11,7 +11,6 @@ export const contentSlice = createSlice({
         selected: [] as number[],
         selectionModel: [] as number[],
         total: 0,
-        loading: false,
         pageSize: 5,
         page: 0,
         filters: {} as Query,
@@ -69,14 +68,6 @@ export const contentSlice = createSlice({
                 state.page = action.payload.page;
             }
         },
-
-        start_loading: (state) => {
-            state.loading = true;
-        },
-
-        stop_loading: (state) => {
-            state.loading = false;
-        },
         
         // Posts content to backend
         add_content: (_state, _action: PayloadAction<Content>) => {},
@@ -114,8 +105,6 @@ export const {
     update_pagination,
     update_selected,
     clear_selected,
-    start_loading,
-    stop_loading,
 } = contentSlice.actions;
 
 export default contentSlice.reducer;
