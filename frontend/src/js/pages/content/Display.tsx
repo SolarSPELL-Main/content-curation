@@ -23,6 +23,10 @@ type DisplayActionProps = {
   onSelectedDelete: (content: Content[]) => void
   onPageSizeChange: (params: GridPageChangeParams) => void
   onPageChange: (params: GridPageChangeParams) => void
+  onCreate: (
+    metadataType: MetadataType,
+    newTags: Metadata[],
+  ) => Promise<Metadata[]>
 }
 
 type PaginationProps = {
@@ -134,6 +138,7 @@ function Display({
           metadata={metadata}
           metadataTypes={metadataTypes}
           onSubmit={onEditSubmit_}
+          onCreate={actions.onCreate}
           open={!!editedContent}
           content={editedContent}
           type={'edit'}

@@ -8,7 +8,7 @@ import * as MetadataActions from '../../state/metadata';
 import * as ContentActions from '../../state/content';
 import { useCCDispatch, useCCSelector } from '../../hooks';
 import { Tabs } from '../../enums';
-import { Content, Query } from 'js/types';
+import { Content, Query, Metadata, MetadataType } from 'js/types';
 
 type PageProps = {
 
@@ -87,6 +87,22 @@ function Page(_: PageProps): React.ReactElement {
         [dispatch],
     );
 
+    const onCreate = React.useCallback(
+        (metadataType: MetadataType, newTags: Metadata[]) => {
+            newTags.forEach(tag =>
+                dispatch(MetadataActions.add_metadata({
+                    name: tag.name,
+                    type_id: metadataType.id,
+                }))
+            );
+
+            // Ideally, async action would return newly selected metadata
+            // Rxjs complicates this, though
+            return (async () => [])();
+        },
+        [dispatch],
+    );
+
     return (
         <Modal
             metadata={metadata}
@@ -108,9 +124,11 @@ function Page(_: PageProps): React.ReactElement {
                             page: params.page,
                         }));
                     },
+                    onCreate: onCreate,
                 },
                 Toolbar: {
                     onAdd: onAdd_,
+                    onCreate: onCreate,
                 },
                 Search: {
                     onQueryChange: onQueryChange,

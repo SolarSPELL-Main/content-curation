@@ -33,6 +33,10 @@ type ContentFormProps = {
     metadata: Record<number, Metadata[]>
     metadataTypes: MetadataType[]
     onSubmit: (content?: Partial<Content>) => void
+    onCreate: (
+        metadataType: MetadataType,
+        newTags: Metadata[],
+    ) => Promise<Metadata[]>
     open: boolean
 } & TypeProps
 
@@ -45,6 +49,7 @@ function ContentForm({
     metadata,
     metadataTypes,
     onSubmit,
+    onCreate,
     open,
     content,
     type,
@@ -323,6 +328,20 @@ function ContentForm({
                                 ...oldState,
                                 [metadataType.id]: selected,
                             }));
+                        },
+                        creatable: true,
+                        onCreate: (
+                            metadataType: MetadataType,
+                            newTags: Metadata[],
+                        ) => {
+                            return onCreate(
+                                metadataType,
+                                // Gets rid of 'Add ""' formatting
+                                newTags.map(tag => ({
+                                    ...tag,
+                                    name: tag.name.substring(5, tag.name.length - 1),
+                                }))
+                            );
                         },
                     },
                 };
