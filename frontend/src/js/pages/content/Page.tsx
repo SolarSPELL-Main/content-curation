@@ -28,6 +28,8 @@ function Page(_: PageProps): React.ReactElement {
     const loading = useCCSelector(state => state.content.loading);
     const page = useCCSelector(state => state.content.page);
     const pageSize = useCCSelector(state => state.content.pageSize);
+    const selected = useCCSelector(state => state.content.selected);
+    const selectionModel = useCCSelector(state => state.content.selectionModel);
 
     React.useEffect(() => {
         dispatch(GlobalActions.update_current_tab(Tabs.CONTENT));
@@ -58,12 +60,12 @@ function Page(_: PageProps): React.ReactElement {
     );
 
     const onSelectedDelete_ = React.useCallback(
-        (content: Content[]) => {
+        (ids: number[]) => {
             // To avoid dealing with pages that no longer exist
             dispatch(ContentActions.update_pagination({
                 page: 0,
             }));
-            dispatch(ContentActions.delete_content(content.map(c => c.id)));
+            dispatch(ContentActions.delete_content(ids));
         },
         [dispatch],
     );
@@ -125,6 +127,20 @@ function Page(_: PageProps): React.ReactElement {
                         }));
                     },
                     onCreate: onCreate,
+                    onSelectChange: params => {
+                        const ids = params.selectionModel as number[];
+
+                        // This callback seems to fire infinitely without an
+                        // equality check of some kind.
+                        const isNew = ids.some(id => !selectionModel.includes(id))
+                            || ids.length !== selectionModel.length;
+
+                        if (isNew) {
+                            dispatch(ContentActions.update_selected(
+                                params.selectionModel as number[],
+                            ));
+                        }
+                    },
                 },
                 Toolbar: {
                     onAdd: onAdd_,
@@ -140,6 +156,7 @@ function Page(_: PageProps): React.ReactElement {
                 pageSize: pageSize,
                 loading: loading,
             }}
+            selected={selected}
         />
     );
 }

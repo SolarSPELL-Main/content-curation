@@ -8,6 +8,8 @@ export const contentSlice = createSlice({
     name: 'content',
     initialState: {
         content: [] as Content[],
+        selected: [] as number[],
+        selectionModel: [] as number[],
         total: 0,
         loading: false,
         pageSize: 5,
@@ -25,6 +27,24 @@ export const contentSlice = createSlice({
         }>) => {
             state.content = action.payload.content;
             state.total = action.payload.total;
+        },
+
+        // For persisting selection
+        update_selected: (state, action: PayloadAction<number[]>) => {
+            const ids = action.payload;
+            const pageIDs = state.content.map(c => c.id);
+
+            // Find which IDs were implicitly deselected
+            const exclude = pageIDs.filter(id => !ids.includes(id));
+            
+            // Find which IDs are not yet selected
+            const unselected = pageIDs.filter(id => !state.selected.includes(id));
+            
+            const selectionDraft = state.selected.concat(unselected)
+                .filter(id => !exclude.includes(id));
+            
+            state.selectionModel = ids;
+            state.selected = selectionDraft;
         },
 
         // For pagination
@@ -52,7 +72,16 @@ export const contentSlice = createSlice({
         add_content: (_state, _action: PayloadAction<Content>) => {},
 
         // Deletes content, payload should be content ID(s)
-        delete_content: (_state, _action: PayloadAction<number|number[]>) => {},
+        delete_content: (state, action: PayloadAction<number|number[]>) => {
+            // Should remove deleted content ID(s) from selected
+            const payload = action.payload;
+
+            if (Array.isArray(payload)) {
+                state.selected = state.selected.filter(id => !payload.includes(id));
+            } else {
+                state.selected = state.selected.filter(id => id !== payload);
+            }
+        },
 
         // Puts content to backend
         edit_content: (_state, _action: PayloadAction<Content>) => {},
@@ -73,6 +102,7 @@ export const {
     edit_content,
     update_filters,
     update_pagination,
+    update_selected,
     start_loading,
     stop_loading,
 } = contentSlice.actions;

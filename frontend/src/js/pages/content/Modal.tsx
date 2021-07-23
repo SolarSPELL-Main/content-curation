@@ -21,6 +21,7 @@ type ModalProps = {
         }
     }
     pageProps: PaginationProps
+    selected: number[]
 }
 
 function Modal({
@@ -29,6 +30,7 @@ function Modal({
     content,
     actions,
     pageProps,
+    selected,
 }: ModalProps): React.ReactElement {
     const [cols, setCols] = React.useState<GridColDef[]>([]);
 
@@ -54,6 +56,7 @@ function Modal({
                 actions={actions.Display}
                 additionalColumns={cols}
                 pageProps={pageProps}
+                selected={selected}
             />
         </Box>
     );

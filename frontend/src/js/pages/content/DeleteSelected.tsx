@@ -7,8 +7,8 @@ import { ConfirmationDialog } from 'solarspell-react-lib';
 import { Content } from 'js/types';
 
 type DeleteSelectedProps = {
-    selected: Content[]
-    onDelete: (content: Content[]) => void
+    selected: number[]
+    onDelete: (content: number[]) => void
 }
 
 /**
