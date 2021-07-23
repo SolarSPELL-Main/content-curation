@@ -7,8 +7,9 @@ import Chip from "@material-ui/core/Chip"
 
 import { useCCSelector, useCCDispatch } from '../../hooks';
 import { logout, update_current_tab } from "../../state/global"
-import { AuthGroup, Tabs } from '../../enums';
+import { Tabs } from '../../enums';
 import { hasPermission } from '../../utils';
+import APP_URLS from "../../urls"
 
 export default () => {
     const dispatch = useCCDispatch()
@@ -39,6 +40,9 @@ export default () => {
                 <div style={{marginTop: "2em"}}/>
                 <Button onClick={_ => dispatch(logout())}>
                     LOGOUT
+                </Button>
+                <Button onClick={_ => window.open(APP_URLS.BUG_REPORT)}>
+                    REPORT A BUG
                 </Button>
                 {hasPermission(user.permissions, 'special', 'admin') ?
                     <Button href="/admin/">
