@@ -25,7 +25,6 @@ function Page(_: PageProps): React.ReactElement {
     const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
     const content = useCCSelector(state => state.content.content);
     const total = useCCSelector(state => state.content.total);
-    const loading = useCCSelector(state => state.content.loading);
     const page = useCCSelector(state => state.content.page);
     const pageSize = useCCSelector(state => state.content.pageSize);
     const selected = useCCSelector(state => state.content.selected);
@@ -165,7 +164,6 @@ function Page(_: PageProps): React.ReactElement {
                 rowCount: total,
                 page: page,
                 pageSize: pageSize,
-                loading: loading,
             }}
             selected={selected}
         />
