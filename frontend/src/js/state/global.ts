@@ -25,7 +25,8 @@ export const globalSlice = createSlice({
                     review: false,
                 },
             },
-        } as User
+        } as User,
+        outstandingRequests: [] as number[],
     },
     reducers: {
         update_current_tab: (state, action: PayloadAction<Tabs>) => {
@@ -93,11 +94,15 @@ export const globalSlice = createSlice({
             state.toasts = state.toasts.filter(n => n.key != action.payload)
         },
 
-        start_loader: () => {
-            console.log('Started loading!');
+        start_loader: (state, action: PayloadAction<number>) => {
+            state.outstandingRequests = state.outstandingRequests.concat(
+                action.payload,
+            );
         },
-        stop_loader: () => {
-            console.log('Finished loading!');
+        stop_loader: (state, action: PayloadAction<number>) => {
+            state.outstandingRequests = state.outstandingRequests.filter(
+                id => id !== action.payload,
+            );
         },
     },
 })

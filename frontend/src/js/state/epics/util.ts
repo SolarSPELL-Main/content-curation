@@ -1,4 +1,6 @@
-import { from, of, concat } from 'rxjs'
+import type { AnyAction, Observable } from '@reduxjs/toolkit';
+import { AxiosResponse } from 'axios';
+import { from, of, concat, ObservableInput } from 'rxjs'
 import { catchError, finalize } from 'rxjs/operators';
 
 import {
@@ -21,16 +23,17 @@ const errorCatcher = (epic: MyEpic) => (...args: Parameters<MyEpic>) =>
         })
     )
 
-const loadingFrom = <T>(promise: Promise<T>) => {
-    of(
-        start_loader(),
-        from(promise),
-    ).pipe(
-        finalize(() => stop_loader()),
-    )
+const fromWrapper = (obs: ObservableInput<AnyAction>) => {
+    const key = Date.now();
+
+    return concat(
+        of(start_loader(key)),
+        obs,
+        of(stop_loader(key)),
+    );
 }
 
 export {
     errorCatcher,
-    loadingFrom,
+    fromWrapper,
 }

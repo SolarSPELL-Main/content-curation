@@ -12,6 +12,7 @@ import {
     stop_loading,
 } from '../content';
 
+import { fromWrapper } from './util';
 import APP_URLS from '../../urls';
 import { api, contentToFormData } from '../../utils';
 
@@ -24,7 +25,14 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
         mergeMap(_ =>
             concat(
                 of(start_loading()),
-                from(api.get(APP_URLS.CONTENT_LIST(state$.value.content.filters, state$.value.content.pageSize, state$.value.content.page + 1))).pipe(
+                fromWrapper(from(api.get(
+                    APP_URLS.CONTENT_LIST(
+                        state$.value.content.filters,
+                        state$.value.content.pageSize,
+                        // Backend pagination starts at 1, not 0
+                        state$.value.content.page + 1,
+                    ),
+                )).pipe(
                     map(({ data }) => 
                         update_content(
                             // Maps API response to Content array
@@ -83,7 +91,7 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                             },
                         ),
                     ),
-                ),
+                )),
                 of(stop_loading()),
             ),
         ),
@@ -97,9 +105,9 @@ const addContentEpic: MyEpic = action$ =>
                 const content = action.payload;
                 const data = contentToFormData(content);
                 const req = api.post(APP_URLS.CONTENT_LIST(), data);
-                return from(req).pipe(
+                return fromWrapper(from(req).pipe(
                     map(_ => fetch_content())
-                );
+                ));
             }
         ),
     )
@@ -116,13 +124,13 @@ const deleteContentEpic: MyEpic = action$ =>
                 }
 
                 // Construct promises for all IDs in payload
-                return from(
+                return fromWrapper(from(
                     Promise.all(
                         payload.map(p => api.delete(APP_URLS.CONTENT(p)))
                     )
                 ).pipe(
                     map(_res => fetch_content())
-                )
+                ));
             },
         ),
     )
@@ -146,11 +154,11 @@ const editContentEpic: MyEpic = action$ =>
                 // If it is, wait until first request finishes,
                 // then make a second request for empty metadata.
                 if (metadataLength) {
-                    return from(req).pipe(
+                    return fromWrapper(from(req).pipe(
                         map(_ => fetch_content()),
-                    );
+                    ));
                 } else {
-                    return from(req).pipe(
+                    return fromWrapper(from(req).pipe(
                         mergeMap(_ => {
                             // Second request
                             // Explicitly empty metadata in JSON
@@ -165,7 +173,7 @@ const editContentEpic: MyEpic = action$ =>
                                 map(_ => fetch_content()),
                             );
                         }),
-                    );
+                    ));
                 }
             },
         ),
