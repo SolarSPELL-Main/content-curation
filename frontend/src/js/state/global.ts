@@ -104,6 +104,9 @@ export const globalSlice = createSlice({
                 id => id !== action.payload,
             );
         },
+        clear_loaders: (state) => {
+            state.outstandingRequests = [];
+        },
     },
 })
 
@@ -116,5 +119,6 @@ export const {
     logout,
     start_loader,
     stop_loader,
+    clear_loaders,
 } = globalSlice.actions
 export default globalSlice.reducer
