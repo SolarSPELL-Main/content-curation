@@ -28,7 +28,7 @@ const preloadMetadataEpic: MyEpic = (action$, state$) => action$.pipe(
     mergeMap(_ =>
         fromWrapper(from(state$.value.metadata.metadata_types).pipe(
             mergeMap(type => from(api.get(APP_URLS.METADATA_BY_TYPE(type.id))).pipe(
-                map(({ data }) => update_metadata({ [type.id]: data.data }))
+                map(({ data }) => update_metadata({ [type.id]: data.data.items }))
             ))
         ))
     )
@@ -81,7 +81,7 @@ const fetchMetadataEpic: MyEpic = action$ =>
         mergeMap(action =>
             fromWrapper(from(api.get(APP_URLS.METADATA_BY_TYPE(action.payload.type_id))).pipe(
                 map(({ data }) => update_metadata({
-                    [action.payload.type_id]: data.data
+                    [action.payload.type_id]: data.data.items,
                 }))
             ))
         ),
