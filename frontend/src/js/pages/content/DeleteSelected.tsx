@@ -44,13 +44,15 @@ function DeleteSelected({
             <Box mb={2} mt={2}>
                 <ConfirmationDialog
                     open={open}
-                    title={'Delete ALL selected content?'}
+                    title={`Delete ${selected.length} selected ${
+                        selected.length == 1 ? 'item' : 'items'
+                    }?`}
                     size={'xs'}
                     onClose={closeDialog}
                 />
                 <Button
                     variant={'contained'}
-                    color={'primary'}
+                    color={'secondary'}
                     onClick={openDialog}
                 >Delete selected</Button>
             </Box>
