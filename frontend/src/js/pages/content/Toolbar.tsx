@@ -9,6 +9,10 @@ import { Content, Metadata, MetadataType } from 'js/types';
 
 type ToolbarActionProps = {
     onAdd: (content: Content) => void
+    onCreate: (
+        metadataType: MetadataType,
+        newTags: Metadata[],
+    ) => Promise<Metadata[]>
     onColumnSelect: (cols: GridColDef[]) => void
 }
 
@@ -36,6 +40,7 @@ function Toolbar({
                         metadata={metadata}
                         metadataTypes={metadataTypes}
                         onAdd={actions.onAdd}
+                        onCreate={actions.onCreate}
                     />
                 </ShowForPermission>
             </Box>

@@ -10,6 +10,10 @@ type AddProps = {
     metadata: Record<number, Metadata[]>
     metadataTypes: MetadataType[]
     onAdd: (content: Content) => void
+    onCreate: (
+        metadataType: MetadataType,
+        newTags: Metadata[],
+    ) => Promise<Metadata[]>
 }
 
 /**
@@ -21,6 +25,7 @@ function Add({
     metadata,
     metadataTypes,
     onAdd,
+    onCreate,
 }: AddProps): React.ReactElement {
     const [open, setOpen] = React.useState(false);
     const onSubmit_ = React.useCallback(
@@ -46,6 +51,7 @@ function Add({
                 metadata={metadata}
                 metadataTypes={metadataTypes}
                 onSubmit={onSubmit_}
+                onCreate={onCreate}
                 open={open}
                 type={'add'}
             />

@@ -16,7 +16,7 @@ import {
     FormFieldDescriptor,
 } from 'solarspell-react-lib';
 import { useCCSelector } from '../../hooks';
-import { AuthGroup, Status } from '../../enums';
+import { Status } from '../../enums';
 import { Metadata, MetadataType, Content } from 'js/types';
 import APP_URLS from "../../urls"
 import { api, hasPermission } from "../../utils"
@@ -33,6 +33,10 @@ type ContentFormProps = {
     metadata: Record<number, Metadata[]>
     metadataTypes: MetadataType[]
     onSubmit: (content?: Partial<Content>) => void
+    onCreate: (
+        metadataType: MetadataType,
+        newTags: Metadata[],
+    ) => Promise<Metadata[]>
     open: boolean
 } & TypeProps
 
@@ -45,6 +49,7 @@ function ContentForm({
     metadata,
     metadataTypes,
     onSubmit,
+    onCreate,
     open,
     content,
     type,
@@ -324,6 +329,20 @@ function ContentForm({
                                 [metadataType.id]: selected,
                             }));
                         },
+                        creatable: true,
+                        onCreate: (
+                            metadataType: MetadataType,
+                            newTags: Metadata[],
+                        ) => {
+                            return onCreate(
+                                metadataType,
+                                // Gets rid of 'Add ""' formatting
+                                newTags.map(tag => ({
+                                    ...tag,
+                                    name: tag.name.substring(5, tag.name.length - 1),
+                                }))
+                            );
+                        },
                     },
                 };
             },
@@ -349,18 +368,18 @@ function ContentForm({
             ),
             propFactory: (state, _r, setter) => {
                 return {
-                    value: state['status'] ?? Status.ACTIVE,
+                    value: state['status'] ?? Status.REVIEW,
                     onChange: (
                         e: React.ChangeEvent<HTMLInputElement>
                     ) => setter(e.target.value),
                 };
             },
             field: 'status',
-            initialValue: Status.ACTIVE,
+            initialValue: Status.REVIEW,
             mb: '20px',
         } : {
             field: 'status',
-            initialValue: Status.ACTIVE,
+            initialValue: Status.REVIEW,
         }),
         (canReview ? {
             component: (props) => (

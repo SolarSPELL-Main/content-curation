@@ -1,20 +1,16 @@
 import React from 'react';
-import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import Collapse from '@material-ui/core/Collapse';
 
 import { ConfirmationDialog } from 'solarspell-react-lib';
-import { Content } from 'js/types';
 
 type DeleteSelectedProps = {
-    selected: Content[]
-    onDelete: (content: Content[]) => void
+    selected: number[]
+    onDelete: (content: number[]) => void
 }
 
 /**
  * This is a button that appears/disappears when selected is not empty.
  * It prompts the user if they are sure they want to delete selected content.
- * Collapse animation is to reduce jarring appearing/disappearing.
  * @param props Array of selected members and callback.
  * @returns A button to delete selected members of the content table.
  */
@@ -40,21 +36,23 @@ function DeleteSelected({
     );
 
     return (
-        <Collapse in={selected.length > 0}>
-            <Box mb={2} mt={2}>
-                <ConfirmationDialog
-                    open={open}
-                    title={'Delete ALL selected content?'}
-                    size={'xs'}
-                    onClose={closeDialog}
-                />
-                <Button
-                    variant={'contained'}
-                    color={'primary'}
-                    onClick={openDialog}
-                >Delete selected</Button>
-            </Box>
-        </Collapse>
+        <>
+            <ConfirmationDialog
+                open={open}
+                title={`Delete ${selected.length} selected ${
+                    selected.length == 1 ? 'item' : 'items'
+                }?`}
+                size={'xs'}
+                onClose={closeDialog}
+            />
+            <Button
+                variant={'contained'}
+                color={'secondary'}
+                onClick={openDialog}
+            >
+                Delete selected
+            </Button>
+        </>
     );
 }
 

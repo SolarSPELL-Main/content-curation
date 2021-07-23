@@ -8,7 +8,7 @@ import * as MetadataActions from '../../state/metadata';
 import * as ContentActions from '../../state/content';
 import { useCCDispatch, useCCSelector } from '../../hooks';
 import { Tabs } from '../../enums';
-import { Content, Query } from 'js/types';
+import { Content, Query, Metadata, MetadataType } from 'js/types';
 
 type PageProps = {
 
@@ -28,6 +28,8 @@ function Page(_: PageProps): React.ReactElement {
     const loading = useCCSelector(state => state.content.loading);
     const page = useCCSelector(state => state.content.page);
     const pageSize = useCCSelector(state => state.content.pageSize);
+    const selected = useCCSelector(state => state.content.selected);
+    const selectionModel = useCCSelector(state => state.content.selectionModel);
 
     React.useEffect(() => {
         dispatch(GlobalActions.update_current_tab(Tabs.CONTENT));
@@ -58,12 +60,12 @@ function Page(_: PageProps): React.ReactElement {
     );
 
     const onSelectedDelete_ = React.useCallback(
-        (content: Content[]) => {
+        (ids: number[]) => {
             // To avoid dealing with pages that no longer exist
             dispatch(ContentActions.update_pagination({
                 page: 0,
             }));
-            dispatch(ContentActions.delete_content(content.map(c => c.id)));
+            dispatch(ContentActions.delete_content(ids));
         },
         [dispatch],
     );
@@ -87,6 +89,22 @@ function Page(_: PageProps): React.ReactElement {
         [dispatch],
     );
 
+    const onCreate = React.useCallback(
+        (metadataType: MetadataType, newTags: Metadata[]) => {
+            newTags.forEach(tag =>
+                dispatch(MetadataActions.add_metadata({
+                    name: tag.name,
+                    type_id: metadataType.id,
+                }))
+            );
+
+            // Ideally, async action would return newly selected metadata
+            // Rxjs complicates this, though
+            return (async () => [])();
+        },
+        [dispatch],
+    );
+
     return (
         <Modal
             metadata={metadata}
@@ -96,7 +114,6 @@ function Page(_: PageProps): React.ReactElement {
                 Display: {
                     onEdit: onEdit_,
                     onDelete: onDelete_,
-                    onSelectedDelete: onSelectedDelete_,
                     onPageSizeChange: params => {
                         dispatch(ContentActions.update_pagination({
                             pageSize: params.pageSize,
@@ -108,9 +125,37 @@ function Page(_: PageProps): React.ReactElement {
                             page: params.page,
                         }));
                     },
+                    onCreate: onCreate,
+                    onSelectChange: params => {
+                        const ids = params.selectionModel as number[];
+
+                        // This callback seems to fire infinitely without an
+                        // equality check of some kind.
+                        const isNew = ids.some(id => !selectionModel.includes(id))
+                            || ids.length !== selectionModel.length;
+
+                        if (isNew) {
+                            dispatch(ContentActions.update_selected(
+                                params.selectionModel as number[],
+                            ));
+                        }
+                    },
+                },
+                SelectedToolbar: {
+                    onDelete: ids => {
+                        // To avoid dealing with pages that no longer exist
+                        dispatch(ContentActions.update_pagination({
+                            page: 0,
+                        }));
+                        dispatch(ContentActions.delete_content(ids));
+                    },
+                    onClear: _ => {
+                        dispatch(ContentActions.clear_selected());
+                    },
                 },
                 Toolbar: {
                     onAdd: onAdd_,
+                    onCreate: onCreate,
                 },
                 Search: {
                     onQueryChange: onQueryChange,
@@ -122,6 +167,7 @@ function Page(_: PageProps): React.ReactElement {
                 pageSize: pageSize,
                 loading: loading,
             }}
+            selected={selected}
         />
     );
 }
