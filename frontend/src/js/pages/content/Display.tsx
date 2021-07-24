@@ -17,7 +17,7 @@ import Viewer from './Viewer';
 import { Content, Metadata, MetadataType } from 'js/types';
 
 type DisplayActionProps = {
-  onEdit: (item: Content, vals: Partial<Content>) => void
+  onEdit: (item: Content, vals?: Partial<Content>) => void
   onDelete: (item: Content) => void
   onPageSizeChange: (params: GridPageChangeParams) => void
   onPageChange: (params: GridPageChangeParams) => void
@@ -88,7 +88,7 @@ function Display({
 
   const onEditSubmit_ = React.useCallback(
     (item?: Partial<Content>) => {
-      if (editedContent && item) {
+      if (editedContent) {
         actions.onEdit(editedContent, item);
       }
       setEditedContent(undefined);

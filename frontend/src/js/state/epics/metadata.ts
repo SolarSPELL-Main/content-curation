@@ -1,4 +1,4 @@
-import { from } from 'rxjs'
+import { from, of, concat } from 'rxjs'
 import { filter, map, mergeMap } from 'rxjs/operators'
 
 import {
@@ -11,6 +11,7 @@ import {
     update_metadatatype,
     add_metadatatype,
     delete_metadatatype,
+    update_newly_added,
     edit_metadatatype,
     preload_all_metadata,
 } from '../metadata'
@@ -43,7 +44,12 @@ const addMetadataEpic: MyEpic = action$ =>
                 name: action.payload.name,
                 type: action.payload.type_id
             })).pipe(
-                map(_res => fetch_metadata({ type_id: action.payload.type_id }))
+                mergeMap(res => [
+                    // Only 1 metadata created at a time, hence to convert to
+                    // array simply wrap response data in an array
+                    update_newly_added([res.data]),
+                    fetch_metadata({ type_id: action.payload.type_id }),
+                ]),
             )),
         ),
     )

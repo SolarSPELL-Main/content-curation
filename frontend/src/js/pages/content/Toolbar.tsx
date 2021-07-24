@@ -8,7 +8,7 @@ import ColumnSelection from './ColumnSelection';
 import { Content, Metadata, MetadataType } from 'js/types';
 
 type ToolbarActionProps = {
-    onAdd: (content: Content) => void
+    onAdd: (content?: Content) => void
     onCreate: (
         metadataType: MetadataType,
         newTags: Metadata[],

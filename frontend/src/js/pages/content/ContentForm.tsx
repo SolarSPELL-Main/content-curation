@@ -54,6 +54,16 @@ function ContentForm({
     content,
     type,
 }: ContentFormProps): React.ReactElement {
+    // Maps newly_added array to Record of type ids -> metadata arrays
+    const newMetadata = useCCSelector(
+        state => state.metadata.newly_added
+    ).reduce<Record<number, Metadata[]>>(
+        (accum, val) => ({
+            ...accum,
+            [val.metadataType.id]: accum[val.metadataType.id] ?
+                accum[val.metadataType.id].concat(val) : [val]
+        }), {} as Record<number, Metadata[]>,
+    );
     const permissions = useCCSelector(state => state.global.user.permissions);
     const canReview = hasPermission(permissions, 'special', 'review');
 
@@ -318,6 +328,7 @@ function ContentForm({
                 return {
                     metadataTypes: metadataTypes,
                     metadata: state['metadata'],
+                    toAdd: newMetadata,
                     options: metadata,
                     actions: {
                         onSelect: (

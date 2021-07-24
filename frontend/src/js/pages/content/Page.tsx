@@ -7,6 +7,8 @@ import * as GlobalActions from '../../state/global';
 import * as MetadataActions from '../../state/metadata';
 import * as ContentActions from '../../state/content';
 import { useCCDispatch, useCCSelector } from '../../hooks';
+import { api } from '../../utils';
+import APP_URLS from '../../urls';
 import { Tabs } from '../../enums';
 import { Content, Query, Metadata, MetadataType } from 'js/types';
 
@@ -31,6 +33,8 @@ function Page(_: PageProps): React.ReactElement {
     const selectionModel = useCCSelector(state => state.content.selectionModel);
 
     React.useEffect(() => {
+        // Avoids accidentally adding metadata added from metadata tab
+        dispatch(MetadataActions.update_newly_added([]));
         dispatch(GlobalActions.update_current_tab(Tabs.CONTENT));
         dispatch(MetadataActions.fetch_metadatatype());
     }, [dispatch]);
@@ -40,9 +44,14 @@ function Page(_: PageProps): React.ReactElement {
     }, [dispatch, page, pageSize]);
 
     const onEdit_ = React.useCallback(
-        (content: Content, vals: Partial<Content>) => {
-            vals.id = content.id;
-            dispatch(ContentActions.edit_content(vals as Content));
+        (content: Content, vals?: Partial<Content>) => {
+            if (vals) {
+                vals.id = content.id;
+                dispatch(ContentActions.edit_content(vals as Content));
+            }
+
+            // Clear newly added
+            dispatch(MetadataActions.update_newly_added([]));
         },
         [dispatch],
     );
@@ -58,22 +67,14 @@ function Page(_: PageProps): React.ReactElement {
         [dispatch],
     );
 
-    const onSelectedDelete_ = React.useCallback(
-        (ids: number[]) => {
-            // To avoid dealing with pages that no longer exist
-            dispatch(ContentActions.update_pagination({
-                page: 0,
-            }));
-            dispatch(ContentActions.delete_content(ids));
-        },
-        [dispatch],
-    );
-
     const onAdd_ = React.useCallback(
         (content?: Content) => {
             if (content) {
                 dispatch(ContentActions.add_content(content));
             }
+
+            // Clear newly added
+            dispatch(MetadataActions.update_newly_added([]));
         },
         [dispatch],
     );
@@ -90,15 +91,13 @@ function Page(_: PageProps): React.ReactElement {
 
     const onCreate = React.useCallback(
         (metadataType: MetadataType, newTags: Metadata[]) => {
-            newTags.forEach(tag =>
-                dispatch(MetadataActions.add_metadata({
+            newTags.forEach(tag => dispatch(MetadataActions.add_metadata(
+                {
                     name: tag.name,
                     type_id: metadataType.id,
-                }))
-            );
+                }
+            )));
 
-            // Ideally, async action would return newly selected metadata
-            // Rxjs complicates this, though
             return (async () => [])();
         },
         [dispatch],
