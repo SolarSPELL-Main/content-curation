@@ -33,6 +33,8 @@ function Page(_: PageProps): React.ReactElement {
     const selectionModel = useCCSelector(state => state.content.selectionModel);
 
     React.useEffect(() => {
+        // Avoids accidentally adding metadata added from metadata tab
+        dispatch(MetadataActions.update_newly_added([]));
         dispatch(GlobalActions.update_current_tab(Tabs.CONTENT));
         dispatch(MetadataActions.fetch_metadatatype());
     }, [dispatch]);
@@ -42,9 +44,14 @@ function Page(_: PageProps): React.ReactElement {
     }, [dispatch, page, pageSize]);
 
     const onEdit_ = React.useCallback(
-        (content: Content, vals: Partial<Content>) => {
-            vals.id = content.id;
-            dispatch(ContentActions.edit_content(vals as Content));
+        (content: Content, vals?: Partial<Content>) => {
+            if (vals) {
+                vals.id = content.id;
+                dispatch(ContentActions.edit_content(vals as Content));
+            }
+
+            // Clear newly added
+            dispatch(MetadataActions.update_newly_added([]));
         },
         [dispatch],
     );
@@ -60,22 +67,14 @@ function Page(_: PageProps): React.ReactElement {
         [dispatch],
     );
 
-    const onSelectedDelete_ = React.useCallback(
-        (ids: number[]) => {
-            // To avoid dealing with pages that no longer exist
-            dispatch(ContentActions.update_pagination({
-                page: 0,
-            }));
-            dispatch(ContentActions.delete_content(ids));
-        },
-        [dispatch],
-    );
-
     const onAdd_ = React.useCallback(
         (content?: Content) => {
             if (content) {
                 dispatch(ContentActions.add_content(content));
             }
+
+            // Clear newly added
+            dispatch(MetadataActions.update_newly_added([]));
         },
         [dispatch],
     );
@@ -92,36 +91,14 @@ function Page(_: PageProps): React.ReactElement {
 
     const onCreate = React.useCallback(
         (metadataType: MetadataType, newTags: Metadata[]) => {
-            // A bit of a janky solution to make adding metadata in content
-            // metadata taggers work. Avoids complex state management, but
-            // brings in much of the epic logic into this component.
-
-            return new Promise<Metadata[]>(async res => {
-                try {
-                    // Simulates addMetadata epic
-                    const newMetadata = (await Promise.all(
-                        newTags.map(tag => api.post(APP_URLS.METADATA_LIST, {
-                            name: tag.name,
-                            type: metadataType.id,
-                        }))
-                    )).map(v => v.data);
-
-                    dispatch(MetadataActions.fetch_metadata({
-                        type_id: metadataType.id,
-                    }));
-
-                    res(newMetadata);
-                } catch(error) {
-                    // Simulates catchError epic
-                    dispatch(GlobalActions.show_toast({
-                        message: `${error.name} - ${error.message}`,
-                        key: Math.random(),
-                        severity: "error"
-                    }));
-                    dispatch(GlobalActions.clear_loaders());
-                    res([]);
+            newTags.forEach(tag => dispatch(MetadataActions.add_metadata(
+                {
+                    name: tag.name,
+                    type_id: metadataType.id,
                 }
-            });
+            )));
+
+            return (async () => [])();
         },
         [dispatch],
     );

@@ -11,6 +11,7 @@ export const metadataSlice = createSlice({
     initialState: {
         metadata_types: [] as MetadataType[],
         metadata: {} as MetadataByType,
+        newly_added: [] as Metadata[],
     },
     reducers: {
         
@@ -66,6 +67,10 @@ export const metadataSlice = createSlice({
             type_id: number
         }>) => {},
 
+        update_newly_added: (state, action: PayloadAction<Metadata[]>) => {
+            state.newly_added = action.payload;
+        },
+
         //edit a metadata type from the application state
         edit_metadatatype: (_state, _action: PayloadAction<{
             name: string
@@ -85,6 +90,7 @@ export const {
     add_metadatatype,
     fetch_metadatatype,
     update_metadatatype,
+    update_newly_added,
     edit_metadatatype,
     preload_all_metadata,
 } = metadataSlice.actions

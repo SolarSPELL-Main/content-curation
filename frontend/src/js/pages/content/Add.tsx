@@ -9,7 +9,7 @@ import { Metadata, MetadataType, Content } from 'js/types';
 type AddProps = {
     metadata: Record<number, Metadata[]>
     metadataTypes: MetadataType[]
-    onAdd: (content: Content) => void
+    onAdd: (content?: Content) => void
     onCreate: (
         metadataType: MetadataType,
         newTags: Metadata[],
@@ -31,9 +31,7 @@ function Add({
     const onSubmit_ = React.useCallback(
         (content?: Partial<Content>) => {
             setOpen(false);
-            if (content) {
-                onAdd(content as Content);
-            }
+            onAdd(content ? content as Content : undefined);
         },
         [onAdd, setOpen],
     );
