@@ -10,6 +10,10 @@ import {
     update_filters,
 } from '../content';
 
+import {
+    show_toast,
+} from '../global';
+
 import { fromWrapper } from './util';
 import APP_URLS from '../../urls';
 import { api, contentToFormData } from '../../utils';
@@ -102,7 +106,11 @@ const addContentEpic: MyEpic = action$ =>
                 const req = api.post(APP_URLS.CONTENT_LIST(), data);
                 return fromWrapper(from(req).pipe(
                     map(_ => fetch_content())
-                ));
+                ), show_toast({
+                    message: `Added content "${action.payload.title}"`,
+                    key: Math.random(),
+                    severity: 'success',
+                }));
             }
         ),
     )
@@ -125,7 +133,13 @@ const deleteContentEpic: MyEpic = action$ =>
                     )
                 ).pipe(
                     map(_res => fetch_content())
-                ));
+                ), show_toast({
+                    message: `Deleted ${payload.length} item` + (
+                        payload.length === 1 ? '' : 's'
+                    ),
+                    key: Math.random(),
+                    severity: 'success',
+                }));
             },
         ),
     )
@@ -151,7 +165,11 @@ const editContentEpic: MyEpic = action$ =>
                 if (metadataLength) {
                     return fromWrapper(from(req).pipe(
                         map(_ => fetch_content()),
-                    ));
+                    ), show_toast({
+                        message: `Edited content "${content.title}"`,
+                        key: Math.random(),
+                        severity: 'success',
+                    }));
                 } else {
                     return fromWrapper(from(req).pipe(
                         mergeMap(_ => {
@@ -168,7 +186,11 @@ const editContentEpic: MyEpic = action$ =>
                                 map(_ => fetch_content()),
                             );
                         }),
-                    ));
+                    ), show_toast({
+                        message: `Edited content "${content.title}"`,
+                        key: Math.random(),
+                        severity: 'success',
+                    }));
                 }
             },
         ),

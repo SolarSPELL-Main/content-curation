@@ -15,7 +15,8 @@ const APP_URLS = {
     //to make it easier to support pagination later down the road
     METADATA_BY_TYPE: (id: number) => `/api/metadata_types/${id}/metadata/`,
     METADATA_LIST: `/api/metadata/`,
-    METADATA_TYPES: `/api/metadata_types/`,
+    // To ensure relatively consistent ordering, sort query param included
+    METADATA_TYPES: `/api/metadata_types/?sort_by=name`,
     METADATA_TYPE: (id: number) => `/api/metadata_types/${id}/`,
     METADATA_TYPE_EXPORT: (id: number) => `/api/metadata_types/${id}/downloadAsCSV/`,
     CONTENT_LIST: (
