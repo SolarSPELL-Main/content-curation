@@ -1,6 +1,9 @@
-import isString from "lodash/isString"
+import type { GridSortModel } from '@material-ui/data-grid';
 import type { Query, Metadata } from "js/types"
-import {isArray, isNumber, isPlainObject} from "lodash"
+import {isArray, isNumber, isPlainObject, isString } from "lodash"
+
+import { CONTENT_FIELDS } from './utils';
+
 //All hardcoded end-points live in this file
 const APP_URLS = {
     BUG_REPORT: "https://docs.google.com/forms/d/e/"
@@ -15,18 +18,37 @@ const APP_URLS = {
     METADATA_TYPES: `/api/metadata_types/`,
     METADATA_TYPE: (id: number) => `/api/metadata_types/${id}/`,
     METADATA_TYPE_EXPORT: (id: number) => `/api/metadata_types/${id}/downloadAsCSV/`,
-    CONTENT_LIST: (params?: Query, pageSize?: number, page?: number) => {
-        let page_params: string[] = [];
+    CONTENT_LIST: (
+        params?: Query,
+        pageSize?: number,
+        page?: number,
+        sortModel?: GridSortModel,
+    ) => {
+        let extra_params: string[] = [];
 
+        // Pagination query params
         if (pageSize != null && page != null) {
-            page_params = [`page_size=${pageSize}`, `page=${page}`]
+            extra_params = extra_params.concat(
+                [`page_size=${pageSize}`, `page=${page}`]
+            );
+        }
+
+        // Sorting query params
+        if (sortModel != null) {
+            extra_params = extra_params.concat(
+                sortModel.map(field => field.sort === 'asc' ?
+                    `sort_by=${CONTENT_FIELDS[field.field]}`
+                    :
+                    `sort_by=-${CONTENT_FIELDS[field.field]}`
+                ),
+            );
         }
 
         if (params == null) {
-            if (page_params.length === 0) {
+            if (extra_params.length === 0) {
                 return "/api/content/"
             } else {
-                return "/api/content/?" + page_params.join("&")
+                return "/api/content/?" + extra_params.join("&")
             }
         }
 
@@ -82,7 +104,7 @@ const APP_URLS = {
             }
 
             return undefined
-        }).filter(x => x !== undefined).concat(page_params);
+        }).filter(x => x !== undefined).concat(extra_params);
         return `/api/content/` + (query_params.length > 0 ?
             "?" + query_params.join("&") : "")
         

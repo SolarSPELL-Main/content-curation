@@ -27,6 +27,7 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                     state$.value.content.pageSize,
                     // Backend pagination starts at 1, not 0
                     state$.value.content.page + 1,
+                    state$.value.content.sortModel,
                 ),
             )).pipe(
                 map(({ data }) => 

@@ -7,8 +7,6 @@ import * as GlobalActions from '../../state/global';
 import * as MetadataActions from '../../state/metadata';
 import * as ContentActions from '../../state/content';
 import { useCCDispatch, useCCSelector } from '../../hooks';
-import { api } from '../../utils';
-import APP_URLS from '../../urls';
 import { Tabs } from '../../enums';
 import { Content, Query, Metadata, MetadataType } from 'js/types';
 
@@ -31,6 +29,7 @@ function Page(_: PageProps): React.ReactElement {
     const pageSize = useCCSelector(state => state.content.pageSize);
     const selected = useCCSelector(state => state.content.selected);
     const selectionModel = useCCSelector(state => state.content.selectionModel);
+    const sortModel = useCCSelector(state => state.content.sortModel);
 
     React.useEffect(() => {
         // Avoids accidentally adding metadata added from metadata tab
@@ -41,7 +40,7 @@ function Page(_: PageProps): React.ReactElement {
 
     React.useEffect(() => {
         dispatch(ContentActions.fetch_content());
-    }, [dispatch, page, pageSize]);
+    }, [dispatch, page, pageSize, sortModel]);
 
     const onEdit_ = React.useCallback(
         (content: Content, vals?: Partial<Content>) => {
@@ -163,6 +162,11 @@ function Page(_: PageProps): React.ReactElement {
                 rowCount: total,
                 page: page,
                 pageSize: pageSize,
+            }}
+            sortProps={{
+                sortModel: sortModel,
+                onSortModelChange: params => 
+                    dispatch(ContentActions.update_sortmodel(params.sortModel)),
             }}
             selected={selected}
         />

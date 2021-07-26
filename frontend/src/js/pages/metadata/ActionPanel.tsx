@@ -51,6 +51,8 @@ function ActionPanel({
                     onAction={onAction}
                     textInputTitle={`Edit Metadata ${metadata.name}`}
                     textInputLabel={'Metadata Name'}
+                    textInputDefaultValue={metadata.name}
+                    allowEnter
                 />
             </ShowForPermission>
             <ShowForPermission slice={'metadata'} permission={'delete'}>
