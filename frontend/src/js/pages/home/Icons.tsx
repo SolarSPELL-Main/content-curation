@@ -1,15 +1,12 @@
 //Importing from outside the project
 import React from 'react';
-import Grid from '@material-ui/core/Grid';
+import Grid, { GridSize } from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
 import { Link } from 'react-router-dom';
 
 type IconsProps = {
     icons: Record<string, any>
 }
-
-const containerStyle: React.CSSProperties = {
-    padding: '20px',
-};
 
 const iconStyle: React.CSSProperties = {
     width: '200px',
@@ -24,15 +21,17 @@ function Icons({
     icons,
 }: IconsProps): React.ReactElement {
     return (
-        <Grid container spacing={5} justify={'center'} style={containerStyle}>
-            {Object.entries(icons).map((entry, idx: number) => (
-                <Grid item key={idx} xs>
-                    <Link to={entry[0]} style={iconStyle} >
-                        <img src={entry[1]} style={iconStyle} />
-                    </Link>
-                </Grid>
-            ))}
-        </Grid>
+        <Box p={2}>
+            <Grid container justify={'center'}>
+                {Object.entries(icons).map((entry, idx: number) => (
+                    <Grid item key={idx} xs={4}>
+                        <Link to={entry[0]} style={iconStyle} >
+                            <img src={entry[1]} style={iconStyle} />
+                        </Link>
+                    </Grid>
+                ))}
+            </Grid>
+        </Box>
     );
 }
 

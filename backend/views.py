@@ -63,7 +63,14 @@ class StandardDataView:
         queryset = self.filter_queryset(self.get_queryset())
         # print("list ",queryset)
         # page = self.paginate_queryset(queryset)
+        
+        sort_model = request.GET.getlist('sort_by')
+
+        if sort_model != None:
+            queryset = queryset.order_by(*sort_model)
+
         page = request.GET.get('page')
+
         if page != None:
             paginator = QuerySetPaginator(queryset,
                                           per_page=request.GET.get('page_size'))
