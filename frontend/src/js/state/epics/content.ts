@@ -72,7 +72,6 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                                             const metadata: Metadata = {
                                                 id: val.id,
                                                 name: val.name,
-                                                creator: '',
                                                 metadataType: {
                                                     name: val.type_name,
                                                     id: key,
