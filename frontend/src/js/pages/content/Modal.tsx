@@ -73,10 +73,12 @@ function Modal({
                 metadataTypes={metadataTypes}
                 onQueryChange={actions.Search.onQueryChange}
             />
+            <div style={{marginTop: ".5em"}}/>
             <SelectedToolbar
                 actions={actions.SelectedToolbar}
                 selected={selected}
             />
+            <div style={{marginTop: ".5em"}}/>
             <Display
                 metadata={metadata}
                 metadataTypes={metadataTypes}
