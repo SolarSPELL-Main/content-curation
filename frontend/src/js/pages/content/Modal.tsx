@@ -1,5 +1,5 @@
 //Importing from outside the project
-import React from 'react';
+import React, {useState} from 'react';
 import Box from '@material-ui/core/Box';
 import { GridColDef } from '@material-ui/data-grid';
 
@@ -9,6 +9,7 @@ import SearchBar from './SearchBar';
 import SelectedToolbar, { SelectedToolbarActions } from './SelectedToolbar';
 import Display, { DisplayActionProps, PaginationProps } from './Display';
 import { Content, Metadata, MetadataType, Query } from 'js/types';
+import Cookies from 'js-cookie';
 
 type ModalProps = {
     metadata: Record<number, Metadata[]>
@@ -34,8 +35,22 @@ function Modal({
     pageProps,
     selected,
 }: ModalProps): React.ReactElement {
-    const [cols, setCols] = React.useState<GridColDef[]>([]);
+    const [cols, setCols] = useState<GridColDef[]>([])
+    React.useEffect(() => {
+        Cookies.set("columns", JSON.stringify(cols.reduce((obj, col) => {
+            if (!col.hide) {
+                obj[col.field] = true
+            }
+            return obj
+        }, {} as Record<string, boolean>)), {
+            expires: 365
+        })
+    }, [cols])
 
+    const [initialColumns] = useState<Record<string, boolean>>(
+        JSON.parse(Cookies.get("columns") ?? "{}")
+    )
+    
     return (
         <Box p={2}>
             <Toolbar
@@ -43,8 +58,9 @@ function Modal({
                 metadataTypes={metadataTypes}
                 actions={{
                     ...actions.Toolbar,
-                    onColumnSelect: setCols,
+                    onColumnSelect: setCols
                 }}
+                initialColumns={initialColumns}
             />
             <SearchBar
                 metadata={metadata}

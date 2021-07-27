@@ -20,6 +20,7 @@ type ToolbarProps = {
     metadata: Record<number, Metadata[]>
     metadataTypes: MetadataType[]
     actions: ToolbarActionProps
+    initialColumns: Record<string, boolean>
 }
 
 /**
@@ -31,6 +32,7 @@ function Toolbar({
     metadata,
     metadataTypes,
     actions,
+    initialColumns
 }: ToolbarProps): React.ReactElement {
     return (
         <Box mb={2} display={'flex'} justifyContent={'space-between'}>
@@ -48,6 +50,7 @@ function Toolbar({
                 <ColumnSelection
                     metadataTypes={metadataTypes}
                     onClose={actions.onColumnSelect}
+                    initialColumns={initialColumns}
                 />
             </Box>
         </Box>

@@ -91,7 +91,7 @@ export const contentSlice = createSlice({
             state, action: PayloadAction<Query>
         ) => {
             state.filters = action.payload
-        }
+        },
     },
 });
 

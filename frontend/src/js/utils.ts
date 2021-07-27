@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Cookies from 'js-cookie';
 import { Content, CRUD, Permissions, SpecialPermissions } from 'js/types';
 
 /*
@@ -22,7 +23,7 @@ export const getCookie = (name: string): string | null => {
 }
 
 export const api = axios.create({
-    headers: { 'X-CSRFToken': getCookie("csrftoken") }
+    headers: { 'X-CSRFToken': Cookies.get("csrftoken") }
 })
 
 /**

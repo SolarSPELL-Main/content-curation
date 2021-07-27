@@ -1,5 +1,6 @@
 import { from } from 'rxjs'
-import { filter, map, mergeMap, mapTo } from 'rxjs/operators'
+import { filter, map, mergeMap, mapTo, tap } from 'rxjs/operators'
+import Cookies from "js-cookie"
 
 import {
     fetch_content,
@@ -178,6 +179,7 @@ const updateFiltersEpic: MyEpic = action$ =>
         filter(update_filters.match),
         mapTo(fetch_content())
     )
+
 
 export {
     fetchContentEpic,
