@@ -19,7 +19,7 @@ function Viewer(props: ViewerProps): React.ReactElement {
     return (
         <ContentViewer
             {...props}
-            items={[
+            fields={[
                 {
                     title: 'Title',
                     field: 'title',
@@ -60,10 +60,7 @@ function Viewer(props: ViewerProps): React.ReactElement {
             ]}
             fileDisplay={{
                 field: 'fileURL',
-                // Currently unused
-                    formatter: (url: string) => {
-                        console.log(url)
-                        return (
+                formatter: (url: string) => (
                     <object
                         width={600}
                         height={600}
@@ -71,7 +68,7 @@ function Viewer(props: ViewerProps): React.ReactElement {
                     >
                         <i>File display</i>
                     </object>
-                )}
+                )
             }}
         />
     )
