@@ -26,7 +26,8 @@ import csv
 import datetime
 import zipfile
 import io
-
+import os
+from os.path import basename
 
 
 class StandardDataView:
@@ -190,6 +191,7 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
     @action(methods=['get'], detail=True)
     def zipdownloadcsv(self, request, pk=None):
         print("zipdownloadcssv")
+        zip_subdir = "media/contents/media/contents/"
         filename = 'content-curation_webapp_Content-{}.zip'.format(
             datetime.datetime.now().strftime("%m-%d-%Y"))
         csvfilename = 'content-curation_webapp_Content-{}.csv'.format(
@@ -210,13 +212,12 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
                        'filesize']
 
         string_buffer = io.StringIO()
-        writer = csv.DictWriter(string_buffer,fieldnames=field_names)
+        writer = csv.DictWriter(string_buffer, fieldnames=field_names)
         writer.writeheader()
         content = Content.objects.filter(id=pk)
         for con in content:
             for obj in con.metadata_info():
                 metadataname += obj["name"] + "|" + metadataname
-            print("metadata name ", metadataname)
             writer.writerow({'file_name': con.file_name,
                              'title': con.title,
                              'description': con.description,
@@ -239,10 +240,21 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
                              'status': con.status,
                              'filesize': con.filesize
                              })
+            try:
+                with zipfile.ZipFile(response, 'w', zipfile.ZIP_DEFLATED,
+                                     allowZip64=True) as zip_file:
+                    zip_file.writestr(csvfilename, string_buffer.getvalue())
+                    for folderName, subfolders, filenames in os.walk(
+                            zip_subdir):
+                        for filename in filenames:
+                            if filename == con.file_name:
+                                filePath = os.path.join(folderName, filename)
+                                zip_file.write(filePath, basename(filePath))
 
-        with zipfile.ZipFile(response, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-            zip_file.writestr(csvfilename,string_buffer.getvalue())
-
+            except zipfile.BadZipfile:
+                print("Error : Bad Zip file")
+            except zipfile.LargeZipFile:
+                print("Error: Large Zip file")
         return response
 
 
