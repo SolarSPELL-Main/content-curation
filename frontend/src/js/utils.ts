@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { Content, CRUD, Permissions, SpecialPermissions } from 'js/types';
+import Cookies from 'js-cookie';
+import type { Content, CRUD, Permissions, SpecialPermissions } from 'js/types';
 
 /*
  * Taken from Django documentation https://docs.djangoproject.com/en/3.2/ref/csrf/
@@ -22,7 +23,15 @@ export const getCookie = (name: string): string | null => {
 }
 
 export const api = axios.create({
-    headers: { 'X-CSRFToken': getCookie("csrftoken") }
+    headers: { 'X-CSRFToken': Cookies.get("csrftoken") }
+})
+
+api.interceptors.response.use(r => r, err => {
+    const code = err?.response?.status
+    if (code === 403) {
+        window.location.href = "/accounts/google/login/"
+    }
+    throw err
 })
 
 /**
@@ -167,4 +176,30 @@ export const hasPermission = (
     } else {
         return permissions[slice][permission as keyof SpecialPermissions];
     }
+}
+
+// Maps frontend content field names to backend content field names
+export const CONTENT_FIELDS: Record<string,string> = {
+    id: 'id',
+    notes: 'additional_notes',
+    active: 'active',
+    fileURL: 'content_file',
+    originalSource: 'original_source',
+    copyrighter: 'copyright_by',
+    copyrightSite: 'copyright_site',
+    copyright: 'copyright_notes',
+    copyrightApproved: 'copyright_approved',
+    creator: 'created_by',
+    createdDate: 'created_on',
+    reviewed: 'reviewed',
+    reviewer: 'reviewed_by',
+    reviewedDate: 'reviewed_on',
+    description: 'description',
+    fileName: 'file_name',
+    datePublished: 'published_date',
+    rightsStatement: 'rights_statement',
+    filesize: 'filesize',
+    status: 'status',
+    title: 'title',
+    metadata: 'metadata',
 }

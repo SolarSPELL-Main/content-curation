@@ -1,6 +1,9 @@
 //Importing from outside the project
 import React from 'react';
 import Box from '@material-ui/core/Box';
+import type {
+    GridSortModel,
+} from '@material-ui/data-grid';
 
 //Importing from other files in the project
 import { MetadataDisplay } from 'solarspell-react-lib';
@@ -36,6 +39,11 @@ function Modal({
     metadataTypes,
     actions,
 }: ModalProps): React.ReactElement {
+    const [pageSize, setPageSize] = React.useState(5);
+    const [sortModel, setSortModel] = React.useState<GridSortModel>([{
+        field: 'name',
+        sort: 'asc',
+    }]);
     const permissions = useCCSelector(state => state.global.user.permissions);
 
     // Users who do not have any of these permissions should not see the
@@ -69,6 +77,14 @@ function Modal({
                     componentProps: {
                         KebabMenu: actions.KebabMenu,
                         ActionPanel: actions.ActionPanel,
+                    },
+                    additionalProps: {
+                        pageSize: pageSize,
+                        onPageSizeChange: params => setPageSize(params.pageSize),
+                        rowsPerPageOptions: [5, 10, 25],
+                        sortModel: sortModel,
+                        onSortModelChange: params => 
+                            setSortModel(params.sortModel),
                     },
                 }}
             />

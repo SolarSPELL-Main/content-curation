@@ -9,11 +9,13 @@ import { MetadataType, Content } from 'js/types';
 type ColumnSelectionProps = {
     onClose: (cols: GridColDef[]) => void
     metadataTypes: MetadataType[]
+    initialColumns: Record<string, boolean>
 }
 
 function ColumnSelection({
     onClose,
     metadataTypes,
+    initialColumns
 }: ColumnSelectionProps): React.ReactElement {
     const [open, setOpen] = React.useState(false);
 
@@ -123,6 +125,7 @@ function ColumnSelection({
                     },
                 ]}
                 metadataTypes={metadataTypes}
+                initialState={initialColumns}
             />
         </>
     );

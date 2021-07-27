@@ -8,7 +8,7 @@ import * as MetadataActions from '../../state/metadata';
 import * as ContentActions from '../../state/content';
 import { useCCDispatch, useCCSelector } from '../../hooks';
 import { Tabs } from '../../enums';
-import { Content, Query } from 'js/types';
+import { Content, Query, Metadata, MetadataType } from 'js/types';
 
 type PageProps = {
 
@@ -25,23 +25,32 @@ function Page(_: PageProps): React.ReactElement {
     const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
     const content = useCCSelector(state => state.content.content);
     const total = useCCSelector(state => state.content.total);
-    const loading = useCCSelector(state => state.content.loading);
     const page = useCCSelector(state => state.content.page);
     const pageSize = useCCSelector(state => state.content.pageSize);
+    const selected = useCCSelector(state => state.content.selected);
+    const selectionModel = useCCSelector(state => state.content.selectionModel);
+    const sortModel = useCCSelector(state => state.content.sortModel);
 
     React.useEffect(() => {
+        // Avoids accidentally adding metadata added from metadata tab
+        dispatch(MetadataActions.update_newly_added([]));
         dispatch(GlobalActions.update_current_tab(Tabs.CONTENT));
         dispatch(MetadataActions.fetch_metadatatype());
     }, [dispatch]);
 
     React.useEffect(() => {
         dispatch(ContentActions.fetch_content());
-    }, [dispatch, page, pageSize]);
+    }, [dispatch, page, pageSize, sortModel]);
 
     const onEdit_ = React.useCallback(
-        (content: Content, vals: Partial<Content>) => {
-            vals.id = content.id;
-            dispatch(ContentActions.edit_content(vals as Content));
+        (content: Content, vals?: Partial<Content>) => {
+            if (vals) {
+                vals.id = content.id;
+                dispatch(ContentActions.edit_content(vals as Content));
+            }
+
+            // Clear newly added
+            dispatch(MetadataActions.update_newly_added([]));
         },
         [dispatch],
     );
@@ -57,22 +66,14 @@ function Page(_: PageProps): React.ReactElement {
         [dispatch],
     );
 
-    const onSelectedDelete_ = React.useCallback(
-        (content: Content[]) => {
-            // To avoid dealing with pages that no longer exist
-            dispatch(ContentActions.update_pagination({
-                page: 0,
-            }));
-            dispatch(ContentActions.delete_content(content.map(c => c.id)));
-        },
-        [dispatch],
-    );
-
     const onAdd_ = React.useCallback(
         (content?: Content) => {
             if (content) {
                 dispatch(ContentActions.add_content(content));
             }
+
+            // Clear newly added
+            dispatch(MetadataActions.update_newly_added([]));
         },
         [dispatch],
     );
@@ -87,6 +88,20 @@ function Page(_: PageProps): React.ReactElement {
         [dispatch],
     );
 
+    const onCreate = React.useCallback(
+        (metadataType: MetadataType, newTags: Metadata[]) => {
+            newTags.forEach(tag => dispatch(MetadataActions.add_metadata(
+                {
+                    name: tag.name,
+                    type_id: metadataType.id,
+                }
+            )));
+
+            return (async () => [])();
+        },
+        [dispatch],
+    );
+
     return (
         <Modal
             metadata={metadata}
@@ -96,7 +111,6 @@ function Page(_: PageProps): React.ReactElement {
                 Display: {
                     onEdit: onEdit_,
                     onDelete: onDelete_,
-                    onSelectedDelete: onSelectedDelete_,
                     onPageSizeChange: params => {
                         dispatch(ContentActions.update_pagination({
                             pageSize: params.pageSize,
@@ -108,9 +122,37 @@ function Page(_: PageProps): React.ReactElement {
                             page: params.page,
                         }));
                     },
+                    onCreate: onCreate,
+                    onSelectChange: params => {
+                        const ids = params.selectionModel as number[];
+
+                        // This callback seems to fire infinitely without an
+                        // equality check of some kind.
+                        const isNew = ids.some(id => !selectionModel.includes(id))
+                            || ids.length !== selectionModel.length;
+
+                        if (isNew) {
+                            dispatch(ContentActions.update_selected(
+                                params.selectionModel as number[],
+                            ));
+                        }
+                    },
+                },
+                SelectedToolbar: {
+                    onDelete: ids => {
+                        // To avoid dealing with pages that no longer exist
+                        dispatch(ContentActions.update_pagination({
+                            page: 0,
+                        }));
+                        dispatch(ContentActions.delete_content(ids));
+                    },
+                    onClear: _ => {
+                        dispatch(ContentActions.clear_selected());
+                    },
                 },
                 Toolbar: {
                     onAdd: onAdd_,
+                    onCreate: onCreate,
                 },
                 Search: {
                     onQueryChange: onQueryChange,
@@ -120,8 +162,13 @@ function Page(_: PageProps): React.ReactElement {
                 rowCount: total,
                 page: page,
                 pageSize: pageSize,
-                loading: loading,
             }}
+            sortProps={{
+                sortModel: sortModel,
+                onSortModelChange: params => 
+                    dispatch(ContentActions.update_sortmodel(params.sortModel)),
+            }}
+            selected={selected}
         />
     );
 }

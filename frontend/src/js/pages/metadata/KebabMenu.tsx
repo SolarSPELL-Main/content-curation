@@ -79,7 +79,9 @@ function KebabMenu({
                         onAction={onEditType_}
                         textInputTitle={`Edit Metadata Type ${metadataType.name}`}
                         textInputLabel={'Metadata Type Name'}
+                        textInputDefaultValue={metadataType.name}
                         textInputSize={'xs'}
+                        allowEnter
                     />
                 </ShowForPermission>
                 <ShowForPermission slice={'metadata'} permission={'delete'}>

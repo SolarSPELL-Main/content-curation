@@ -16,7 +16,7 @@ import {
     FormFieldDescriptor,
 } from 'solarspell-react-lib';
 import { useCCSelector } from '../../hooks';
-import { AuthGroup, Status } from '../../enums';
+import { Status } from '../../enums';
 import { Metadata, MetadataType, Content } from 'js/types';
 import APP_URLS from "../../urls"
 import { api, hasPermission } from "../../utils"
@@ -33,6 +33,10 @@ type ContentFormProps = {
     metadata: Record<number, Metadata[]>
     metadataTypes: MetadataType[]
     onSubmit: (content?: Partial<Content>) => void
+    onCreate: (
+        metadataType: MetadataType,
+        newTags: Metadata[],
+    ) => Promise<Metadata[]>
     open: boolean
 } & TypeProps
 
@@ -45,10 +49,21 @@ function ContentForm({
     metadata,
     metadataTypes,
     onSubmit,
+    onCreate,
     open,
     content,
     type,
 }: ContentFormProps): React.ReactElement {
+    // Maps newly_added array to Record of type ids -> metadata arrays
+    const newMetadata = useCCSelector(
+        state => state.metadata.newly_added
+    ).reduce<Record<number, Metadata[]>>(
+        (accum, val) => ({
+            ...accum,
+            [val.metadataType.id]: accum[val.metadataType.id] ?
+                accum[val.metadataType.id].concat(val) : [val]
+        }), {} as Record<number, Metadata[]>,
+    );
     const permissions = useCCSelector(state => state.global.user.permissions);
     const canReview = hasPermission(permissions, 'special', 'review');
 
@@ -313,6 +328,7 @@ function ContentForm({
                 return {
                     metadataTypes: metadataTypes,
                     metadata: state['metadata'],
+                    toAdd: newMetadata,
                     options: metadata,
                     actions: {
                         onSelect: (
@@ -323,6 +339,20 @@ function ContentForm({
                                 ...oldState,
                                 [metadataType.id]: selected,
                             }));
+                        },
+                        creatable: true,
+                        onCreate: (
+                            metadataType: MetadataType,
+                            newTags: Metadata[],
+                        ) => {
+                            return onCreate(
+                                metadataType,
+                                // Gets rid of 'Add ""' formatting
+                                newTags.map(tag => ({
+                                    ...tag,
+                                    name: tag.name.substring(5, tag.name.length - 1),
+                                }))
+                            );
                         },
                     },
                 };
@@ -349,18 +379,18 @@ function ContentForm({
             ),
             propFactory: (state, _r, setter) => {
                 return {
-                    value: state['status'] ?? Status.ACTIVE,
+                    value: state['status'] ?? Status.REVIEW,
                     onChange: (
                         e: React.ChangeEvent<HTMLInputElement>
                     ) => setter(e.target.value),
                 };
             },
             field: 'status',
-            initialValue: Status.ACTIVE,
+            initialValue: Status.REVIEW,
             mb: '20px',
         } : {
             field: 'status',
-            initialValue: Status.ACTIVE,
+            initialValue: Status.REVIEW,
         }),
         (canReview ? {
             component: (props) => (

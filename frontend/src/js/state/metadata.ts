@@ -11,6 +11,7 @@ export const metadataSlice = createSlice({
     initialState: {
         metadata_types: [] as MetadataType[],
         metadata: {} as MetadataByType,
+        newly_added: [] as Metadata[],
     },
     reducers: {
         
@@ -26,13 +27,15 @@ export const metadataSlice = createSlice({
         delete_metadata: (_state, _action: PayloadAction<{
             id: number
             type_id: number
+            name: string
         }>) => {},
-        //What `update_metadata` does is instead of completely replacing the 
-        //metadata dict it just updates it with the latest it receives from that
-        // endpoint
+
+        // Updates metadata in state with new values, while partially retaining
+        // old ones
         update_metadata: (state, action: PayloadAction<MetadataByType>) => {
-            Object.assign(state.metadata, action.payload)
+            state.metadata = Object.assign({}, state.metadata, action.payload);
         },
+
         //add metadata in the application state
         add_metadata: (_state, _action: PayloadAction<{
             name: string
@@ -52,11 +55,11 @@ export const metadataSlice = createSlice({
         //delete a metadata type from application state
         delete_metadatatype: (_state: any, _action: PayloadAction<{
             type_id: number
+            name: string
         }>) => {},
 
-        //update metadata type in the application state, instead of completely 
-        //replacing it
-        update_metadatatype: (state, action: PayloadAction<Metadata[]>) => {
+        // Replace metadata types currently in state
+        update_metadatatype: (state, action: PayloadAction<MetadataType[]>) => {
             state.metadata_types = action.payload
         },
 
@@ -65,6 +68,10 @@ export const metadataSlice = createSlice({
             name: string,
             type_id: number
         }>) => {},
+
+        update_newly_added: (state, action: PayloadAction<Metadata[]>) => {
+            state.newly_added = action.payload;
+        },
 
         //edit a metadata type from the application state
         edit_metadatatype: (_state, _action: PayloadAction<{
@@ -76,8 +83,17 @@ export const metadataSlice = createSlice({
 
 //export these variables as consts so it can be used in the file store.ts
 export const {
-    delete_metadata, add_metadata, fetch_metadata, update_metadata,
-    edit_metadata, delete_metadatatype, add_metadatatype, fetch_metadatatype,
-    update_metadatatype, edit_metadatatype, preload_all_metadata
+    delete_metadata,
+    add_metadata,
+    fetch_metadata,
+    update_metadata,
+    edit_metadata,
+    delete_metadatatype,
+    add_metadatatype,
+    fetch_metadatatype,
+    update_metadatatype,
+    update_newly_added,
+    edit_metadatatype,
+    preload_all_metadata,
 } = metadataSlice.actions
 export default metadataSlice.reducer

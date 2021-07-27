@@ -1,9 +1,11 @@
 //Importing from outside the project
 import React from 'react';
-import {
+import type {
   GridSelectionModelChangeParams,
   GridColDef,
   GridPageChangeParams,
+  GridSortModel,
+  GridSortModelParams,
 } from '@material-ui/data-grid';
 
 //Importing from other files in the project
@@ -11,25 +13,32 @@ import { ContentTable } from 'solarspell-react-lib';
 import { useCCSelector } from '../../hooks';
 import { hasPermission } from '../../utils';
 import ShowForPermission from '../ShowForPermission';
-import DeleteSelected from './DeleteSelected';
 import ActionPanel from './ActionPanel';
 import ContentForm from './ContentForm';
 import Viewer from './Viewer';
 import { Content, Metadata, MetadataType } from 'js/types';
 
 type DisplayActionProps = {
-  onEdit: (item: Content, vals: Partial<Content>) => void
+  onEdit: (item: Content, vals?: Partial<Content>) => void
   onDelete: (item: Content) => void
-  onSelectedDelete: (content: Content[]) => void
   onPageSizeChange: (params: GridPageChangeParams) => void
   onPageChange: (params: GridPageChangeParams) => void
+  onCreate: (
+    metadataType: MetadataType,
+    newTags: Metadata[],
+  ) => Promise<Metadata[]>
+  onSelectChange: (params: GridSelectionModelChangeParams) => void
 }
 
 type PaginationProps = {
   pageSize: number
   page: number
   rowCount: number
-  loading: boolean
+}
+
+type SortingProps = {
+  sortModel: GridSortModel,
+  onSortModelChange: (params: GridSortModelParams) => void
 }
 
 type DisplayProps = {
@@ -38,6 +47,8 @@ type DisplayProps = {
   content: Content[]
   actions: DisplayActionProps
   pageProps: PaginationProps
+  sortProps: SortingProps
+  selected: number[]
   additionalColumns: GridColDef[]
 }
 
@@ -52,6 +63,8 @@ function Display({
   content,
   actions,
   pageProps,
+  sortProps,
+  selected,
   additionalColumns,
 }: DisplayProps): React.ReactElement {
   const permissions = useCCSelector(state => state.global.user.permissions);
@@ -75,16 +88,7 @@ function Display({
 
   const [editedContent, setEditedContent] = React.useState<Content|undefined>();
   const [viewedContent, setViewedContent] = React.useState<Content|undefined>();
-  const [selected, setSelected] = React.useState<Content[]>([]);
-
-  // Ensures deleted content is cleaned from state
-  React.useEffect(
-    () => {
-      const ids = content.map(c => c.id);
-      setSelected(s => s.filter(c => ids.includes(c.id)));
-    },
-    [content],
-  );
+  const ids = content.map(c => c.id);
 
   const onEdit_ = React.useCallback(
     (item: Content) => setEditedContent(item),
@@ -93,7 +97,7 @@ function Display({
 
   const onEditSubmit_ = React.useCallback(
     (item?: Partial<Content>) => {
-      if (editedContent && item) {
+      if (editedContent) {
         actions.onEdit(editedContent, item);
       }
       setEditedContent(undefined);
@@ -111,29 +115,14 @@ function Display({
     [setViewedContent],
   );
 
-  const onSelectChange_ = React.useCallback(
-    (
-      content: Content[],
-      rows: GridSelectionModelChangeParams,
-    ) => setSelected(
-      content.filter(c => rows.selectionModel.includes(c.id))
-    ),
-    [setSelected],
-  );
-
   return (
     <>
-      <ShowForPermission slice={'content'} permission={'delete'}>
-        <DeleteSelected
-          selected={selected}
-          onDelete={actions.onSelectedDelete}
-        />
-      </ShowForPermission>
       <ShowForPermission slice={'content'} permission={'update'}>
         {editedContent && <ContentForm
           metadata={metadata}
           metadataTypes={metadataTypes}
           onSubmit={onEditSubmit_}
+          onCreate={actions.onCreate}
           open={!!editedContent}
           content={editedContent}
           type={'edit'}
@@ -150,7 +139,6 @@ function Display({
       <ContentTable
         content={content}
         selectable={showDeleteSelection}
-        onSelectChange={onSelectChange_}
         components={{
           ActionPanel: showActionPanel ? ActionPanel : undefined,
         }}
@@ -163,16 +151,22 @@ function Display({
         }}
         additionalColumns={additionalColumns}
         additionalProps={{
+          // DataGrid does not take it well when selection model includes
+          // IDs that are not within its rows
+          selectionModel: selected.filter(id => ids.includes(id)),
+          onSelectionModelChange: actions.onSelectChange,
           rowsPerPageOptions: [5, 10, 25],
           onPageSizeChange: actions.onPageSizeChange,
           onPageChange: actions.onPageChange,
           paginationMode: 'server',
+          sortingMode: 'server',
           ...pageProps,
+          ...sortProps,
         }}
       />
     </>
   )
 }
 
-export type { DisplayActionProps, PaginationProps };
+export type { DisplayActionProps, PaginationProps, SortingProps };
 export default Display;
