@@ -27,13 +27,15 @@ export const metadataSlice = createSlice({
         delete_metadata: (_state, _action: PayloadAction<{
             id: number
             type_id: number
+            name: string
         }>) => {},
-        //What `update_metadata` does is instead of completely replacing the 
-        //metadata dict it just updates it with the latest it receives from that
-        // endpoint
+
+        // Updates metadata in state with new values, while partially retaining
+        // old ones
         update_metadata: (state, action: PayloadAction<MetadataByType>) => {
-            Object.assign(state.metadata, action.payload)
+            state.metadata = Object.assign({}, state.metadata, action.payload);
         },
+
         //add metadata in the application state
         add_metadata: (_state, _action: PayloadAction<{
             name: string
@@ -53,11 +55,11 @@ export const metadataSlice = createSlice({
         //delete a metadata type from application state
         delete_metadatatype: (_state: any, _action: PayloadAction<{
             type_id: number
+            name: string
         }>) => {},
 
-        //update metadata type in the application state, instead of completely 
-        //replacing it
-        update_metadatatype: (state, action: PayloadAction<Metadata[]>) => {
+        // Replace metadata types currently in state
+        update_metadatatype: (state, action: PayloadAction<MetadataType[]>) => {
             state.metadata_types = action.payload
         },
 

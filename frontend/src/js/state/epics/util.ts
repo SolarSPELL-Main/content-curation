@@ -27,14 +27,23 @@ const errorCatcher = (epic: MyEpic) => (...args: Parameters<MyEpic>) =>
         })
     )
 
-const fromWrapper = (obs: ObservableInput<AnyAction>) => {
+const fromWrapper = (obs: ObservableInput<AnyAction>, onFinish?: AnyAction) => {
     const key = Date.now();
 
-    return concat(
-        of(start_loader(key)),
-        obs,
-        of(stop_loader(key)),
-    );
+    if (onFinish != null) {
+        return concat(
+            of(start_loader(key)),
+            obs,
+            of(onFinish),
+            of(stop_loader(key)),
+        );
+    } else {
+        return concat(
+            of(start_loader(key)),
+            obs,
+            of(stop_loader(key)),
+        );
+    }
 }
 
 export {

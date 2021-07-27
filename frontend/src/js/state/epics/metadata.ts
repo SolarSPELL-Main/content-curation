@@ -1,5 +1,5 @@
-import { from, of, concat } from 'rxjs'
-import { filter, map, mergeMap } from 'rxjs/operators'
+import { from } from 'rxjs';
+import { filter, map, mergeMap } from 'rxjs/operators';
 
 import {
     fetch_metadata,
@@ -14,7 +14,11 @@ import {
     update_newly_added,
     edit_metadatatype,
     preload_all_metadata,
-} from '../metadata'
+} from '../metadata';
+
+import {
+    show_toast,
+} from '../global';
 
 import { fromWrapper } from './util';
 import APP_URLS from '../../urls';
@@ -45,12 +49,16 @@ const addMetadataEpic: MyEpic = action$ =>
                 type: action.payload.type_id
             })).pipe(
                 mergeMap(res => [
-                    // Only 1 metadata created at a time, hence to convert to
-                    // array simply wrap response data in an array
+                    // Only 1 metadata created at a time (currently), hence to
+                    // convert to array simply wrap response data into an array
                     update_newly_added([res.data]),
                     fetch_metadata({ type_id: action.payload.type_id }),
                 ]),
-            )),
+            ), show_toast({
+                message: `Added metadata "${action.payload.name}"`,
+                key: Math.random(),
+                severity: 'success',
+            })),
         ),
     )
 
@@ -64,7 +72,11 @@ const editMetadataEpic: MyEpic = action$ =>
                 type: action.payload.new_type_id
             })).pipe(
                 map(({data}) => fetch_metadata({ type_id: data.metadataType.id}))
-            )),
+            ), show_toast({
+                message: `Renamed metadata to "${action.payload.name}"`,
+                key: Math.random(),
+                severity: 'success',
+            })),
         ),
     )
 
@@ -75,7 +87,11 @@ const deleteMetadataEpic: MyEpic = action$ =>
         mergeMap(action =>
             fromWrapper(from(api.delete(APP_URLS.METADATA(action.payload.id))).pipe(
                 map(_res => fetch_metadata({ type_id: action.payload.type_id }))
-            )),
+            ), show_toast({
+                message: `Deleted metadata "${action.payload.name}"`,
+                key: Math.random(),
+                severity: 'success',
+            })),
         ),
     )
 
@@ -102,7 +118,11 @@ const addMetadataTypeEpic: MyEpic = action$ =>
                 name: action.payload.name,
             })).pipe(
                 map(_res => fetch_metadatatype())
-            )),
+            ), show_toast({
+                message: `Added metadata type "${action.payload.name}"`,
+                key: Math.random(),
+                severity: 'success',
+            })),
         ),
     )
 
@@ -115,7 +135,11 @@ const editMetadataTypeEpic: MyEpic = action$ =>
                 name: action.payload.name,
             })).pipe(
                 map(_res => fetch_metadatatype())
-            )),
+            ), show_toast({
+                message: `Renamed metadata type to "${action.payload.name}"`,
+                key: Math.random(),
+                severity: 'success',
+            })),
         )
     )
 
@@ -126,7 +150,11 @@ const deleteMetadataTypeEpic: MyEpic = action$ =>
         mergeMap(action =>
             fromWrapper(from(api.delete(APP_URLS.METADATA_TYPE(action.payload.type_id))).pipe(
                 map(_res => fetch_metadatatype())
-            )),
+            ), show_toast({
+                message: `Deleted metadata type "${action.payload.name}"`,
+                key: Math.random(),
+                severity: 'success',
+            })),
         ),
     )
 
@@ -142,7 +170,7 @@ const fetchMetadataTypesEpic: MyEpic = action$ =>
         ),
     )
 
-//Epic to update a metadata type in application state
+//Epic to fetch actual metadata items of metadata types
 const updateMetadataTypeEpic: MyEpic = action$ =>
     action$.pipe(
         filter(update_metadatatype.match),

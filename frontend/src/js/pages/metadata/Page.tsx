@@ -44,7 +44,8 @@ function Page(_: PageProps): React.ReactElement {
                         })),
                     onDeleteType: (metadataType) => 
                         dispatch(Actions.delete_metadatatype({
-                            type_id: metadataType.id
+                            type_id: metadataType.id,
+                            name: metadataType.name,
                         })),
                     onExport: (metadataType) =>
                         window.open(APP_URLS.METADATA_TYPE_EXPORT(metadataType.id)),
@@ -53,7 +54,11 @@ function Page(_: PageProps): React.ReactElement {
                     onEdit: (metadata, name) => 
                         dispatch(Actions.edit_metadata({ name: name, id: metadata.id })),
                     onDelete: (metadata) => 
-                        dispatch(Actions.delete_metadata({ type_id: metadata.metadataType.id, id: metadata.id })),
+                        dispatch(Actions.delete_metadata({
+                            type_id: metadata.metadataType.id,
+                            id: metadata.id,
+                            name: metadata.name,
+                        })),
                 },
                 AddType: {
                     onAddType: (name) => 

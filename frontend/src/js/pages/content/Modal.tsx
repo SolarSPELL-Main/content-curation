@@ -7,7 +7,11 @@ import { GridColDef } from '@material-ui/data-grid';
 import Toolbar, { ToolbarActionProps } from './Toolbar';
 import SearchBar from './SearchBar';
 import SelectedToolbar, { SelectedToolbarActions } from './SelectedToolbar';
-import Display, { DisplayActionProps, PaginationProps } from './Display';
+import Display, {
+    DisplayActionProps,
+    PaginationProps,
+    SortingProps,
+} from './Display';
 import { Content, Metadata, MetadataType, Query } from 'js/types';
 import Cookies from 'js-cookie';
 
@@ -24,6 +28,7 @@ type ModalProps = {
         }
     }
     pageProps: PaginationProps
+    sortProps: SortingProps
     selected: number[]
 }
 
@@ -33,6 +38,7 @@ function Modal({
     content,
     actions,
     pageProps,
+    sortProps,
     selected,
 }: ModalProps): React.ReactElement {
     const [cols, setCols] = useState<GridColDef[]>([])
@@ -78,6 +84,7 @@ function Modal({
                 actions={actions.Display}
                 additionalColumns={cols}
                 pageProps={pageProps}
+                sortProps={sortProps}
                 selected={selected}
             />
         </Box>

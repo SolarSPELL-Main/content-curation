@@ -1,9 +1,11 @@
 //Importing from outside the project
 import React from 'react';
-import {
+import type {
   GridSelectionModelChangeParams,
   GridColDef,
   GridPageChangeParams,
+  GridSortModel,
+  GridSortModelParams,
 } from '@material-ui/data-grid';
 
 //Importing from other files in the project
@@ -34,12 +36,18 @@ type PaginationProps = {
   rowCount: number
 }
 
+type SortingProps = {
+  sortModel: GridSortModel,
+  onSortModelChange: (params: GridSortModelParams) => void
+}
+
 type DisplayProps = {
   metadata: Record<number, Metadata[]>
   metadataTypes: MetadataType[]
   content: Content[]
   actions: DisplayActionProps
   pageProps: PaginationProps
+  sortProps: SortingProps
   selected: number[]
   additionalColumns: GridColDef[]
 }
@@ -55,6 +63,7 @@ function Display({
   content,
   actions,
   pageProps,
+  sortProps,
   selected,
   additionalColumns,
 }: DisplayProps): React.ReactElement {
@@ -150,12 +159,14 @@ function Display({
           onPageSizeChange: actions.onPageSizeChange,
           onPageChange: actions.onPageChange,
           paginationMode: 'server',
+          sortingMode: 'server',
           ...pageProps,
+          ...sortProps,
         }}
       />
     </>
   )
 }
 
-export type { DisplayActionProps, PaginationProps };
+export type { DisplayActionProps, PaginationProps, SortingProps };
 export default Display;

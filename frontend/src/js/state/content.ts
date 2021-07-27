@@ -1,5 +1,6 @@
 //Importing from outside the project
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import type { GridSortModel } from '@material-ui/data-grid';
 
 //Importing from other files in the project
 import { Content, Query } from "../types"
@@ -14,6 +15,10 @@ export const contentSlice = createSlice({
         pageSize: 5,
         page: 0,
         filters: {} as Query,
+        sortModel: [{
+            field: 'title',
+            sort: 'asc',
+        }] as GridSortModel,
     },
     reducers: {
         // Fetches list of content from backend
@@ -92,6 +97,10 @@ export const contentSlice = createSlice({
         ) => {
             state.filters = action.payload
         },
+
+        update_sortmodel: (state, action: PayloadAction<GridSortModel>) => {
+            state.sortModel = action.payload;
+        },
     },
 });
 
@@ -103,6 +112,7 @@ export const {
     edit_content,
     update_filters,
     update_pagination,
+    update_sortmodel,
     update_selected,
     clear_selected,
 } = contentSlice.actions;

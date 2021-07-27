@@ -38,8 +38,8 @@ const tabDescriptors: TabDescriptor[] = [
     {
         props: {
             component: RouterLink,
-            style: logoTabStyle,
             to: '/home',
+            style: logoTabStyle,
             label: (
                 <img src={Logo} style={logoStyle} />
             ),
