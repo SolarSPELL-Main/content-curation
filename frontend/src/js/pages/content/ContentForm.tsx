@@ -440,6 +440,8 @@ function ContentForm({
                             :
                             Date.now(),
                         inputValue: state['rawReviewedDate'] ?? '',
+                        minDate: null,
+                        maxDate: null,
                     },
                 };
             },
