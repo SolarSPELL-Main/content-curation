@@ -50,7 +50,7 @@ function DeleteSelected({
                 color={'secondary'}
                 onClick={openDialog}
             >
-                Delete selected
+                Delete
             </Button>
         </>
     );

@@ -21,7 +21,7 @@ function ClearSelected({
             color={'primary'}
             onClick={() => onClear(selected)}
         >
-            Clear selected
+            Clear Selection
         </Button>
     );
 }

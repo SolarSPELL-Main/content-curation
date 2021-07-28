@@ -12,7 +12,7 @@ export const contentSlice = createSlice({
         selected: [] as number[],
         selectionModel: [] as number[],
         total: 0,
-        pageSize: 5,
+        pageSize: 10,
         page: 0,
         filters: {} as Query,
         sortModel: [{

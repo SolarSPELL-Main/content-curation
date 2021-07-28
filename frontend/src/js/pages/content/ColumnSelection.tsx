@@ -5,6 +5,7 @@ import PrettyBytes from 'pretty-bytes';
 
 import { ContentColumnSelection } from 'solarspell-react-lib';
 import { MetadataType, Content } from 'js/types';
+import Checkbox from '@material-ui/core/Checkbox';
 
 type ColumnSelectionProps = {
     onClose: (cols: GridColDef[]) => void
@@ -63,9 +64,10 @@ function ColumnSelection({
                             disableColumnMenu: true,
                             filterable: false,
                             hide: hidden,
-                            valueFormatter: (params) => 
-                                params.getValue(params.id, field.field) ?
-                                    'Yes' : 'No'
+                            renderCell: params =>
+                                <Checkbox checked={params.getValue(
+                                    params.id, field.field
+                                ) == true} />
                         }),
                     },
                     {
@@ -82,9 +84,10 @@ function ColumnSelection({
                             disableColumnMenu: true,
                             filterable: false,
                             hide: hidden,
-                            valueFormatter: (params) => 
-                                params.getValue(params.id, field.field) ?
-                                    'Yes' : 'No'
+                            renderCell: params =>
+                                <Checkbox checked={params.getValue(
+                                    params.id, field.field
+                                ) == true} />
                         }),
                     },
                     {

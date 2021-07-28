@@ -8,6 +8,7 @@ import { CONTENT_FIELDS } from './utils';
 const APP_URLS = {
     BUG_REPORT: "https://docs.google.com/forms/d/e/"
         + "1FAIpQLScdPbE0AGVuNCvhy2gnTvmVNyQcQtd4vt6zBjjBgAwprb4VKg/viewform",
+    EXPORT: (id: number) => `/api/content/${id}/zipdownloadcsv/`,
     LOGOUT: `/accounts/logout/`,
     METADATA: (id: number) => `/api/metadata/${id}/`,
     //api endpoint `/api/metadata_types/{type_id}/metadata/ ` returns all 
@@ -73,26 +74,44 @@ const APP_URLS = {
             }
 
             if (isPlainObject(param)) {
+                let both = ""
                 if ("from" in (param as Object)) {
                     const from = (param as { from: any }).from
-                    if (from === null) return undefined
-                    if (key === "years") {
-                        return `${backend_key}_min=${
-                            ("" + from).padStart(4, "0")
-                        }-01-01`
+                    if (from !== null) {
+                        if (key === "years") {
+                            both += `${backend_key}_min=${
+                                ("" + from).padStart(4, "0")
+                            }-01-01`
+                        } else if (key === "filesize") {
+                            both += `${backend_key}_min=${from*1000000}`
+                        }
+
+                    } else {
+                        both += `${backend_key}_min=${from}` 
                     }
-                    return `${backend_key}_min=${from}`
+                    if (!("to" in (param as Object))) {
+                        return both;
+                    }
                 }
+                if (both.length > 0) {
+                    both += "&"
+                }
+
                 if ("to" in (param as Object)) {
                     const to = (param as { to: any }).to
-                    if (to === null) return undefined
-                    if (key === "years") {
-                        return `${backend_key}_max=${
-                            ("" + to).padStart(4, "0")
-                        }-12-31`
+                    if (to !== null) {
+                        if (key === "years") {
+                            both += `${backend_key}_max=${
+                                ("" + to).padStart(4, "0")
+                            }-12-31`
+                        } else if (key === "filesize") {
+                            both += `${backend_key}_max=${to*1000000}`
+                        }
+                    } else {
+                        both += `${backend_key}_max=${to}`
                     }
 
-                    return `${backend_key}_max=${to}`
+                    return both
                 }
                 const metadata = [].concat(...Object.values(param)) as Metadata[];
                 return metadata.length > 0 ?
