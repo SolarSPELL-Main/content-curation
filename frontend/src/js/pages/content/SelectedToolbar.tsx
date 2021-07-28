@@ -5,12 +5,12 @@ import Collapse from '@material-ui/core/Collapse';
 import ShowForPermission from '../ShowForPermission';
 import DeleteSelected from './DeleteSelected';
 import ClearSelected from './ClearSelected';
-import {Button} from '@material-ui/core';
-import APP_URLS from '../../urls';
+import ExportSelected from './ExportSelected';
 
 type SelectedToolbarActions = {
     onDelete: (ids: number[]) => void
     onClear: (ids: number[]) => void
+    onExport: (ids: number[]) => void
 }
 
 type SelectedToolbarProps = {
@@ -48,9 +48,10 @@ function SelectedToolbar({
                 </ShowForPermission>
                 <ShowForPermission slice={"special"} permission={"export"}>
                     <Box>
-                        <Button onClick={() => {
-                            window.open(APP_URLS.EXPORT(selected[0]))
-                        }}>EXPORT</Button>
+                        <ExportSelected
+                            selected={selected}
+                            onExport={actions.onExport}
+                        />
                     </Box>
                 </ShowForPermission>
             </Box>
