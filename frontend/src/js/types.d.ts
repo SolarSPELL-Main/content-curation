@@ -12,7 +12,7 @@ type MetadataType = {
 } & BaseMetadataType
 
 type Metadata = {
-    creator: string
+
 } & BaseMetadata<MetadataType>
 
 type Content = {
