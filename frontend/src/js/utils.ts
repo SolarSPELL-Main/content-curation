@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Cookies from 'js-cookie';
+import { Status } from './enums';
 import type { Content, CRUD, Permissions, SpecialPermissions } from 'js/types';
 
 /*
@@ -74,10 +75,9 @@ api.interceptors.response.use(r => r, err => {
         :
         ''
     );
-
-    data.append('reviewed', content.reviewed?.toString() ?? 'false');
     
-    if (content.reviewed && content.reviewedDate) {
+    // Append reviewed_on if content status is not REVIEW
+    if (content.status !== Status.REVIEW && content.reviewedDate) {
         data.append('reviewed_on', content.reviewedDate);
     }
 
@@ -191,7 +191,6 @@ export const CONTENT_FIELDS: Record<string,string> = {
     copyrightApproved: 'copyright_approved',
     creator: 'created_by',
     createdDate: 'created_on',
-    reviewed: 'reviewed',
     reviewer: 'reviewed_by',
     reviewedDate: 'reviewed_on',
     description: 'description',
