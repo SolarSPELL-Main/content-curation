@@ -155,7 +155,7 @@ function Display({
           // IDs that are not within its rows
           selectionModel: selected.filter(id => ids.includes(id)),
           onSelectionModelChange: actions.onSelectChange,
-          rowsPerPageOptions: [10, 25, 100],
+          rowsPerPageOptions: [10, 25, 100, 500],
           onPageSizeChange: actions.onPageSizeChange,
           onPageChange: actions.onPageChange,
           paginationMode: 'server',

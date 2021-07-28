@@ -395,11 +395,7 @@ function ContentForm({
         (canReview ? {
             component: (props) => (
                 <>
-                    <Typography>Reviewed</Typography>
-                    <Checkbox
-                        {...props.checkbox}
-                    />
-                    {props.checkbox.checked && <KeyboardDatePicker
+                    {props.reviewed && <KeyboardDatePicker
                         {...props.datePicker}
                     />}
                 </>
@@ -418,22 +414,14 @@ function ContentForm({
                 ) => void;
 
                 return {
-                    checkbox: {
-                        checked: state['reviewed'] ?? false,
-                        onChange: (
-                            _e: React.SyntheticEvent,
-                            checked: boolean,
-                        ) => {
-                            setter(checked);
-                        },
-                    },
+                    reviewed: state['status'] !== Status.REVIEW,
                     datePicker: {
                         disableToolbar: true,
                         variant: 'inline',
                         format: 'MM/dd/yyyy',
                         label: 'Reviewed On',
                         onChange: (date: Date, val?: string) => {
-                            genericSetter('reviewedDate',
+                            setter(
                                 (oldState: Date) => {
                                     return val ?
                                         date && !isNaN(date.getTime()) ?
@@ -450,17 +438,19 @@ function ContentForm({
                         value: state['reviewedDate'] ?
                             parseISO(state['reviewedDate'])
                             :
-                            null,
+                            Date.now(),
                         inputValue: state['rawReviewedDate'] ?? '',
+                        minDate: null,
+                        maxDate: null,
                     },
                 };
             },
-            field: 'reviewed',
-            initialValue: false,
+            field: 'reviewedDate',
+            initialValue: null,
             mb: 0,
         } : {
-            field: 'reviewed',
-            initialValue: false,
+            field: 'reviewedDate',
+            initialValue: null,
         }),
         {
             component: TextField,

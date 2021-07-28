@@ -7,6 +7,7 @@ import * as GlobalActions from '../../state/global';
 import * as MetadataActions from '../../state/metadata';
 import * as ContentActions from '../../state/content';
 import { useCCDispatch, useCCSelector } from '../../hooks';
+import APP_URLS from '../../urls';
 import { Tabs } from '../../enums';
 import { Content, Query, Metadata, MetadataType } from 'js/types';
 
@@ -148,6 +149,11 @@ function Page(_: PageProps): React.ReactElement {
                     },
                     onClear: _ => {
                         dispatch(ContentActions.clear_selected());
+                    },
+                    onExport: ids => {
+                        window.open(
+                            APP_URLS.EXPORT(ids[0]),
+                        );
                     },
                 },
                 Toolbar: {

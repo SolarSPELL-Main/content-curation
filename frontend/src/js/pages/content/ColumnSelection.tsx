@@ -75,8 +75,8 @@ function ColumnSelection({
                         title: 'Copyrighted By',
                     },
                     {
-                        field: 'reviewed',
-                        title: 'Reviewed',
+                        field: 'status',
+                        title: 'Status',
                         column: (field, hidden) => ({
                             field: field.field,
                             headerName: field.title,
@@ -84,10 +84,6 @@ function ColumnSelection({
                             disableColumnMenu: true,
                             filterable: false,
                             hide: hidden,
-                            renderCell: params =>
-                                <Checkbox checked={params.getValue(
-                                    params.id, field.field
-                                ) == true} />
                         }),
                     },
                     {

@@ -22,7 +22,6 @@ type Content = {
     copyrightApproved: boolean
     creator: string
     createdDate: string
-    reviewed: boolean
     reviewer?: string
     reviewedDate?: string
     file?: File
@@ -40,15 +39,13 @@ type Range<T> = {
 
 type Query = Partial<{
     title: string
-    fileName: string
-    copyright: string
-    years: Range<number>
+    file_name: string
+    published_date: Range<number>
     filesize: Range<number>
-    reviewed: Range<string>
-    active: 'all' | 'active' | 'inactive'
-    duplicatable: 'all' | 'duplicatable' | 'nonduplicatable'
+    reviewed_on: Range<string>
+    status: Status
+    created_by: string
     metadata: Record<number,Metadata[]>
-    status: string
 }>
 
 type Toast = {

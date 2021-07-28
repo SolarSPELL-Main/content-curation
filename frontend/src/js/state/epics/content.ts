@@ -1,6 +1,5 @@
 import { from } from 'rxjs'
-import { filter, map, mergeMap, mapTo, tap } from 'rxjs/operators'
-import Cookies from "js-cookie"
+import { filter, map, mergeMap, mapTo } from 'rxjs/operators'
 
 import {
     fetch_content,
@@ -18,6 +17,7 @@ import {
 import { fromWrapper } from './util';
 import APP_URLS from '../../urls';
 import { api, contentToFormData } from '../../utils';
+import { Status } from '../../enums';
 
 import type { Content, Metadata } from '../../types';
 import type { MyEpic } from './types';
@@ -33,6 +33,7 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                     // Backend pagination starts at 1, not 0
                     state$.value.content.page + 1,
                     state$.value.content.sortModel,
+                    state$.value.global.user.username,
                 ),
             )).pipe(
                 map(({ data }) => 
@@ -52,9 +53,14 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                                     copyrightApproved: val.copyright_approved,
                                     creator: val.created_by,
                                     createdDate: val.created_on,
-                                    reviewed: val.reviewed,
                                     reviewer: val.reviewed_by,
-                                    reviewedDate: val.reviewed_on,
+                                    // If status is REVIEW, content still needs
+                                    // to be reviewed, hence reviewedDate should
+                                    // be displayed as null.
+                                    reviewedDate: val.status === Status.REVIEW ?
+                                        null
+                                        :
+                                        val.reviewed_on,
                                     description: val.description,
                                     fileName: val.file_name,
                                     datePublished: val.published_year,
