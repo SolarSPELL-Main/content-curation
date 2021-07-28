@@ -1,7 +1,16 @@
-import axios from 'axios'
+import axios from 'axios';
 import Cookies from 'js-cookie';
+import { isPlainObject, isString, isNumber } from 'lodash';
 import { Status } from './enums';
-import type { Content, CRUD, Permissions, SpecialPermissions } from 'js/types';
+import type {
+    Content,
+    Metadata,
+    CRUD,
+    Permissions,
+    Query,
+    SpecialPermissions,
+    Range,
+} from 'js/types';
 
 /*
  * Taken from Django documentation https://docs.djangoproject.com/en/3.2/ref/csrf/
@@ -201,4 +210,73 @@ export const CONTENT_FIELDS: Record<string,string> = {
     status: 'status',
     title: 'title',
     metadata: 'metadata',
+}
+
+export const queryToParams = (
+    query?: Query,
+    creator?: string,
+): string[]|undefined => {
+    if (!query) {
+        return;
+    }
+
+    let queryParams: string[] = [];
+
+    Object.keys(query).forEach((key_) => {
+        const key = key_ as keyof Query;
+        const val = query[key];
+
+        if (val == null) {
+            return;
+        }
+
+        if (key === 'metadata') {
+            // Special case, metadata must be converted to array of numbers
+            // then repeatedly included in query parameters.
+            const metadata = val as Record<number,Metadata[]>;
+            Object.values(metadata).reduce<number[]>(
+                (accum, val) => accum.concat(val.map(m => m.id)),
+                [],
+            ).forEach(v => queryParams.push(`metadata=${v}`));
+        } else if (key === 'created_by') {
+            // Special case, true/false should map to including username or not
+            if (val === 'true') {
+                queryParams.push(`${key}=${creator ?? ''}`)
+            }
+        } else if (key === 'status') {
+            // Special case, 'all' must be treated as null for query
+            if (val !== 'all') {
+                queryParams.push(`${key}=${val}`);
+            }
+        } else {
+            if (isString(val)) {
+                queryParams.push(`${key}=${val}`)
+            } else if (isPlainObject(val)) {
+                const range = val as Range<number|string>;
+                const finalRange = {
+                    from: '',
+                    to: '',
+                };
+
+                finalRange.from = range.from != null ?
+                    range.from.toString()
+                    :
+                    '';
+                
+                finalRange.to = range.to != null ?
+                    range.to.toString()
+                    :
+                    '';
+
+                queryParams.push(`${key}_min=${finalRange.from}`);
+                queryParams.push(`${key}_max=${finalRange.to}`);
+            }
+        }
+    });
+
+    if (queryParams.length > 0) {
+        return queryParams;
+    } else {
+        return;
+    }
 }

@@ -35,17 +35,36 @@ function SearchBar({
                     width: 4,
                 },
                 {
-                    field: 'fileName',
+                    field: 'file_name',
                     title: 'Filename',
                     type: 'string',
                     width: 4,
                 },
                 {
-                    field: 'years',
+                    field: 'published_date',
                     title: 'Years',
                     type: 'numeric',
                     width: 2,
                     min: 0,
+                    formatter: (val, field) => {
+                        // Years < 2 throw an error on backend
+                        // Greater than 9999 also means > 4 digits, which is bad
+                        if (val < 2 || val > 9999) {
+                            return '';
+                        }
+
+                        let suffix: string = '';
+
+                        // If 'from', start date should be January 1st
+                        if (field === 'from') {
+                            suffix = '-01-01';
+                        // If 'to', end date should be December 31st
+                        } else {
+                            suffix = '-12-31';
+                        }
+
+                        return val.toString().padStart(4, '0') + suffix;
+                    }
                 },
                 {
                     field: 'filesize',
@@ -54,13 +73,15 @@ function SearchBar({
                     unit: 'MB',
                     width: 2,
                     min: 0,
+                    // Convert megabytes to bytes
+                    formatter: val => val * 1024 * 1024,
                 },
                 {
-                    field: 'reviewed',
+                    field: 'reviewed_on',
                     title: 'Reviewed',
                     type: 'date',
                     width: 2,
-                    stringifier: date => format(date, 'yyyy-MM-dd'),
+                    formatter: date => format(date, 'yyyy-MM-dd'),
                 },
                 {
                     field: 'status',
@@ -80,7 +101,7 @@ function SearchBar({
                     initialValue: 'all',
                 },
                 {
-                    field: 'createdBy',
+                    field: 'created_by',
                     title: 'Created By',
                     type: 'enum',
                     width: 2,
