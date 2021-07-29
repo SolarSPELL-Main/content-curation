@@ -208,6 +208,12 @@ export const CONTENT_FIELDS: Record<string,string> = {
     metadata: 'metadata',
 }
 
+/**
+ * Constructs an array of query parameters from a Query object.
+ * @param query The Query object.
+ * @param creator The current logged-in user (used for Created By Me).
+ * @returns The query parameters in an array or undefined (if query is null).
+ */
 export const queryToParams = (
     query?: Query,
     creator?: string,
@@ -218,6 +224,7 @@ export const queryToParams = (
 
     const queryParams: string[] = [];
 
+    // Loop over each key in the query
     Object.keys(query).forEach((key_) => {
         const key = key_ as keyof Query;
         const val = query[key];
@@ -245,8 +252,12 @@ export const queryToParams = (
                 queryParams.push(`${key}=${val}`);
             }
         } else {
+            // Simplest case, search value is a string
             if (isString(val)) {
                 queryParams.push(`${key}=${val}`)
+            // Assumes that if the Query value is an object, it represents a
+            // Range object. Hence, ${key}_min and ${key}_max should exist in
+            // the query parameters.
             } else if (isPlainObject(val)) {
                 const range = val as Range<number|string>;
                 const finalRange = {
@@ -257,6 +268,9 @@ export const queryToParams = (
                 finalRange.from = range.from != null ?
                     range.from.toString()
                     :
+                    // null/undefined casts to 'null'/'undefined' in string
+                    // conversion, hence must explicitly set query value
+                    // to empty string.
                     '';
                 
                 finalRange.to = range.to != null ?
