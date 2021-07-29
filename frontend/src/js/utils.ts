@@ -225,9 +225,8 @@ export const queryToParams = (
     const queryParams: string[] = [];
 
     // Loop over each key in the query
-    Object.keys(query).forEach((key_) => {
+    Object.entries(query).forEach(([key_, val]) => {
         const key = key_ as keyof Query;
-        const val = query[key];
 
         if (val == null) {
             return;
