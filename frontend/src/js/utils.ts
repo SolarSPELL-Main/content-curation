@@ -220,7 +220,7 @@ export const queryToParams = (
         return;
     }
 
-    let queryParams: string[] = [];
+    const queryParams: string[] = [];
 
     Object.keys(query).forEach((key_) => {
         const key = key_ as keyof Query;
