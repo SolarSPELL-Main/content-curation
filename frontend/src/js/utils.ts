@@ -91,7 +91,7 @@ api.interceptors.response.use(r => r, err => {
     data.append('status', content.status);
 
     // Unused fields
-    // data.append('active', 'true');
+    // These should be filled in by the backend
     // data.append('created_by', content.creator ?? 'admin');
     // data.append('created_on', format(Date.now(), 'yyyy-MM-dd'));
     // data.append('reviewed_by', '');
