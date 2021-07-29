@@ -47,10 +47,6 @@ api.interceptors.response.use(r => r, err => {
 /**
  * Converts Content to a FormData object for adding or editing content.
  * @param content Content to convert to FormData.
- * @param forceAll Whether to force all fields in Content to have a
- *                 corresponding field in the FormData, regardless of
- *                 if it is null/undefined.
- *                 Used for distinguishing patching / posting content.
  * @returns FormData representing the Content.
  */
  export const contentToFormData = (content: Content): FormData => {
