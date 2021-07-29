@@ -69,24 +69,21 @@ function ContentForm({
 
     let dialogStyle: any = { title: '' };
 
-    switch (type) {
-        case 'add':
-            dialogStyle = {
-                title: 'Add New Item',
-                cancelColor: 'secondary',
-                confirmColor: 'primary',
-                confirmText: 'Add',
-            };
-            break;
-        case 'edit':
-            dialogStyle = {
-                title: `Edit Content ${content?.title}`,
-                cancelColor: 'secondary',
-                confirmColor: 'primary',
-                confirmText: 'Save',
-            };
-            break;
-    };
+    if (type === 'add') {
+        dialogStyle = {
+            title: 'Add New Item',
+            cancelColor: 'secondary',
+            confirmColor: 'primary',
+            confirmText: 'Add',
+        };
+    } else if (type === 'edit') {
+        dialogStyle = {
+            title: `Edit Content ${content?.title}`,
+            cancelColor: 'secondary',
+            confirmColor: 'primary',
+            confirmText: 'Save',
+        };
+    }
 
     const fields: FormFieldDescriptor<Content>[] = [
         {
