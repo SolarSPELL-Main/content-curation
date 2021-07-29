@@ -44,7 +44,6 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                                 (val: any) => <Content>({
                                     id: Number(val.id),
                                     notes: val.additional_notes,
-                                    active: val.active,
                                     fileURL: val.content_file,
                                     originalSource: val.original_source,
                                     copyrighter: val.copyright_by,

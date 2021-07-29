@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { isPlainObject, isString, isNumber } from 'lodash';
+import { isPlainObject, isString } from 'lodash';
 import { Status } from './enums';
 import type {
     Content,
@@ -212,7 +212,7 @@ export const CONTENT_FIELDS: Record<string,string> = {
  * Constructs an array of query parameters from a Query object.
  * @param query The Query object.
  * @param creator The current logged-in user (used for Created By Me).
- * @returns The query parameters in an array or undefined (if query is null).
+ * @returns The query parameters in an array or null (if query is null or empty).
  */
 export const queryToParams = (
     query?: Query,
