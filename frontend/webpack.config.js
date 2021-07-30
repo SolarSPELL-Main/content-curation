@@ -33,7 +33,8 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             inject: 'body',
-            template: path.join(__dirname, "src/html/index.html")
+            template: path.join(__dirname, "src/html/index.html"),
+            favicon: "./src/assets/favicon.ico"
         }),
         //new CopyWebpackPlugin({
             //patterns: [

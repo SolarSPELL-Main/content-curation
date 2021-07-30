@@ -147,6 +147,7 @@ def get_user(request, *args, **kwargs):
             "username": request.user.username,
             "email": request.user.email,
             "groups": [group.name for group in request.user.groups.all()],
+            "user_id": request.user.id
         })
     else:
         return build_response({
@@ -154,6 +155,7 @@ def get_user(request, *args, **kwargs):
             "username": "",
             "email": "",
             "groups": "",
+            "user_id": "",
         })
 
 
@@ -167,6 +169,13 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
     serializer_class = ContentSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = ContentFilter
+
+    def create(self, request, *args, **kwargs):
+        print("Intercepted", request.user)
+
+        print(kwargs.keys())
+        request.data["created_by"] = request.user.id
+        return super().create(request, *args, **kwargs)
 
     @api_view(['PATCH'])
     def patch(self, request, pk=None):

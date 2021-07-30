@@ -224,7 +224,6 @@ export const queryToParams = (
 
     const queryParams: string[] = [];
 
-    // Loop over each key in the query
     Object.entries(query).forEach(([key_, val]) => {
         const key = key_ as keyof Query;
 
@@ -240,15 +239,16 @@ export const queryToParams = (
                 (accum, val) => accum.concat(val.map(m => m.id)),
                 [],
             ).forEach(v => queryParams.push(`metadata=${v}`));
-        } else if (key === 'created_by') {
-            // Special case, true/false should map to including username or not
-            if (val === 'true') {
-                queryParams.push(`${key}=${creator ?? ''}`)
-            }
         } else if (key === 'status') {
             // Special case, 'all' must be treated as null for query
             if (val !== 'all') {
                 queryParams.push(`${key}=${val}`);
+            }
+        } else if (key === "created_by") {
+            // Special case, defaults to created_by logged in user
+            // unless otherwise specified
+            if (creator != null && val !== 'false') {
+                queryParams.push(`${key}=${creator ?? ''}`)
             }
         } else {
             // Simplest case, search value is a string

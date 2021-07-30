@@ -31,6 +31,7 @@ function Page(_: PageProps): React.ReactElement {
     const selected = useCCSelector(state => state.content.selected);
     const selectionModel = useCCSelector(state => state.content.selectionModel);
     const sortModel = useCCSelector(state => state.content.sortModel);
+    const user_id = useCCSelector(state => state.global.user.user_id)
 
     React.useEffect(() => {
         // Avoids accidentally adding metadata added from metadata tab
@@ -40,8 +41,10 @@ function Page(_: PageProps): React.ReactElement {
     }, [dispatch]);
 
     React.useEffect(() => {
-        dispatch(ContentActions.fetch_content());
-    }, [dispatch, page, pageSize, sortModel]);
+        if (user_id !== 0) {
+            dispatch(ContentActions.fetch_content());
+        }
+    }, [dispatch, page, pageSize, sortModel, user_id]);
 
     const onEdit_ = React.useCallback(
         (content: Content, vals?: Partial<Content>) => {

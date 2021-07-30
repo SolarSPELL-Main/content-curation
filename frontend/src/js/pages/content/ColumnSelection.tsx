@@ -42,6 +42,7 @@ function ColumnSelection({
                 variant={'contained'}
                 color={'primary'}
                 onClick={open_}
+                style={{ marginRight: "0px" }}
             >
                 Column Select
             </Button>

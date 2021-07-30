@@ -6,6 +6,7 @@ from django import forms
 from django.http import QueryDict
 from django_filters.widgets import BooleanWidget
 from .enums import STATUS
+from django.contrib.auth import get_user_model
 
 
 # Search Content Filter criteria
@@ -20,7 +21,9 @@ class ContentFilter(filters.FilterSet):
         widget=forms.CheckboxSelectMultiple)
     created_on = filters.DateFromToRangeFilter(
         widget=RangeWidget(attrs={'type': 'date'}))
-    created_by = filters.CharFilter(lookup_expr='icontains')
+    created_by = filters.ModelChoiceFilter(
+        queryset=get_user_model().objects.all()
+    )
     modified_on = filters.DateFromToRangeFilter(
         widget=RangeWidget(attrs={'type': 'date'}))
     modified_by = filters.CharFilter(lookup_expr='icontains')

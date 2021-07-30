@@ -24,12 +24,13 @@ export default () => {
     );
 
     return (
-        <Box p={2}>
+        <Box pt={'4em'} p={2}>
             <Grid container spacing={2}>
-                <Grid item xs={6} style={{paddingRight: "2em"}}>
+                <Grid item xs={1} />
+                <Grid item xs={6} style={{paddingRight: "1em"}}>
                     <img src={ProfileImpact} style={{maxWidth: "100%"}} />
                 </Grid>
-                <Grid item xs={6} style={{paddingLeft: "2em"}}>
+                <Grid item xs={5} style={{paddingLeft: "1em"}}>
                     {user.username ? <>
                         <Typography variant="h2">Hello, {user.username}! 👋</Typography>
                         <Typography variant="subtitle2">Email</Typography>
@@ -41,14 +42,20 @@ export default () => {
                             label={group}
                         />)}
                         <div style={{marginTop: "2em"}}/>
-                        <Button onClick={_ => dispatch(logout())}>
+                        <Button
+                            style={{marginRight: "1em"}}
+                            onClick={_ => dispatch(logout())}
+                        >
                             LOGOUT
                         </Button>
-                        <Button onClick={_ => window.open(APP_URLS.BUG_REPORT)}>
+                        <Button
+                            style={{marginRight: "1em"}}
+                            onClick={_ => window.open(APP_URLS.BUG_REPORT)}
+                        >
                             REPORT A BUG
                         </Button>
                         {hasPermission(user.permissions, 'special', 'admin') ?
-                            <Button href="/admin/">
+                            <Button href="/admin/" style={{marginRight: "1em"}}>
                                 Admin Site
                             </Button> : <></>
                         }
