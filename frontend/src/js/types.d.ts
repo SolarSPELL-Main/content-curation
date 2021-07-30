@@ -58,6 +58,7 @@ type User = {
     username: string
     email: string
     token: string
+    user_id: number
     groups: AuthGroup[]
     permissions: Permissions
 }

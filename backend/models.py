@@ -70,13 +70,14 @@ class Content(models.Model):
     active = models.BooleanField(default=1)
     # duplicatable = models.BooleanField(default=0)
     # Cataloger/Curator from loggedIn
-    created_by = models.TextField(null=True)
+    created_by = models.ForeignKey(
+        "auth.User", default=None, null=True, on_delete=models.SET_DEFAULT
+    )
     created_on = models.DateField(default=datetime.date.today, null=True)
     # further modified by curators/metadataaides/library specialist(s)to edit the filename and metadata record
     modified_by = models.TextField(null=True)
     modified_on = models.DateField(default=datetime.date.today, null=True)
     # Sara Team -> Reviews it
-    reviewed = models.BooleanField(default=0)
     reviewed_by = models.TextField(null=True)
     reviewed_on = models.DateField(default=datetime.date.today, null=True)
     # CopyRight Permission for curator's content

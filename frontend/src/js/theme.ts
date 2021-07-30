@@ -7,16 +7,15 @@ const maroon = "#8C1D40"
 
 export default createMuiTheme({
     typography: {
-        allVariants: {
-            marginRight: "1em"
-        },
         h2: {
             color: bright_blue,
-            fontWeight: "bolder"
+            fontWeight: "bolder",
+            marginRight: "1em"
         },
         subtitle2: {
             fontWeight: "bold",
-            marginTop: "1em"
+            marginTop: "1em",
+            marginRight: "1em"
         }
     },
     props: {

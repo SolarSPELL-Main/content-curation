@@ -222,6 +222,14 @@ export const queryToParams = (
 
     let queryParams: string[] = [];
 
+    //Special case, defaults to created_by logged in user unless otherwise
+    //specified
+    if (creator !== undefined) {
+        if (query.created_by !== "false") {
+            queryParams.push(`created_by=${creator ?? ''}`)
+        }
+    }
+
     Object.keys(query).forEach((key_) => {
         const key = key_ as keyof Query;
         const val = query[key];
@@ -238,16 +246,13 @@ export const queryToParams = (
                 (accum, val) => accum.concat(val.map(m => m.id)),
                 [],
             ).forEach(v => queryParams.push(`metadata=${v}`));
-        } else if (key === 'created_by') {
-            // Special case, true/false should map to including username or not
-            if (val === 'true') {
-                queryParams.push(`${key}=${creator ?? ''}`)
-            }
         } else if (key === 'status') {
             // Special case, 'all' must be treated as null for query
             if (val !== 'all') {
                 queryParams.push(`${key}=${val}`);
             }
+        } else if (key === "created_by") {
+            //Created_by case already handled
         } else {
             if (isString(val)) {
                 queryParams.push(`${key}=${val}`)

@@ -115,7 +115,7 @@ function SearchBar({
                             title: 'Created by Me',
                         },
                     ],
-                    initialValue: 'false',
+                    initialValue: 'true',
                 },
                 {
                     field: 'metadata',

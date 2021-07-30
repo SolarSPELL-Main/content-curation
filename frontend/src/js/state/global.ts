@@ -16,6 +16,7 @@ export const globalSlice = createSlice({
             email: "",
             token: "",
             groups: [],
+            user_id: 0,
             permissions: {
                 content: createCRUDPermissions(),
                 metadata: createCRUDPermissions(),
