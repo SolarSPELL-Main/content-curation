@@ -1,12 +1,14 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
+import SvgIcon from '@material-ui/core/SvgIcon';
 import { GridColDef } from '@material-ui/data-grid';
+import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
+import HighlightOff from '@material-ui/icons/HighlightOff';
 import PrettyBytes from 'pretty-bytes';
 
 import { ContentColumnSelection } from 'solarspell-react-lib';
 import { MetadataType, Content } from 'js/types';
-import Checkbox from '@material-ui/core/Checkbox';
 
 type ColumnSelectionProps = {
     onClose: (cols: GridColDef[]) => void
@@ -65,10 +67,28 @@ function ColumnSelection({
                             disableColumnMenu: true,
                             filterable: false,
                             hide: hidden,
-                            renderCell: params =>
-                                <Checkbox checked={params.getValue(
-                                    params.id, field.field
-                                ) == true} />
+                            renderCell: params => (
+                                <SvgIcon
+                                    htmlColor={!!params.getValue(
+                                        params.id, field.field
+                                    ) ?
+                                        'green'
+                                        :
+                                        'darkRed'
+                                    }
+                                    style={{
+                                        marginLeft: '1em',
+                                    }}
+                                >
+                                    {!!params.getValue(
+                                        params.id, field.field
+                                    ) ?
+                                        <CheckCircleOutline />
+                                        :
+                                        <HighlightOff />
+                                    }
+                                </SvgIcon>
+                            )
                         }),
                     },
                     {
