@@ -84,9 +84,11 @@ function Page(_: PageProps): React.ReactElement {
 
     const onQueryChange = React.useCallback(
         (query: Query) => {
+            // Reset page back to start to avoid out-of-range errors
             dispatch(ContentActions.update_pagination({
                 page: 0,
             }));
+            
             dispatch(ContentActions.update_filters(query));
         },
         [dispatch],

@@ -46,7 +46,6 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                                 (val: any) => <Content>({
                                     id: Number(val.id),
                                     notes: val.additional_notes,
-                                    active: val.active,
                                     fileURL: val.content_file,
                                     originalSource: val.original_source,
                                     copyrighter: val.copyright_by,
@@ -55,10 +54,13 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                                     copyrightApproved: val.copyright_approved,
                                     creator: val.created_by,
                                     createdDate: val.created_on,
-                                    reviewer: val.reviewed_by,
                                     // If status is REVIEW, content still needs
-                                    // to be reviewed, hence reviewedDate should
-                                    // be displayed as null.
+                                    // to be reviewed, hence below two fields
+                                    // should be displayed as null.
+                                    reviewer: val.status === Status.REVIEW ?
+                                        null
+                                        :
+                                        val.reviewed_by,
                                     reviewedDate: val.status === Status.REVIEW ?
                                         null
                                         :

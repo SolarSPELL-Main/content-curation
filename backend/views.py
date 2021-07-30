@@ -102,7 +102,7 @@ class MetadataTypeViewSet(StandardDataView, viewsets.ModelViewSet):
 
     @action(detail=True, methods=["GET"])
     def metadata(self, request, pk=None):
-        queryset = Metadata.objects.filter(type_id=pk)
+        queryset = Metadata.objects.filter(type_id=pk).order_by('name')
         return build_response({
             'total': queryset.count(),
             'items': MetadataSerializer(
@@ -174,7 +174,7 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
         print("Intercepted", request.user)
 
         print(kwargs.keys())
-        request.data["created_by"] = request.user.id
+        request.data["created_by"] = request.user.username
         return super().create(request, *args, **kwargs)
 
     @api_view(['PATCH'])

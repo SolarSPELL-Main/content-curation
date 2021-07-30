@@ -21,7 +21,9 @@ function TypeAdder({
     onAddType,
 }: TypeAdderProps): React.ReactElement {
     const [dialogOpen, setDialogOpen] = React.useState(false);
-    const open = React.useCallback(() => setDialogOpen(true), [setDialogOpen]);
+    const open = React.useCallback(() => {
+        setDialogOpen(true)
+    }, [setDialogOpen]);
     const close = React.useCallback((val: string) => {
         setDialogOpen(false);
         if (val) {
@@ -36,6 +38,7 @@ function TypeAdder({
                 onClose={close}
                 title={'Enter new Metadata Type name'}
                 label={'New Metadata Type name'}
+                allowEnter
             />
             <Box mb={1}>
                 <Button

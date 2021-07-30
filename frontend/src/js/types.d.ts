@@ -16,7 +16,6 @@ type Metadata = {
 } & BaseMetadata<MetadataType>
 
 type Content = {
-    active: boolean
     copyrighter?: string
     copyrightSite?: string
     copyrightApproved: boolean

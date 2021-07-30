@@ -25,7 +25,7 @@ class MetadataSerializer(ModelSerializer):
         fields = ('id', 'name', 'type','metadataType')
     
 class ContentSerializer(ModelSerializer):
-    created_by = StringRelatedField()
+    #created_by = StringRelatedField()
     class Meta:
         model = Content
         fields = (

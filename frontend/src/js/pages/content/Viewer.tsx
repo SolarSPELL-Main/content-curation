@@ -1,4 +1,5 @@
 import React from 'react';
+import prettyBytes from 'pretty-bytes';
 
 import { ContentViewer } from 'solarspell-react-lib';
 import { MetadataType, Content } from 'js/types';
@@ -33,12 +34,41 @@ function Viewer(props: ViewerProps): React.ReactElement {
                     field: 'fileName',
                 },
                 {
+                    title: 'Filesize',
+                    field: 'filesize',
+                    formatter: (val: number) => prettyBytes(val),
+                },
+                {
+                    title: 'Original Source',
+                    field: 'originalSource',
+                },
+                {
                     title: 'Created On',
                     field: 'createdDate',
                 },
                 {
+                    title: 'Created By',
+                    field: 'creator',
+                },
+                {
                     title: 'Year of Publication',
                     field: 'datePublished',
+                },
+                {
+                    title: 'Status',
+                    field: 'status',
+                },
+                {
+                    title: 'Reviewed Date',
+                    field: 'reviewedDate',
+                },
+                {
+                    title: 'Reviewed By',
+                    field: 'reviewer',
+                },
+                {
+                    title: 'Copyright Site',
+                    field: 'copyrightSite',
                 },
                 {
                     title: 'Copyright Approved',

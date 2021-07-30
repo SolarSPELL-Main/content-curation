@@ -89,7 +89,7 @@ export const globalSlice = createSlice({
         },
         logout: () => {},
         show_toast: (state, action: PayloadAction<Toast>) => {
-            state.toasts.push(action.payload)
+            state.toasts = state.toasts.concat(action.payload)
         },
         close_toast: (state, action: PayloadAction<number>) => {
             state.toasts = state.toasts.filter(n => n.key != action.payload)

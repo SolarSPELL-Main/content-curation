@@ -69,24 +69,21 @@ function ContentForm({
 
     let dialogStyle: any = { title: '' };
 
-    switch (type) {
-        case 'add':
-            dialogStyle = {
-                title: 'Add New Item',
-                cancelColor: 'secondary',
-                confirmColor: 'primary',
-                confirmText: 'Add',
-            };
-            break;
-        case 'edit':
-            dialogStyle = {
-                title: `Edit Content ${content?.title}`,
-                cancelColor: 'secondary',
-                confirmColor: 'primary',
-                confirmText: 'Save',
-            };
-            break;
-    };
+    if (type === 'add') {
+        dialogStyle = {
+            title: 'Add New Item',
+            cancelColor: 'secondary',
+            confirmColor: 'primary',
+            confirmText: 'Add',
+        };
+    } else if (type === 'edit') {
+        dialogStyle = {
+            title: `Edit Content ${content?.title}`,
+            cancelColor: 'secondary',
+            confirmColor: 'primary',
+            confirmText: 'Save',
+        };
+    }
 
     const fields: FormFieldDescriptor<Content>[] = [
         {
@@ -230,7 +227,7 @@ function ContentForm({
         },
         {
             component: TextField,
-            propFactory: (state, _r, setter) => {
+            propFactory: (state, reasons, setter) => {
                 return {
                     fullWidth: true,
                     label: 'Year of Publication',
@@ -241,10 +238,39 @@ function ContentForm({
                     },
                     value: state['datePublished'] ?? '',
                     type: 'number',
+                    error: !!reasons['datePublished'],
+                    helperText: reasons['datePublished'],
+                    onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
+                        // MUI TextField allows 'e' even in number fields,
+                        // so just explicitly disable it when detected.
+                        if (e.key === 'e') {
+                            e.stopPropagation();
+                            e.preventDefault();
+                        }
+                    },
                 };
             },
             field: 'datePublished',
             initialValue: '',
+            validator: (state) => {
+                const val = state['datePublished'];
+
+                // If null or empty string, don't run rest of validation
+                if (val == null || val === '') {
+                    return;
+                } else {
+                    const num = parseInt(val);
+
+                    // Impose range limit
+                    if (isNaN(num) || num < 1000 || num > 9999) {
+                        return 'Invalid year';
+                    } else {
+                        return;
+                    }
+
+                }
+
+            }
         },
         {
             component: TextField,

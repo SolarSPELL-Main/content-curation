@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { isPlainObject, isString, isNumber } from 'lodash';
+import { isPlainObject, isString } from 'lodash';
 import { Status } from './enums';
 import type {
     Content,
@@ -47,10 +47,6 @@ api.interceptors.response.use(r => r, err => {
 /**
  * Converts Content to a FormData object for adding or editing content.
  * @param content Content to convert to FormData.
- * @param forceAll Whether to force all fields in Content to have a
- *                 corresponding field in the FormData, regardless of
- *                 if it is null/undefined.
- *                 Used for distinguishing patching / posting content.
  * @returns FormData representing the Content.
  */
  export const contentToFormData = (content: Content): FormData => {
@@ -95,7 +91,7 @@ api.interceptors.response.use(r => r, err => {
     data.append('status', content.status);
 
     // Unused fields
-    // data.append('active', 'true');
+    // These should be filled in by the backend
     // data.append('created_by', content.creator ?? 'admin');
     // data.append('created_on', format(Date.now(), 'yyyy-MM-dd'));
     // data.append('reviewed_by', '');
@@ -212,6 +208,12 @@ export const CONTENT_FIELDS: Record<string,string> = {
     metadata: 'metadata',
 }
 
+/**
+ * Constructs an array of query parameters from a Query object.
+ * @param query The Query object.
+ * @param creator The current logged-in user (used for Created By Me).
+ * @returns The query parameters in an array or null (if query is null or empty).
+ */
 export const queryToParams = (
     query?: Query,
     creator?: string,
@@ -220,19 +222,10 @@ export const queryToParams = (
         return;
     }
 
-    let queryParams: string[] = [];
+    const queryParams: string[] = [];
 
-    //Special case, defaults to created_by logged in user unless otherwise
-    //specified
-    if (creator !== undefined) {
-        if (query.created_by !== "false") {
-            queryParams.push(`created_by=${creator ?? ''}`)
-        }
-    }
-
-    Object.keys(query).forEach((key_) => {
+    Object.entries(query).forEach(([key_, val]) => {
         const key = key_ as keyof Query;
-        const val = query[key];
 
         if (val == null) {
             return;
@@ -252,10 +245,18 @@ export const queryToParams = (
                 queryParams.push(`${key}=${val}`);
             }
         } else if (key === "created_by") {
-            //Created_by case already handled
+            // Special case, defaults to created_by logged in user
+            // unless otherwise specified
+            if (creator != null && val !== 'false') {
+                queryParams.push(`${key}=${creator ?? ''}`)
+            }
         } else {
+            // Simplest case, search value is a string
             if (isString(val)) {
                 queryParams.push(`${key}=${val}`)
+            // Assumes that if the Query value is an object, it represents a
+            // Range object. Hence, ${key}_min and ${key}_max should exist in
+            // the query parameters.
             } else if (isPlainObject(val)) {
                 const range = val as Range<number|string>;
                 const finalRange = {
@@ -266,6 +267,9 @@ export const queryToParams = (
                 finalRange.from = range.from != null ?
                     range.from.toString()
                     :
+                    // null/undefined casts to 'null'/'undefined' in string
+                    // conversion, hence must explicitly set query value
+                    // to empty string.
                     '';
                 
                 finalRange.to = range.to != null ?

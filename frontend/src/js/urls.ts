@@ -36,7 +36,7 @@ const APP_URLS = {
         }
 
         // Sorting query params
-        if (sortModel != null) {
+        if (sortModel) {
             extra_params = extra_params.concat(
                 sortModel.map(field => field.sort === 'asc' ?
                     `sort_by=${CONTENT_FIELDS[field.field]}`
@@ -44,6 +44,11 @@ const APP_URLS = {
                     `sort_by=-${CONTENT_FIELDS[field.field]}`
                 ),
             );
+        }
+
+        // By default, include ASC sort by title
+        if (!sortModel || !sortModel.some(field => field.field === 'title')) {
+            extra_params = extra_params.concat('sort_by=title');
         }
 
         // Filtering query params
