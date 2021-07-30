@@ -3,6 +3,7 @@ from django_filters import widgets
 from django_filters.widgets import RangeWidget
 from .models import Content, Metadata
 from django import forms
+from django.http import QueryDict
 from django_filters.widgets import BooleanWidget
 from .enums import STATUS
 
@@ -15,6 +16,7 @@ class ContentFilter(filters.FilterSet):
     filesize = filters.RangeFilter()
     metadata = filters.ModelMultipleChoiceFilter(
         queryset=Metadata.objects.all(),
+        method="filter_metadata",
         widget=forms.CheckboxSelectMultiple)
     created_on = filters.DateFromToRangeFilter(
         widget=RangeWidget(attrs={'type': 'date'}))
@@ -32,6 +34,17 @@ class ContentFilter(filters.FilterSet):
         widget=BooleanWidget())
     copyright_approved = filters.BooleanFilter(
         widget=BooleanWidget())
+
+    def filter_metadata(self, queryset, name, value):
+        if not value:
+            return queryset
+
+        metadata_list = self.data.getlist('metadata')
+
+        for m in metadata_list:
+            queryset = queryset.filter(metadata__pk=m)
+
+        return queryset
 
     class Meta:
         model = Content
