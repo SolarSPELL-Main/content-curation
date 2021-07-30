@@ -102,7 +102,7 @@ class MetadataTypeViewSet(StandardDataView, viewsets.ModelViewSet):
 
     @action(detail=True, methods=["GET"])
     def metadata(self, request, pk=None):
-        queryset = Metadata.objects.filter(type_id=pk)
+        queryset = Metadata.objects.filter(type_id=pk).order_by('name')
         return build_response({
             'total': queryset.count(),
             'items': MetadataSerializer(
