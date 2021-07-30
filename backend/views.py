@@ -174,7 +174,7 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
         print("Intercepted", request.user)
 
         print(kwargs.keys())
-        request.data["created_by"] = request.user.id
+        request.data["created_by"] = request.user.username
         return super().create(request, *args, **kwargs)
 
     @api_view(['PATCH'])

@@ -71,7 +71,8 @@ class Content(models.Model):
     # duplicatable = models.BooleanField(default=0)
     # Cataloger/Curator from loggedIn
     created_by = models.ForeignKey(
-        "auth.User", default=None, null=True, on_delete=models.SET_DEFAULT
+        "auth.User", default=None, null=True, on_delete=models.SET_DEFAULT,
+        to_field="username"
     )
     created_on = models.DateField(default=datetime.date.today, null=True)
     # further modified by curators/metadataaides/library specialist(s)to edit the filename and metadata record
