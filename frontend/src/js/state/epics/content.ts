@@ -39,7 +39,9 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                 ),
             )).pipe(
                 map(({ data }) => 
-                    update_content(
+                    {
+                        console.log(data);
+                        return update_content(
                         // Maps API response to Content array
                         {
                             content: data.data.items.map(
@@ -52,7 +54,7 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                                     copyrightSite: val.copyright_site,
                                     copyright: val.copyright_notes,
                                     copyrightApproved: val.copyright_approved,
-                                    creator: val.created_by,
+                                    creator: val.created_by_name,
                                     createdDate: val.created_on,
                                     // If status is REVIEW, content still needs
                                     // to be reviewed, hence below two fields
@@ -100,7 +102,7 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                             ),
                             total: data.data.total,
                         },
-                    ),
+                    )},
                 ),
             )),
         ),
