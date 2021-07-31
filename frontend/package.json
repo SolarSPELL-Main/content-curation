@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "npm run-script clean && webpack --mode=development",
     "build:prod": "npm run-script clean && webpack --mode=production",
     "clean": "rimraf ./static",
@@ -27,6 +27,7 @@
     "eslint-plugin-react": "^7.17.0",
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^5.3.1",
+    "jest": "^27.0.6",
     "react-dnd": "^7.7.0",
     "rimraf": "^2.6.3",
     "style-loader": "^1.1.4",
