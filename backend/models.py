@@ -92,6 +92,9 @@ class Content(models.Model):
         default='Review',
     )
 
+    def created_by_name(self):
+        return self.created_by.username
+
     def published_year(self):
         return None if self.published_date == None else str(
             self.published_date.year)
