@@ -40,13 +40,12 @@ class Metadata(models.Model):
 
 class Content(models.Model):
     def set_file_name(self, file_name):
-        path = "media/contents/" + file_name
         # get file size if this content was saved individually
         if (self.content_file):
             self.hash = sha256(self.content_file.read()).hexdigest()
             self.filesize = self.content_file.size
             self.file_name = get_valid_filename(file_name)
-        return path
+        return file_name
 
     content_file = models.FileField(
         "File",
