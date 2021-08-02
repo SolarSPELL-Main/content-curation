@@ -32,14 +32,14 @@ function SelectedToolbar({
     return (
         <Collapse in={selected.length > 0}>
             <Box mb={2} mt={2} display={'flex'}>
-                <Box>
+                <Box mr={2} >
                     <ClearSelected
                         selected={selected}
                         onClear={actions.onClear}
                     />
                 </Box>
                 <ShowForPermission slice={'content'} permission={'delete'}>
-                    <Box>
+                    <Box mr={2} >
                         <DeleteSelected
                             selected={selected}
                             onDelete={actions.onDelete}
@@ -47,7 +47,7 @@ function SelectedToolbar({
                     </Box>
                 </ShowForPermission>
                 <ShowForPermission slice={"special"} permission={"export"}>
-                    <Box>
+                    <Box mr={2} >
                         <ExportSelected
                             selected={selected}
                             onExport={actions.onExport}
