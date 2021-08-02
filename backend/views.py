@@ -234,7 +234,7 @@ def zipdownloadcsv(request):
     response = HttpResponse(content_type='application/zip')
     response['Content-Disposition'] = 'attachment; filename={}'. \
         format(filename)
-    metadataname = ""
+    
     field_names = ['file_name', 'title', 'description', 'metadata_info',
                    'active', 'copyright_notes',
                    'rights_statement',
@@ -252,6 +252,7 @@ def zipdownloadcsv(request):
 
     content = Content.objects.filter(id=content_ids)
     for con in content:
+        metadataname = ""
         for obj in con.metadata_info():
             metadataname += obj["name"] + " | " + metadataname
         writer.writerow({'file_name': con.file_name,
