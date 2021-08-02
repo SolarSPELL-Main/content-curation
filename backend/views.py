@@ -222,9 +222,9 @@ def check_duplicate(request):
 def zipdownloadcsv(request):
     print("zipdownloadcssv")
 
-    print(request.GET.get("id", None))
+    print(request.GET.getlist("id", None))
 
-    content_ids = request.GET.get("id", None)
+    content_ids = request.GET.getlist("id", None)
 
     zip_subdir = "media/contents/media/contents/"
     filename = 'content-curation_webapp_Content-{}.zip'.format(
@@ -250,7 +250,7 @@ def zipdownloadcsv(request):
     writer = csv.DictWriter(string_buffer, fieldnames=field_names)
     writer.writeheader()
 
-    content = Content.objects.filter(id=content_ids)
+    content = Content.objects.filter(id__in=content_ids)
     for con in content:
         metadataname = ""
         for obj in con.metadata_info():
