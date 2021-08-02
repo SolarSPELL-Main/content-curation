@@ -290,7 +290,13 @@ export const queryToParams = (
     }
 }
 
-export const downloadFile = (data: Blob, fileName: string, type="text/plain") => {
+/**
+ * Triggers a download of a blob object with a given filename. Creates a
+ * temporary hidden <a> tag that downloads the file and triggers a click event
+ *
+ * Credit to David Walsh at https://davidwalsh.name/javascript-download
+ */
+export const downloadFile = (file: Blob, fileName: string) => {
     // Create an invisible A element
     const a = document.createElement("a");
     a.style.display = "none";
@@ -298,7 +304,7 @@ export const downloadFile = (data: Blob, fileName: string, type="text/plain") =>
 
     // Set the HREF to a Blob representation of the data to be downloaded
     a.href = window.URL.createObjectURL(
-        data
+        file
     );
 
     // Use download attribute to set set desired file name
