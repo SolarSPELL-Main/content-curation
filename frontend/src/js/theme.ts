@@ -24,6 +24,31 @@ export default createMuiTheme({
             color: "primary"
         }
     },
+    overrides: {
+        MuiTablePagination: {
+            // A bit of a full sweep across all the components in the pagination
+            // component, but this ensures the row select and page indicator
+            // won't disappear on page resize.
+            caption: {
+                display: 'block !important',
+            },
+            actions: {
+                display: 'block !important',
+            },
+            selectIcon: {
+                display: 'block !important',
+            },
+            select: {
+                display: 'block !important',
+            },
+            selectRoot: {
+                display: 'block !important',
+            },
+            input: {
+                display: 'block !important',
+            },
+        },
+    },
     palette: {
         primary: {
             main: bright_blue
