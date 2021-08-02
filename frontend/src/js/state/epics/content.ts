@@ -39,9 +39,7 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                 ),
             )).pipe(
                 map(({ data }) => 
-                    {
-                        console.log(data);
-                        return update_content(
+                    update_content(
                         // Maps API response to Content array
                         {
                             content: data.data.items.map(
@@ -102,7 +100,7 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                             ),
                             total: data.data.total,
                         },
-                    )},
+                    ),
                 ),
             )),
         ),

@@ -70,6 +70,7 @@ function KebabMenu({
                         textInputTitle={`Create a new Metadata of type ${metadataType.name}`}
                         textInputLabel={'Metadata Name'}
                         submitButtonText={'Create'}
+                        allowEnter
                     />
                 </ShowForPermission>
                 <ShowForPermission slice={'metadata'} permission={'update'}>

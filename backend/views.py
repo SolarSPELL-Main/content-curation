@@ -14,6 +14,7 @@ from rest_framework.permissions import DjangoModelPermissions
 from django_filters import rest_framework as filters
 
 from django.core.paginator import QuerySetPaginator
+from django.conf import settings
 
 '''Importing from other files in the project'''
 from backend.models import MetadataType, Metadata, Content
@@ -177,13 +178,30 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
         print(kwargs.keys())
         request.data["created_by"] = request.user.id
         return super().create(request, *args, **kwargs)
-
-    @api_view(['PATCH'])
-    def patch(self, request, pk=None):
-        print("Content View Set Patch")
-        instance = self.get_object(pk)
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
         if not instance:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            file_path = os.path.join(settings.MEDIA_ROOT, instance.file_name)
+            if os.path.exists(file_path):
+                os.remove(file_path)
+        return super().destroy(request, *args, **kwargs)
+
+    def partial_update(self, request, pk=None):
+        print("Content View Set Patch")
+        instance = self.get_object()
+        if not instance:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # New file has been uploaded for content
+        # Removes old one
+        if 'content_file' in request.data:
+            file_path = os.path.join(settings.MEDIA_ROOT, instance.file_name)
+            if os.path.exists(file_path):
+                os.remove(file_path)
+        
         serializer = self.get_serializer(instance,
                                          data=request.data,
                                          many=isinstance(request.data, list),
@@ -232,12 +250,9 @@ def zipdownloadcsv(request):
     ]
 
     with tempfile.SpooledTemporaryFile() as temp_zip:
-        zip_subdir = "media/contents/media/contents/"
-        filename = 'content-curation_webapp_Content-{}.zip'.format(
-            datetime.datetime.now().strftime("%m-%d-%Y"))
+        zip_subdir = settings.MEDIA_ROOT
         csvfilename = 'content-curation_webapp_Content-{}.csv'.format(
             datetime.datetime.now().strftime("%m-%d-%Y"))
-        metadataname = ""
         field_names = ['file_name', 'title', 'description', 'metadata_info',
                        'active', 'copyright_notes',
                        'rights_statement',
@@ -259,6 +274,7 @@ def zipdownloadcsv(request):
         ) as zip_file:
             for con in content:
                 print(con.title)
+                metadataname = ""
                 for obj in con.metadata_info():
                     metadataname += obj["name"] + " | " + metadataname
                 writer.writerow({'file_name': con.file_name,

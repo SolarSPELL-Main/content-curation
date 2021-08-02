@@ -290,7 +290,7 @@ export const queryToParams = (
     }
 }
 
-export const downloadFile = (data: Blob, fileName: string, type="text/plain") => {
+export const downloadFile = (data: Blob, fileName: string) => {
     // Create an invisible A element
     const a = document.createElement("a");
     a.style.display = "none";
