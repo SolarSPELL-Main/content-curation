@@ -18,6 +18,6 @@ urlpatterns = [
     path(r'get_user/', get_user),
     path(r'search', search),
     path("check_duplicate/", check_duplicate),
-    path(r'zipdownloadcsv/', zipdownloadcsv),
+    path(r'export/', zipdownloadcsv),
     path('', include(router.urls)),
 ]

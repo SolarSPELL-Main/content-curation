@@ -10,6 +10,7 @@ import { useCCDispatch, useCCSelector } from '../../hooks';
 import APP_URLS from '../../urls';
 import { Tabs } from '../../enums';
 import { Content, Query, Metadata, MetadataType } from 'js/types';
+import {api, downloadFile} from '../../utils';
 
 type PageProps = {
 
@@ -156,9 +157,13 @@ function Page(_: PageProps): React.ReactElement {
                         dispatch(ContentActions.clear_selected());
                     },
                     onExport: ids => {
-                        window.open(
-                            APP_URLS.EXPORT(ids[0]),
-                        );
+                        const form = new FormData()
+                        form.set("content", JSON.stringify(ids))
+                        api.post(APP_URLS.EXPORT, form, {responseType: "blob"})
+                            .then(res => {
+                                console.log((res.data as Blob))
+                                downloadFile(res.data, "export.zip")
+                            })
                     },
                 },
                 Toolbar: {

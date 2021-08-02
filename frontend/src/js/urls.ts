@@ -7,7 +7,7 @@ import { CONTENT_FIELDS, queryToParams } from './utils';
 const APP_URLS = {
     BUG_REPORT: "https://docs.google.com/forms/d/e/"
         + "1FAIpQLScdPbE0AGVuNCvhy2gnTvmVNyQcQtd4vt6zBjjBgAwprb4VKg/viewform",
-    EXPORT: (id: number) => `/api/content/${id}/zipdownloadcsv/`,
+    EXPORT: `/api/export/`,
     LOGOUT: `/accounts/logout/`,
     METADATA: (id: number) => `/api/metadata/${id}/`,
     //api endpoint `/api/metadata_types/{type_id}/metadata/ ` returns all 
