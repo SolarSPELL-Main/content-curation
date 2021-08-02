@@ -227,75 +227,79 @@ def zipdownloadcsv(request):
     content_ids = request.GET.getlist("id", None)
 
     zip_subdir = "media/contents/media/contents/"
-    filename = 'content-curation_webapp_Content-{}.zip'.format(
+    zipfilename = 'content-curation_webapp_Content-{}.zip'.format(
         datetime.datetime.now().strftime("%m-%d-%Y"))
     csvfilename = 'content-curation_webapp_Content-{}.csv'.format(
         datetime.datetime.now().strftime("%m-%d-%Y"))
-    response = HttpResponse(content_type='application/zip')
-    response['Content-Disposition'] = 'attachment; filename={}'. \
-        format(filename)
     
     field_names = ['file_name', 'title', 'description', 'metadata_info',
                    'active', 'copyright_notes',
                    'rights_statement',
                    'additional_notes', 'published_date', 'created_by',
                    'created_on',
-                   'reviewed_by', 'reviewed_on', 'reviewed',
+                   'reviewed_by', 'reviewed_on',
                    'copyright_approved',
                    'copyright_by', 'published_year',
                    'original_source', 'copyright_site', 'status',
                    'filesize']
 
+    zip_buffer = io.BytesIO()
     string_buffer = io.StringIO()
     writer = csv.DictWriter(string_buffer, fieldnames=field_names)
     writer.writeheader()
 
     content = Content.objects.filter(id__in=content_ids)
-    for con in content:
-        metadataname = ""
-        for obj in con.metadata_info():
-            metadataname += obj["name"] + " | " + metadataname
-        writer.writerow({'file_name': con.file_name,
-                         'title': con.title,
-                         'description': con.description,
-                         'metadata_info': metadataname,
-                         'active': con.active,
-                         'copyright_notes': con.copyright_notes,
-                         'rights_statement': con.rights_statement,
-                         'additional_notes': con.additional_notes,
-                         'published_date': con.published_date,
-                         'created_by': con.created_by,
-                         'created_on': con.created_on,
-                         'reviewed_by': con.reviewed_by,
-                         'reviewed_on': con.reviewed_on,
-                         'reviewed': con.reviewed,
-                         'copyright_approved': con.copyright_approved,
-                         'copyright_by': con.copyright_by,
-                         'published_year': con.published_year(),
-                         'original_source': con.original_source,
-                         'copyright_site': con.copyright_site,
-                         'status': con.status,
-                         'filesize': con.filesize
-                         })
-        try:
-            with zipfile.ZipFile(response, 'w', zipfile.ZIP_DEFLATED,
-                             allowZip64=True) as zip_file:
-                zip_file.writestr(csvfilename, string_buffer.getvalue())
-                for folderName, subfolders, filenames in os.walk(
-                    zip_subdir):
+
+    try:
+        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED,
+                            allowZip64=True) as zip_file:
+            for con in content:
+                metadataname = ""
+                for obj in con.metadata_info():
+                    metadataname += obj["name"] + " | " + metadataname
+                writer.writerow({'file_name': con.file_name,
+                                'title': con.title,
+                                'description': con.description,
+                                'metadata_info': metadataname,
+                                'active': con.active,
+                                'copyright_notes': con.copyright_notes,
+                                'rights_statement': con.rights_statement,
+                                'additional_notes': con.additional_notes,
+                                'published_date': con.published_date,
+                                'created_by': con.created_by,
+                                'created_on': con.created_on,
+                                'reviewed_by': con.reviewed_by,
+                                'reviewed_on': con.reviewed_on,
+                                'copyright_approved': con.copyright_approved,
+                                'copyright_by': con.copyright_by,
+                                'published_year': con.published_year(),
+                                'original_source': con.original_source,
+                                'copyright_site': con.copyright_site,
+                                'status': con.status,
+                                'filesize': con.filesize
+                                })
+                
+                for folderName, subfolders, filenames in os.walk(zip_subdir):
                     for filename in filenames:
                         if filename == con.file_name:
                             filePath = os.path.join(folderName, filename)
                             zip_file.write(filePath, basename(filePath))
 
-        except zipfile.BadZipfile:
-            return build_response(
-                status=status.HTTP_400_BAD_REQUEST,
-                error="Bad Zip File"
-                )
-        except zipfile.LargeZipFile:
-            return build_response(
-                status=status.HTTP_400_BAD_REQUEST,
-                error="Large Zip File"
-                )
+            zip_file.writestr(csvfilename, string_buffer.getvalue())
+    except zipfile.BadZipfile:
+        return build_response(
+            status=status.HTTP_400_BAD_REQUEST,
+            error="Bad Zip File"
+            )
+    except zipfile.LargeZipFile:
+        return build_response(
+            status=status.HTTP_400_BAD_REQUEST,
+            error="Large Zip File"
+            )
+    
+    response = HttpResponse(zip_buffer.getvalue(),
+        content_type='application/zip')
+    response['Content-Disposition'] = 'attachment; filename={}'. \
+        format(zipfilename)
+    
     return response
