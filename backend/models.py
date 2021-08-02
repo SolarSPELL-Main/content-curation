@@ -93,7 +93,7 @@ class Content(models.Model):
     )
 
     def created_by_name(self):
-        return self.created_by.username
+        return self.created_by.username if self.created_by else ""
 
     def published_year(self):
         return None if self.published_date == None else str(

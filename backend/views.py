@@ -1,7 +1,7 @@
 '''Importing from outside the project'''
 from django.db.utils import IntegrityError, Error
 from django.shortcuts import render
-from django.http.response import JsonResponse, HttpResponse
+from django.http.response import JsonResponse, HttpResponse, FileResponse
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view, renderer_classes, action
 from rest_framework.renderers import JSONRenderer
@@ -28,6 +28,7 @@ import zipfile
 import io
 import os
 from os.path import basename
+import tempfile
 
 
 class StandardDataView:
@@ -219,82 +220,87 @@ def check_duplicate(request):
 
 
 # Export content as CSV file
+@api_view(('POST',))
+@renderer_classes((JSONRenderer,))
 def zipdownloadcsv(request):
     print("zipdownloadcssv")
 
-    print(request.GET.get("id", None))
+    print(request.POST.get("content", None))
 
-    content_ids = request.GET.get("id", None)
+    content_ids = [
+        int(s) for s in request.POST.get("content", None)[1:-1].split(",")
+    ]
 
-    zip_subdir = "media/contents/media/contents/"
-    filename = 'content-curation_webapp_Content-{}.zip'.format(
-        datetime.datetime.now().strftime("%m-%d-%Y"))
-    csvfilename = 'content-curation_webapp_Content-{}.csv'.format(
-        datetime.datetime.now().strftime("%m-%d-%Y"))
-    response = HttpResponse(content_type='application/zip')
-    response['Content-Disposition'] = 'attachment; filename={}'. \
-        format(filename)
-    metadataname = ""
-    field_names = ['file_name', 'title', 'description', 'metadata_info',
-                   'active', 'copyright_notes',
-                   'rights_statement',
-                   'additional_notes', 'published_date', 'created_by',
-                   'created_on',
-                   'reviewed_by', 'reviewed_on', 'reviewed',
-                   'copyright_approved',
-                   'copyright_by', 'published_year',
-                   'original_source', 'copyright_site', 'status',
-                   'filesize']
+    with tempfile.SpooledTemporaryFile() as temp_zip:
+        zip_subdir = "media/contents/media/contents/"
+        filename = 'content-curation_webapp_Content-{}.zip'.format(
+            datetime.datetime.now().strftime("%m-%d-%Y"))
+        csvfilename = 'content-curation_webapp_Content-{}.csv'.format(
+            datetime.datetime.now().strftime("%m-%d-%Y"))
+        metadataname = ""
+        field_names = ['file_name', 'title', 'description', 'metadata_info',
+                       'active', 'copyright_notes',
+                       'rights_statement',
+                       'additional_notes', 'published_date', 'created_by',
+                       'created_on',
+                       'reviewed_by', 'reviewed_on',
+                       'copyright_approved',
+                       'copyright_by', 'published_year',
+                       'original_source', 'copyright_site', 'status',
+                       'filesize']
 
-    string_buffer = io.StringIO()
-    writer = csv.DictWriter(string_buffer, fieldnames=field_names)
-    writer.writeheader()
+        string_buffer = io.StringIO()
+        writer = csv.DictWriter(string_buffer, fieldnames=field_names)
+        writer.writeheader()
 
-    content = Content.objects.filter(id=content_ids)
-    for con in content:
-        for obj in con.metadata_info():
-            metadataname += obj["name"] + " | " + metadataname
-        writer.writerow({'file_name': con.file_name,
-                         'title': con.title,
-                         'description': con.description,
-                         'metadata_info': metadataname,
-                         'active': con.active,
-                         'copyright_notes': con.copyright_notes,
-                         'rights_statement': con.rights_statement,
-                         'additional_notes': con.additional_notes,
-                         'published_date': con.published_date,
-                         'created_by': con.created_by,
-                         'created_on': con.created_on,
-                         'reviewed_by': con.reviewed_by,
-                         'reviewed_on': con.reviewed_on,
-                         'reviewed': con.reviewed,
-                         'copyright_approved': con.copyright_approved,
-                         'copyright_by': con.copyright_by,
-                         'published_year': con.published_year(),
-                         'original_source': con.original_source,
-                         'copyright_site': con.copyright_site,
-                         'status': con.status,
-                         'filesize': con.filesize
-                         })
-        try:
-            with zipfile.ZipFile(response, 'w', zipfile.ZIP_DEFLATED,
-                             allowZip64=True) as zip_file:
-                zip_file.writestr(csvfilename, string_buffer.getvalue())
-                for folderName, subfolders, filenames in os.walk(
-                    zip_subdir):
-                    for filename in filenames:
-                        if filename == con.file_name:
-                            filePath = os.path.join(folderName, filename)
-                            zip_file.write(filePath, basename(filePath))
+        content = Content.objects.filter(id__in=content_ids)
+        with zipfile.ZipFile(
+            temp_zip, 'w', zipfile.ZIP_DEFLATED, allowZip64=True
+        ) as zip_file:
+            for con in content:
+                print(con.title)
+                for obj in con.metadata_info():
+                    metadataname += obj["name"] + " | " + metadataname
+                writer.writerow({'file_name': con.file_name,
+                                 'title': con.title,
+                                 'description': con.description,
+                                 'metadata_info': metadataname,
+                                 'active': con.active,
+                                 'copyright_notes': con.copyright_notes,
+                                 'rights_statement': con.rights_statement,
+                                 'additional_notes': con.additional_notes,
+                                 'published_date': con.published_date,
+                                 'created_by': con.created_by,
+                                 'created_on': con.created_on,
+                                 'reviewed_by': con.reviewed_by,
+                                 'reviewed_on': con.reviewed_on,
+                                 'copyright_approved': con.copyright_approved,
+                                 'copyright_by': con.copyright_by,
+                                 'published_year': con.published_year(),
+                                 'original_source': con.original_source,
+                                 'copyright_site': con.copyright_site,
+                                 'status': con.status,
+                                 'filesize': con.filesize
+                                 })
+                try:
+                    for folderName, subfolders, filenames in os.walk(
+                        zip_subdir):
+                        for filename in filenames:
+                            if filename == con.file_name:
+                                filePath = os.path.join(folderName, filename)
+                                print("Writing ", filePath)
+                                zip_file.write(filePath, basename(filePath))
 
-        except zipfile.BadZipfile:
-            return build_response(
-                status=status.HTTP_400_BAD_REQUEST,
-                error="Bad Zip File"
-                )
-        except zipfile.LargeZipFile:
-            return build_response(
-                status=status.HTTP_400_BAD_REQUEST,
-                error="Large Zip File"
-                )
-    return response
+                except zipfile.BadZipfile:
+                    return build_response(
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        error="Bad Zip File"
+                        )
+                except zipfile.LargeZipFile:
+                    return build_response(
+                        status=status.HTTP_400_BAD_REQUEST,
+                        error="Large Zip File"
+                        )
+            zip_file.writestr(csvfilename, string_buffer.getvalue())
+        temp_zip.seek(0)
+        return HttpResponse(temp_zip.read(), content_type="application/x-zip-compressed")
