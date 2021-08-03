@@ -2,11 +2,11 @@ import React from 'react';
 import prettyBytes from 'pretty-bytes';
 
 import { ContentViewer } from 'solarspell-react-lib';
-import { MetadataType, Content } from 'js/types';
+import { useCCSelector } from '../../hooks';
+import { Content } from 'js/types';
 
 type ViewerProps = {
     content: Content
-    metadataTypes: MetadataType[]
     open: boolean
     onClose: () => void
 }
@@ -17,9 +17,12 @@ type ViewerProps = {
  * @returns A dialog displaying information about a single piece of content.
  */
 function Viewer(props: ViewerProps): React.ReactElement {
+    const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
+
     return (
         <ContentViewer
             {...props}
+            metadataTypes={metadataTypes}
             fields={[
                 {
                     title: 'Title',

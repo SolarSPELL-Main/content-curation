@@ -4,28 +4,21 @@ import Box from '@material-ui/core/Box';
 import { GridColDef } from '@material-ui/data-grid';
 
 //Importing from other files in the project
-import Toolbar, { ToolbarActionProps } from './Toolbar';
+import Toolbar from './Toolbar';
 import SearchBar from './SearchBar';
-import SelectedToolbar, { SelectedToolbarActions } from './SelectedToolbar';
-import Display, {
-    DisplayActionProps,
+import SelectedToolbar from './SelectedToolbar';
+import Table, {
+    TableActionProps,
     PaginationProps,
     SortingProps,
-} from './Display';
-import { Content, Metadata, MetadataType, Query } from 'js/types';
+} from './Table';
+import { Content } from 'js/types';
 import Cookies from 'js-cookie';
 
 type ModalProps = {
-    metadata: Record<number, Metadata[]>
-    metadataTypes: MetadataType[]
     content: Content[]
     actions: {
-        Display: DisplayActionProps
-        Toolbar: Omit<ToolbarActionProps,'onColumnSelect'>
-        SelectedToolbar: SelectedToolbarActions
-        Search: {
-            onQueryChange: (query: Query) => void
-        }
+        Table: TableActionProps
     }
     pageProps: PaginationProps
     sortProps: SortingProps
@@ -33,14 +26,13 @@ type ModalProps = {
 }
 
 function Modal({
-    metadata,
-    metadataTypes,
     content,
     actions,
     pageProps,
     sortProps,
     selected,
 }: ModalProps): React.ReactElement {
+    // GridColDef is not serializable, hence column management must occur here
     const [cols, setCols] = useState<GridColDef[]>([])
     React.useEffect(() => {
         Cookies.set("columns", JSON.stringify(cols.reduce((obj, col) => {
@@ -60,30 +52,18 @@ function Modal({
     return (
         <Box p={2}>
             <Toolbar
-                metadata={metadata}
-                metadataTypes={metadataTypes}
                 actions={{
-                    ...actions.Toolbar,
                     onColumnSelect: setCols
                 }}
                 initialColumns={initialColumns}
             />
-            <SearchBar
-                metadata={metadata}
-                metadataTypes={metadataTypes}
-                onQueryChange={actions.Search.onQueryChange}
-            />
+            <SearchBar />
             <div style={{marginTop: ".5em"}}/>
-            <SelectedToolbar
-                actions={actions.SelectedToolbar}
-                selected={selected}
-            />
+            <SelectedToolbar />
             <div style={{marginTop: ".5em"}}/>
-            <Display
-                metadata={metadata}
-                metadataTypes={metadataTypes}
+            <Table
                 content={content}
-                actions={actions.Display}
+                actions={actions.Table}
                 additionalColumns={cols}
                 pageProps={pageProps}
                 sortProps={sortProps}

@@ -1,6 +1,10 @@
 //Importing from outside the project
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import type { GridSortModel } from '@material-ui/data-grid';
+import type {
+    GridSortModel,
+    GridColDef,
+} from '@material-ui/data-grid';
+import Cookies from 'js-cookie';
 
 //Importing from other files in the project
 import { Content, Query } from "../types"
@@ -19,6 +23,10 @@ export const contentSlice = createSlice({
             field: 'title',
             sort: 'asc',
         }] as GridSortModel,
+        initialColumns: JSON.parse(
+            Cookies.get("columns") ?? "{}"
+        ) as Record<string,boolean>,
+        columns: [] as GridColDef[],
     },
     reducers: {
         // Fetches list of content from backend
@@ -93,13 +101,32 @@ export const contentSlice = createSlice({
         edit_content: (_state, _action: PayloadAction<Content>) => {},
 
         update_filters: (
-            state, action: PayloadAction<Query>
+            state,
+            action: PayloadAction<Query>,
         ) => {
             state.filters = action.payload
         },
 
         update_sortmodel: (state, action: PayloadAction<GridSortModel>) => {
             state.sortModel = action.payload;
+        },
+
+        update_columns: (
+            state,
+            action: PayloadAction<GridColDef[]>,
+        ) => {
+            // Store selected columns to cookies
+            Cookies.set(
+                "columns",
+                JSON.stringify(action.payload.reduce((obj, col) => {
+                    if (!col.hide) {
+                        obj[col.field] = true
+                    }
+                    return obj
+                }, {} as Record<string, boolean>)),
+                { expires: 365 },
+            );
+            state.columns = action.payload;
         },
     },
 });
@@ -113,6 +140,7 @@ export const {
     update_filters,
     update_pagination,
     update_sortmodel,
+    update_columns,
     update_selected,
     clear_selected,
 } = contentSlice.actions;

@@ -16,17 +16,13 @@ import ShowForPermission from '../ShowForPermission';
 import ActionPanel from './ActionPanel';
 import ContentForm from './ContentForm';
 import Viewer from './Viewer';
-import { Content, Metadata, MetadataType } from 'js/types';
+import { Content } from 'js/types';
 
-type DisplayActionProps = {
+type TableActionProps = {
   onEdit: (item: Content, vals?: Partial<Content>) => void
   onDelete: (item: Content) => void
   onPageSizeChange: (params: GridPageChangeParams) => void
   onPageChange: (params: GridPageChangeParams) => void
-  onCreate: (
-    metadataType: MetadataType,
-    newTags: Metadata[],
-  ) => Promise<Metadata[]>
   onSelectChange: (params: GridSelectionModelChangeParams) => void
 }
 
@@ -41,11 +37,9 @@ type SortingProps = {
   onSortModelChange: (params: GridSortModelParams) => void
 }
 
-type DisplayProps = {
-  metadata: Record<number, Metadata[]>
-  metadataTypes: MetadataType[]
+type TableProps = {
   content: Content[]
-  actions: DisplayActionProps
+  actions: TableActionProps
   pageProps: PaginationProps
   sortProps: SortingProps
   selected: number[]
@@ -57,16 +51,14 @@ type DisplayProps = {
  * @param props Context and callbacks.
  * @returns A table to display all content.
  */
-function Display({
-  metadata,
-  metadataTypes,
+function Table({
   content,
   actions,
   pageProps,
   sortProps,
   selected,
   additionalColumns,
-}: DisplayProps): React.ReactElement {
+}: TableProps): React.ReactElement {
   const permissions = useCCSelector(state => state.global.user.permissions);
 
   // Users who do not have any of these permissions should not see
@@ -119,10 +111,7 @@ function Display({
     <>
       <ShowForPermission slice={'content'} permission={'update'}>
         {editedContent && <ContentForm
-          metadata={metadata}
-          metadataTypes={metadataTypes}
           onSubmit={onEditSubmit_}
-          onCreate={actions.onCreate}
           open={!!editedContent}
           content={editedContent}
           type={'edit'}
@@ -130,7 +119,6 @@ function Display({
       </ShowForPermission>
       <ShowForPermission slice={'content'} permission={'read'}>
         {viewedContent && <Viewer
-          metadataTypes={metadataTypes}
           content={viewedContent}
           open={!!viewedContent}
           onClose={onViewClose_}
@@ -168,5 +156,5 @@ function Display({
   )
 }
 
-export type { DisplayActionProps, PaginationProps, SortingProps };
-export default Display;
+export type { TableActionProps, PaginationProps, SortingProps };
+export default Table;

@@ -7,10 +7,8 @@ import * as GlobalActions from '../../state/global';
 import * as MetadataActions from '../../state/metadata';
 import * as ContentActions from '../../state/content';
 import { useCCDispatch, useCCSelector } from '../../hooks';
-import APP_URLS from '../../urls';
 import { Tabs } from '../../enums';
-import { Content, Query, Metadata, MetadataType } from 'js/types';
-import {api, downloadFile} from '../../utils';
+import { Content } from 'js/types';
 
 type PageProps = {
 
@@ -23,8 +21,6 @@ type PageProps = {
  */
 function Page(_: PageProps): React.ReactElement {
     const dispatch = useCCDispatch();
-    const metadata = useCCSelector(state => state.metadata.metadata);
-    const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
     const content = useCCSelector(state => state.content.content);
     const total = useCCSelector(state => state.content.total);
     const page = useCCSelector(state => state.content.page);
@@ -71,51 +67,11 @@ function Page(_: PageProps): React.ReactElement {
         [dispatch],
     );
 
-    const onAdd_ = React.useCallback(
-        (content?: Content) => {
-            if (content) {
-                dispatch(ContentActions.add_content(content));
-            }
-
-            // Clear newly added
-            dispatch(MetadataActions.update_newly_added([]));
-        },
-        [dispatch],
-    );
-
-    const onQueryChange = React.useCallback(
-        (query: Query) => {
-            // Reset page back to start to avoid out-of-range errors
-            dispatch(ContentActions.update_pagination({
-                page: 0,
-            }));
-            
-            dispatch(ContentActions.update_filters(query));
-        },
-        [dispatch],
-    );
-
-    const onCreate = React.useCallback(
-        (metadataType: MetadataType, newTags: Metadata[]) => {
-            newTags.forEach(tag => dispatch(MetadataActions.add_metadata(
-                {
-                    name: tag.name,
-                    type_id: metadataType.id,
-                }
-            )));
-
-            return (async () => [])();
-        },
-        [dispatch],
-    );
-
     return (
         <Modal
-            metadata={metadata}
-            metadataTypes={metadataTypes}
             content={content}
             actions={{
-                Display: {
+                Table: {
                     onEdit: onEdit_,
                     onDelete: onDelete_,
                     onPageSizeChange: params => {
@@ -129,7 +85,6 @@ function Page(_: PageProps): React.ReactElement {
                             page: params.page,
                         }));
                     },
-                    onCreate: onCreate,
                     onSelectChange: params => {
                         const ids = params.selectionModel as number[];
 
@@ -145,34 +100,6 @@ function Page(_: PageProps): React.ReactElement {
                         }
                     },
                 },
-                SelectedToolbar: {
-                    onDelete: ids => {
-                        // To avoid dealing with pages that no longer exist
-                        dispatch(ContentActions.update_pagination({
-                            page: 0,
-                        }));
-                        dispatch(ContentActions.delete_content(ids));
-                    },
-                    onClear: _ => {
-                        dispatch(ContentActions.clear_selected());
-                    },
-                    onExport: ids => {
-                        const form = new FormData()
-                        form.set("content", JSON.stringify(ids))
-                        api.post(APP_URLS.EXPORT, form, {responseType: "blob"})
-                            .then(res => {
-                                console.log((res.data as Blob))
-                                downloadFile(res.data, "export.zip")
-                            })
-                    },
-                },
-                Toolbar: {
-                    onAdd: onAdd_,
-                    onCreate: onCreate,
-                },
-                Search: {
-                    onQueryChange: onQueryChange,
-                }
             }}
             pageProps={{
                 rowCount: total,
