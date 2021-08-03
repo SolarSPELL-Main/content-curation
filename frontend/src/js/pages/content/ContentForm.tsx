@@ -302,7 +302,7 @@ function ContentForm({
             field: 'copyright',
             initialValue: '',
         },
-        (canReview ? {
+        {
             component: (props) => (
                 <>
                     <Typography>Copyright Approved</Typography>
@@ -323,10 +323,7 @@ function ContentForm({
             field: 'copyrightApproved',
             initialValue: false,
             mb: 0,
-        } : {
-            field: 'copyrightApproved',
-            initialValue: false,
-        }),
+        },
         {
             component: TextField,
             propFactory: (state, _r, setter) => {
