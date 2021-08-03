@@ -14,7 +14,7 @@ import Cookies from 'js-cookie';
  * The body of the content tab.
  * @returns Toolbars, search bar, and the table rendered as one.
  */
-function Modal(): React.ReactElement {
+function Body(): React.ReactElement {
     // GridColDef is not serializable, hence column management must occur here
     const [cols, setCols] = useState<GridColDef[]>([])
     React.useEffect(() => {
@@ -51,4 +51,4 @@ function Modal(): React.ReactElement {
     );
 }
 
-export default Modal;
+export default Body;

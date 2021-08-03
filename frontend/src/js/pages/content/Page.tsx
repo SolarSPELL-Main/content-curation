@@ -2,7 +2,7 @@
 import React from 'react';
 
 //Importing from other files in the project
-import Modal from './Modal';
+import Body from './Body';
 import * as GlobalActions from '../../state/global';
 import * as MetadataActions from '../../state/metadata';
 import { useCCDispatch } from '../../hooks';
@@ -23,7 +23,7 @@ function Page(): React.ReactElement {
     }, [dispatch]);
 
     return (
-        <Modal />
+        <Body />
     );
 }
 
