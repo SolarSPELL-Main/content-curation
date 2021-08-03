@@ -8,7 +8,7 @@ type ShowForPermissionProps = {
     slice: keyof Permissions
     permission: keyof CRUD|keyof SpecialPermissions|string[]
     mode?: 'some'|'every'
-    children?: React.ReactElement
+    children?: React.ReactElement | React.ReactElement[]
 }
 
 /**

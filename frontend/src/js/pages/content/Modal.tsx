@@ -7,31 +7,14 @@ import { GridColDef } from '@material-ui/data-grid';
 import Toolbar from './Toolbar';
 import SearchBar from './SearchBar';
 import SelectedToolbar from './SelectedToolbar';
-import Table, {
-    TableActionProps,
-    PaginationProps,
-    SortingProps,
-} from './Table';
-import { Content } from 'js/types';
+import Table from './Table';
 import Cookies from 'js-cookie';
 
-type ModalProps = {
-    content: Content[]
-    actions: {
-        Table: TableActionProps
-    }
-    pageProps: PaginationProps
-    sortProps: SortingProps
-    selected: number[]
-}
-
-function Modal({
-    content,
-    actions,
-    pageProps,
-    sortProps,
-    selected,
-}: ModalProps): React.ReactElement {
+/**
+ * The body of the content tab.
+ * @returns Toolbars, search bar, and the table rendered as one.
+ */
+function Modal(): React.ReactElement {
     // GridColDef is not serializable, hence column management must occur here
     const [cols, setCols] = useState<GridColDef[]>([])
     React.useEffect(() => {
@@ -62,12 +45,7 @@ function Modal({
             <SelectedToolbar />
             <div style={{marginTop: ".5em"}}/>
             <Table
-                content={content}
-                actions={actions.Table}
                 additionalColumns={cols}
-                pageProps={pageProps}
-                sortProps={sortProps}
-                selected={selected}
             />
         </Box>
     );

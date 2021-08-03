@@ -36,7 +36,7 @@ type ContentFormProps = {
 } & TypeProps
 
 /**
- * Form for editing/adding content.
+ * Dialog form for editing/adding content.
  * Also allows creation of metadata tags using its taggers.
  * @params props The context / callbacks of the component.
  * @returns A form for adding/editing content.
