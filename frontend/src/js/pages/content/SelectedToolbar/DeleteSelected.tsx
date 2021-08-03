@@ -6,7 +6,8 @@ import * as Actions from '../../../state/content';
 import { useCCDispatch, useCCSelector } from '../../../hooks';
 
 /**
- * This is a button that appears/disappears when selected is not empty.
+ * This is the 'Delete' button that shows below the search bar when the user
+ * has selected content.
  * It prompts the user if they are sure they want to delete selected content.
  * If agreed, the user's selected content will all be deleted.
  * @returns A button to delete selected members of the content table.
