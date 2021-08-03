@@ -29,6 +29,8 @@ function Add(): React.ReactElement {
             </Button>
             <ContentForm
                 onSubmit={content => {
+                    setOpen(false);
+
                     if (content) {
                         // Cast Partial to Content since assumes validation
                         // takes care of required fields
