@@ -162,7 +162,7 @@ function Page(_: PageProps): React.ReactElement {
                         api.post(APP_URLS.EXPORT, form, {responseType: "blob"})
                             .then(res => {
                                 console.log((res.data as Blob))
-                                downloadFile(res.data, "export.zip", "application/x-zip-compressed")
+                                downloadFile(res.data, "export.zip")
                             })
                     },
                 },

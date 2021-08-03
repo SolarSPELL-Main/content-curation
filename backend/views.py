@@ -14,6 +14,7 @@ from rest_framework.permissions import DjangoModelPermissions
 from django_filters import rest_framework as filters
 
 from django.core.paginator import QuerySetPaginator
+from django.conf import settings
 
 '''Importing from other files in the project'''
 from backend.models import MetadataType, Metadata, Content
@@ -177,13 +178,30 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
         print(kwargs.keys())
         request.data["created_by"] = request.user.id
         return super().create(request, *args, **kwargs)
-
-    @api_view(['PATCH'])
-    def patch(self, request, pk=None):
-        print("Content View Set Patch")
-        instance = self.get_object(pk)
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
         if not instance:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            file_path = os.path.join(settings.MEDIA_ROOT, instance.file_name)
+            if os.path.exists(file_path):
+                os.remove(file_path)
+        return super().destroy(request, *args, **kwargs)
+
+    def partial_update(self, request, pk=None):
+        print("Content View Set Patch")
+        instance = self.get_object()
+        if not instance:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # New file has been uploaded for content
+        # Removes old one
+        if 'content_file' in request.data:
+            file_path = os.path.join(settings.MEDIA_ROOT, instance.file_name)
+            if os.path.exists(file_path):
+                os.remove(file_path)
+        
         serializer = self.get_serializer(instance,
                                          data=request.data,
                                          many=isinstance(request.data, list),
@@ -232,7 +250,7 @@ def zipdownloadcsv(request):
     #if it runs out of ram, kind of like swap space
     with tempfile.SpooledTemporaryFile() as temp_zip:
         #path to look for content
-        zip_subdir = "media/contents/media/contents/"
+        zip_subdir = settings.MEDIA_ROOT + "content"
         filename = 'content-curation_webapp_Content-{}.zip'.format(
             datetime.datetime.now().strftime("%m-%d-%Y")
         )
@@ -286,12 +304,8 @@ def zipdownloadcsv(request):
                 })
 
                 try:
-                    for folderName, subfolders, filenames in os.walk(
-                        zip_subdir):
-                        for filename in filenames:
-                            if filename == con.file_name:
-                                filePath = os.path.join(folderName, filename)
-                                zip_file.write(filePath, basename(filePath))
+                    filePath = os.path.join(zip_subdir, filename)
+                    zip_file.write(filePath, basename(filePath))
 
                 except zipfile.BadZipfile:
                     return build_response(
