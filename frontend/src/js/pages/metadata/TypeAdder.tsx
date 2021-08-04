@@ -5,44 +5,37 @@ import Box from '@material-ui/core/Box';
 
 //Importing from other files in the project
 import { TextInputDialog } from 'solarspell-react-lib';
-
-type TypeAdderActionProps = {
-    onAddType: (typeName: string) => void
-}
-
-type TypeAdderProps = TypeAdderActionProps
+import * as Actions from '../../state/metadata';
+import { useCCDispatch } from '../../hooks';
 
 /**
  * This component handles the adding of new metadata types and its dialog.
- * @param props The callback on adding a new type.
+ * It is displayed is the 'Add Type' button.
  * @returns A button with an accompanying dialog.
  */
-function TypeAdder({
-    onAddType,
-}: TypeAdderProps): React.ReactElement {
+function TypeAdder(): React.ReactElement {
+    const dispatch = useCCDispatch();
     const [dialogOpen, setDialogOpen] = React.useState(false);
-    const open = React.useCallback(() => {
-        setDialogOpen(true)
-    }, [setDialogOpen]);
-    const close = React.useCallback((val: string) => {
-        setDialogOpen(false);
-        if (val) {
-            onAddType(val);
-        }
-    }, [onAddType, setDialogOpen]);
 
     return (
         <>
             <TextInputDialog
                 open={dialogOpen}
-                onClose={close}
+                onClose={name => {
+                    setDialogOpen(false);
+                    if (name) {
+                        dispatch(Actions.add_metadatatype({
+                            name: name,
+                        }));
+                    }
+                }}
                 title={'Enter new Metadata Type name'}
                 label={'New Metadata Type name'}
                 allowEnter
             />
             <Box mb={1}>
                 <Button
-                    onClick={open}
+                    onClick={() => setDialogOpen(true)}
                     variant={'contained'}
                     color={'primary'}
                 >
@@ -53,5 +46,4 @@ function TypeAdder({
     );
 }
 
-export type { TypeAdderActionProps };
 export default TypeAdder;

@@ -13,7 +13,7 @@ type PageProps = {
 
 /**
  * The home tab of the application.
- * @param _ Unused for now.
+ * @param props The icons to be displayed on the homepage.
  * @returns The home tab body.
  */
 function Page({

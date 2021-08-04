@@ -15,7 +15,8 @@ import {
     ContentMetadataDisplay,
     FormFieldDescriptor,
 } from 'solarspell-react-lib';
-import { useCCSelector } from '../../hooks';
+import * as MetadataActions from '../../state/metadata';
+import { useCCDispatch, useCCSelector } from '../../hooks';
 import { Status } from '../../enums';
 import { Metadata, MetadataType, Content } from 'js/types';
 import APP_URLS from "../../urls"
@@ -30,30 +31,23 @@ type TypeProps = {
 }
 
 type ContentFormProps = {
-    metadata: Record<number, Metadata[]>
-    metadataTypes: MetadataType[]
     onSubmit: (content?: Partial<Content>) => void
-    onCreate: (
-        metadataType: MetadataType,
-        newTags: Metadata[],
-    ) => Promise<Metadata[]>
     open: boolean
 } & TypeProps
 
 /**
- * Form for editing/adding content.
+ * Dialog form for editing/adding content.
+ * Also allows creation of metadata tags using its taggers.
  * @params props The context / callbacks of the component.
  * @returns A form for adding/editing content.
  */
 function ContentForm({
-    metadata,
-    metadataTypes,
     onSubmit,
-    onCreate,
     open,
     content,
     type,
 }: ContentFormProps): React.ReactElement {
+    const dispatch = useCCDispatch();
     // Maps newly_added array to Record of type ids -> metadata arrays
     const newMetadata = useCCSelector(
         state => state.metadata.newly_added
@@ -64,6 +58,8 @@ function ContentForm({
                 accum[val.metadataType.id].concat(val) : [val]
         }), {} as Record<number, Metadata[]>,
     );
+    const metadata = useCCSelector(state => state.metadata.metadata);
+    const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
     const permissions = useCCSelector(state => state.global.user.permissions);
     const canReview = hasPermission(permissions, 'special', 'review');
 
@@ -306,7 +302,7 @@ function ContentForm({
             field: 'copyright',
             initialValue: '',
         },
-        (canReview ? {
+        {
             component: (props) => (
                 <>
                     <Typography>Copyright Approved</Typography>
@@ -327,10 +323,7 @@ function ContentForm({
             field: 'copyrightApproved',
             initialValue: false,
             mb: 0,
-        } : {
-            field: 'copyrightApproved',
-            initialValue: false,
-        }),
+        },
         {
             component: TextField,
             propFactory: (state, _r, setter) => {
@@ -369,16 +362,22 @@ function ContentForm({
                         creatable: true,
                         onCreate: (
                             metadataType: MetadataType,
-                            newTags: Metadata[],
+                            newTags_: Metadata[],
                         ) => {
-                            return onCreate(
-                                metadataType,
-                                // Gets rid of 'Add ""' formatting
-                                newTags.map(tag => ({
-                                    ...tag,
-                                    name: tag.name.substring(5, tag.name.length - 1),
-                                }))
-                            );
+                            // Gets rid of 'Add ""' formatting
+                            const newTags = newTags_.map(tag => ({
+                                ...tag,
+                                name: tag.name.substring(5, tag.name.length - 1),
+                            }));
+
+                            newTags.forEach(tag => dispatch(
+                                MetadataActions.add_metadata({
+                                    name: tag.name,
+                                    type_id: metadataType.id,
+                                })
+                            ));
+                
+                            return (async () => [])();
                         },
                     },
                 };
@@ -466,8 +465,6 @@ function ContentForm({
                             :
                             Date.now(),
                         inputValue: state['rawReviewedDate'] ?? '',
-                        minDate: null,
-                        maxDate: null,
                     },
                 };
             },
