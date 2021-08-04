@@ -26,7 +26,6 @@ function TypeAdder(): React.ReactElement {
                     if (name) {
                         dispatch(Actions.add_metadatatype({
                             name: name,
-                            type_id: -1,
                         }));
                     }
                 }}

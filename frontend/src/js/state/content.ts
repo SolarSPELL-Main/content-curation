@@ -2,9 +2,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type {
     GridSortModel,
-    GridColDef,
 } from '@material-ui/data-grid';
-import Cookies from 'js-cookie';
 
 //Importing from other files in the project
 import { Content, Query } from "../types"
@@ -12,27 +10,57 @@ import { Content, Query } from "../types"
 export const contentSlice = createSlice({
     name: 'content',
     initialState: {
+        /**
+         * All Content objects currently displayed in the Content tab
+         */
         content: [] as Content[],
+        /**
+         * All selected Content IDs. Stored in Redux state to allow selection
+         * to persist between pages
+         */
         selected: [] as number[],
+        /**
+         * The selected Content IDs on the current page in the Content tab
+         * table. Used to check whether the user's selection has changed while
+         * taking into account pagination
+         */
         selectionModel: [] as number[],
+        /**
+         * The total number of content items on the backend
+         */
         total: 0,
+        /**
+         * The number of rows to display on a single page
+         */
         pageSize: 10,
+        /**
+         * The current page (index starting from 0)
+         */
         page: 0,
+        /**
+         * The filter parameters used to filter content fetched from the backend
+         */
         filters: {} as Query,
+        /**
+         * The model used to sort content fetched from the backend.
+         * By default, sorts by title ascending
+         */
         sortModel: [{
             field: 'title',
             sort: 'asc',
         }] as GridSortModel,
-        initialColumns: JSON.parse(
-            Cookies.get("columns") ?? "{}"
-        ) as Record<string,boolean>,
-        columns: [] as GridColDef[],
     },
     reducers: {
-        // Fetches list of content from backend
+        /**
+         * Triggers Epic to fetch content from backend
+         */
         fetch_content: () => {},
 
-        // Updates content in state
+        /**
+         * Updates content in current state
+         * @param state The current state
+         * @param action.payload The new content to display and number of items
+         */
         update_content: (state, action: PayloadAction<{
             content: Content[]
             total: number
@@ -41,7 +69,11 @@ export const contentSlice = createSlice({
             state.total = action.payload.total;
         },
 
-        // For persisting selection
+        /**
+         * Updates selected items in current state with action payload
+         * @param state The current state
+         * @param action.payload The new selected items on the current page
+         */
         update_selected: (state, action: PayloadAction<number[]>) => {
             const ids = action.payload;
             const pageIDs = state.content.map(c => c.id);
@@ -59,6 +91,11 @@ export const contentSlice = createSlice({
             state.selected = selectionDraft;
         },
 
+        /**
+         * Either removes IDs from selection or completely clears selection
+         * @param state The current state
+         * @param action.payload The IDs to remove, or undefined
+         */
         clear_selected: (state, action: PayloadAction<number[]|undefined>) => {
             const ids = action.payload;
 
@@ -69,7 +106,11 @@ export const contentSlice = createSlice({
             }
         },
 
-        // For pagination
+        /**
+         * Updates pagination in current state
+         * @param state The current state
+         * @param action.payload The new page size or new page for display
+         */
         update_pagination: (state, action: PayloadAction<{
             pageSize?: number
             page?: number
@@ -77,17 +118,26 @@ export const contentSlice = createSlice({
             if (action.payload.pageSize != null) {
                 state.pageSize = action.payload.pageSize;
             }
+
             if (action.payload.page != null) {
                 state.page = action.payload.page;
             }
         },
         
-        // Posts content to backend
+        /**
+         * POSTs content to backend
+         * @param _state The current state
+         * @param _action.payload The content to post
+         */
         add_content: (_state, _action: PayloadAction<Content>) => {},
 
-        // Deletes content, payload should be content ID(s)
+        /**
+         * DELETEs content from backend
+         * @param state The current state
+         * @param action.payload The ID or IDs of content to delete
+         */
         delete_content: (state, action: PayloadAction<number|number[]>) => {
-            // Should remove deleted content ID(s) from selected
+            // Must also remove deleted content ID(s) from selected
             const payload = action.payload;
 
             if (Array.isArray(payload)) {
@@ -97,9 +147,18 @@ export const contentSlice = createSlice({
             }
         },
 
-        // Puts content to backend
+        /**
+         * PATCHes content to backend
+         * @param _state The current state
+         * @param _action.payload The new piece of content (with valid ID)
+         */
         edit_content: (_state, _action: PayloadAction<Content>) => {},
 
+        /**
+         * Updates the filter in current state
+         * @param state The current state
+         * @param action The new filters to use
+         */
         update_filters: (
             state,
             action: PayloadAction<Query>,
@@ -107,26 +166,13 @@ export const contentSlice = createSlice({
             state.filters = action.payload
         },
 
+        /**
+         * Updates the sort model in current state
+         * @param state The current state
+         * @param action The new sort model to use
+         */
         update_sortmodel: (state, action: PayloadAction<GridSortModel>) => {
             state.sortModel = action.payload;
-        },
-
-        update_columns: (
-            state,
-            action: PayloadAction<GridColDef[]>,
-        ) => {
-            // Store selected columns to cookies
-            Cookies.set(
-                "columns",
-                JSON.stringify(action.payload.reduce((obj, col) => {
-                    if (!col.hide) {
-                        obj[col.field] = true
-                    }
-                    return obj
-                }, {} as Record<string, boolean>)),
-                { expires: 365 },
-            );
-            state.columns = action.payload;
         },
     },
 });
@@ -140,7 +186,6 @@ export const {
     update_filters,
     update_pagination,
     update_sortmodel,
-    update_columns,
     update_selected,
     clear_selected,
 } = contentSlice.actions;

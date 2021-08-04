@@ -51,12 +51,16 @@ function Table({
     'some',
   );
   
-  // Users who cannot delete should both not see the 'Delete Selected' button
-  // nor be able to select content from the content table.
-  const showDeleteSelection = hasPermission(
+  // Only users who can delete or export content should have the option to
+  // select rows of content in the table.
+  const showSelection = hasPermission(
     permissions,
     'content',
     'delete',
+  ) || hasPermission(
+    permissions,
+    'special',
+    'export',
   );
 
   const ids = content.map(c => c.id);
@@ -64,14 +68,15 @@ function Table({
   return (
     <ContentTable
       content={content}
-      selectable={showDeleteSelection}
+      selectable={showSelection}
       components={{
         ActionPanel: showActionPanel ? ActionPanel : undefined,
       }}
       additionalColumns={additionalColumns}
       additionalProps={{
         // DataGrid does not take it well when selection model includes
-        // IDs that are not within its rows
+        // IDs that are not within its rows, so selected must be filtered
+        // to only currently displayed content
         selectionModel: selected.filter(id => ids.includes(id)),
         onSelectionModelChange: params => {
           const ids = params.selectionModel as number[];
