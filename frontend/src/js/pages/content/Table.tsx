@@ -75,7 +75,8 @@ function Table({
       additionalColumns={additionalColumns}
       additionalProps={{
         // DataGrid does not take it well when selection model includes
-        // IDs that are not within its rows
+        // IDs that are not within its rows, so selected must be filtered
+        // to only currently displayed content
         selectionModel: selected.filter(id => ids.includes(id)),
         onSelectionModelChange: params => {
           const ids = params.selectionModel as number[];
