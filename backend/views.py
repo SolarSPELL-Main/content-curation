@@ -6,6 +6,7 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import api_view, renderer_classes, action
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
+from rest_framework import permissions
 from django.middleware.csrf import get_token
 from django.views.generic import TemplateView
 from allauth.socialaccount.models import SocialToken
@@ -163,9 +164,18 @@ def get_user(request, *args, **kwargs):
 class Welcome(TemplateView):
     template_name = 'welcome.html'
 
+# Permission object that verifies that a user modifying content
+# either owns that content or is a Library Specialist
+class ContentOwnerPermissions(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj: Content):
+        if request.method == "GET":
+            return True
+        else:
+            return request.user == obj.created_by or \
+            request.user.groups.filter(name="Library Specialist").exists()
 
 class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissions]
+    permission_classes = [DjangoModelPermissions, ContentOwnerPermissions]
     queryset = Content.objects.all()
     serializer_class = ContentSerializer
     filter_backends = (filters.DjangoFilterBackend,)
@@ -213,6 +223,8 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
         print(headers)
         return Response(serializer.data, status=status.HTTP_200_OK,
                         headers=headers)
+
+
 
 # Search Content Queryset
 def search(request):
