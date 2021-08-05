@@ -194,6 +194,36 @@ export const CONTENT_FIELDS: Record<string,string> = {
 }
 
 /**
+ * Converts a Range object into a query-compatible format.
+ * @param range The Range object to convert
+ * @returns The Range object with its values converted to strings
+ */
+const rangeToQuery = (range: Range<number|string>): {
+    from: string,
+    to: string,
+} => {
+    const finalRange = {
+        from: '',
+        to: '',
+    };
+
+    finalRange.from = range.from != null ?
+        range.from.toString()
+        :
+        // null/undefined casts to 'null'/'undefined' in string
+        // conversion, hence must explicitly set query value
+        // to empty string.
+        '';
+    
+    finalRange.to = range.to != null ?
+        range.to.toString()
+        :
+        '';
+    
+    return finalRange;
+}
+
+/**
  * Constructs an array of query parameters from a Query object.
  * @param query The Query object.
  * @param creator The current logged-in user (used for Created By Me).
@@ -219,9 +249,9 @@ export const queryToParams = (
         if (key === 'metadata') {
             // Special case, metadata must be converted to array of numbers
             // then repeatedly included in query parameters.
-            const metadata = val as Record<number,Metadata[]>;
-            Object.values(metadata).reduce<number[]>(
-                (accum, val) => accum.concat(val.map(m => m.id)),
+            const metadataRecord = val as Record<number,Metadata[]>;
+            Object.values(metadataRecord).reduce<number[]>(
+                (accum, metadata) => accum.concat(metadata.map(m => m.id)),
                 [],
             ).forEach(v => queryParams.push(`metadata=${v}`));
         } else if (key === 'status') {
@@ -243,25 +273,7 @@ export const queryToParams = (
             // Range object. Hence, ${key}_min and ${key}_max should exist in
             // the query parameters.
             } else if (isPlainObject(val)) {
-                const range = val as Range<number|string>;
-                const finalRange = {
-                    from: '',
-                    to: '',
-                };
-
-                finalRange.from = range.from != null ?
-                    range.from.toString()
-                    :
-                    // null/undefined casts to 'null'/'undefined' in string
-                    // conversion, hence must explicitly set query value
-                    // to empty string.
-                    '';
-                
-                finalRange.to = range.to != null ?
-                    range.to.toString()
-                    :
-                    '';
-
+                const finalRange = rangeToQuery(val as Range<number|string>)
                 queryParams.push(`${key}_min=${finalRange.from}`);
                 queryParams.push(`${key}_max=${finalRange.to}`);
             }

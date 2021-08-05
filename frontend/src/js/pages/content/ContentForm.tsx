@@ -448,13 +448,22 @@ function ContentForm({
                         onChange: (date: Date, val?: string) => {
                             setter(
                                 (oldState: Date) => {
-                                    return val ?
-                                        date && !isNaN(date.getTime()) ?
-                                            format(date, 'yyyy-MM-dd')
-                                            :
-                                            oldState
-                                        :
-                                        null;
+                                    // If no user input, no date should be
+                                    // recorded, hence return null
+                                    if (!val) {
+                                        return null;
+                                    }
+
+                                    // Checks if date parsed from user input
+                                    // is valid
+                                    const isValidDate = date
+                                        && !isNaN(date.getTime());
+                                    
+                                    if (isValidDate) {
+                                        return format(date, 'yyyy-MM-dd');
+                                    } else {
+                                        return oldState;
+                                    }
                                 }
                             );
 

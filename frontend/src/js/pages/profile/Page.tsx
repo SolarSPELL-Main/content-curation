@@ -23,6 +23,13 @@ export default () => {
         [dispatch],
     );
 
+    const adminButton = hasPermission(user.permissions, 'special', 'admin') ?
+        <Button href="/admin/" style={{marginRight: "1em"}}>
+            Admin Site
+        </Button>
+        :
+        <></>;
+
     return (
         <Box pt={'4em'} p={2}>
             <Grid container spacing={2}>
@@ -54,11 +61,7 @@ export default () => {
                         >
                             REPORT A BUG
                         </Button>
-                        {hasPermission(user.permissions, 'special', 'admin') ?
-                            <Button href="/admin/" style={{marginRight: "1em"}}>
-                                Admin Site
-                            </Button> : <></>
-                        }
+                        {adminButton}
                     </> : <>
                         <Typography variant="h2">
                             You are logged out
