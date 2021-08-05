@@ -77,14 +77,14 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                                     metadata: val.metadata_info.reduce(
                                         (
                                             accum: Record<number,Metadata[]>,
-                                            val: any,
+                                            m: any,
                                         ) => {
-                                            const key: number = val.type;
+                                            const key: number = m.type;
                                             const metadata: Metadata = {
-                                                id: val.id,
-                                                name: val.name,
+                                                id: m.id,
+                                                name: m.name,
                                                 metadataType: {
-                                                    name: val.type_name,
+                                                    name: m.type_name,
                                                     id: key,
                                                 },
                                             };
@@ -186,14 +186,14 @@ const editContentEpic: MyEpic = action$ =>
                         mergeMap(_ => {
                             // Second request
                             // Explicitly empty metadata in JSON
-                            const req = api.patch(
+                            const reqEmpty = api.patch(
                                 APP_URLS.CONTENT(content.id),
                                 {
                                     metadata: [],
                                 }
                             );
 
-                            return from(req).pipe(
+                            return from(reqEmpty).pipe(
                                 map(_ => fetch_content()),
                             );
                         }),

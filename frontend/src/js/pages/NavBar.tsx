@@ -36,6 +36,7 @@ type NavBarProps = {
 
 /**
  * This component is the full nav bar integrated with Redux global state.
+ * It provides support for showing/hiding tabs based on user permissions.
  * @param props The properties of the nav bar.
  * @returns The nav bar.
  */

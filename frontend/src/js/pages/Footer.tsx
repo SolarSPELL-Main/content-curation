@@ -24,7 +24,7 @@ export default () => <Box
         ["https://solarspell.org/newsletter", "Newsletter"],
         ["mailto:team@solarspell.org", "team@solarspell.org"],
     ] as [string, string][]).map(([url, text]) =>
-        <Box p={1}>
+        <Box p={1} key={url}>
             <Link
                 href={url}
                 target="_blank"
