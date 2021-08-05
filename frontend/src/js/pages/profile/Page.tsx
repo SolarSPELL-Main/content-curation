@@ -63,7 +63,10 @@ export default () => {
                         <Typography variant="h2">
                             You are logged out
                         </Typography>
-                        <Button style={{marginTop: "2em"}} href="/accounts/google/login/">
+                        <Button
+                            style={{marginTop: "2em"}}
+                            href={APP_URLS.LOGIN_GOOGLE}
+                        >
                             Login
                         </Button>
                     </>}

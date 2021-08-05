@@ -33,27 +33,26 @@ import tempfile
 
 
 class StandardDataView:
-    # permission_classes = (IsAdminUser,)
-    print("StandardDataView")
-
     page_size_query_param = "page_size"
 
     def create(self, request, *args, **kwargs):
         print("create Standard View")
         try:
             serializer = self.get_serializer(data=request.data)
-            print("request.data ", request.data)
-            # print("serializer valid ",serializer.is_valid)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)
-            print(headers)
-            return Response(serializer.data, status=status.HTTP_201_CREATED,
-                            headers=headers)
-        except IntegrityError as e:
-            return build_response(status=status.HTTP_400_BAD_REQUEST,
-                                  success=False,
-                                  error="Already Exists in Database")
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED,
+                headers=headers
+            )
+        except IntegrityError:
+            return build_response(
+                status=status.HTTP_400_BAD_REQUEST,
+                success=False,
+                error="Already Exists in Database"
+            )
 
     def retrieve(self, request, *args, **kwargs):
         print("retreieve")
@@ -62,7 +61,6 @@ class StandardDataView:
         return build_response(serializer.data)
 
     def list(self, request, *args, **kwargs):
-        print("list")
         queryset = self.filter_queryset(self.get_queryset())
         # print("list ",queryset)
         # page = self.paginate_queryset(queryset)
@@ -75,8 +73,10 @@ class StandardDataView:
         page = request.GET.get('page')
 
         if page != None:
-            paginator = QuerySetPaginator(queryset,
-                                          per_page=request.GET.get('page_size'))
+            paginator = QuerySetPaginator(
+                queryset,
+                per_page=request.GET.get('page_size')
+            )
             serializer = self.get_serializer(paginator.page(page), many=True)
             return build_response({
                 'total': queryset.count(),
@@ -94,7 +94,6 @@ class MetadataViewSet(StandardDataView, viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions]
     queryset = Metadata.objects.all()
     serializer_class = MetadataSerializer
-    print("Metadataviewset  query ", queryset.query)
 
 
 class MetadataTypeViewSet(StandardDataView, viewsets.ModelViewSet):
@@ -250,7 +249,7 @@ def zipdownloadcsv(request):
     #if it runs out of ram, kind of like swap space
     with tempfile.SpooledTemporaryFile() as temp_zip:
         #path to look for content
-        zip_subdir = settings.MEDIA_ROOT + "content"
+        zip_subdir = settings.MEDIA_ROOT
         filename = 'content-curation_webapp_Content-{}.zip'.format(
             datetime.datetime.now().strftime("%m-%d-%Y")
         )
@@ -284,7 +283,6 @@ def zipdownloadcsv(request):
                     'file_name': con.file_name,
                     'title': con.title,
                     'description': con.description,
-                    'metadata_info': metadataname,
                     'active': con.active,
                     'copyright_notes': con.copyright_notes,
                     'rights_statement': con.rights_statement,
@@ -302,21 +300,25 @@ def zipdownloadcsv(request):
                     'status': con.status,
                     'filesize': con.filesize
                 })
-
+                
                 try:
-                    filePath = os.path.join(zip_subdir, filename)
-                    zip_file.write(filePath, basename(filePath))
+                    for folderName, subfolders, filenames in os.walk(
+                        zip_subdir):
+                        for filename in filenames:
+                            if filename == con.file_name:
+                                filePath = os.path.join(folderName, filename)
+                                zip_file.write(filePath, basename(filePath))
 
                 except zipfile.BadZipfile:
                     return build_response(
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                         error="Bad Zip File"
-                        )
+                    )
                 except zipfile.LargeZipFile:
                     return build_response(
                         status=status.HTTP_400_BAD_REQUEST,
                         error="Large Zip File"
-                        )
+                    )
             #Write the csv buffer to the zip file
             zip_file.writestr(csvfilename, string_buffer.getvalue())
         #Needed to keep the file open

@@ -18,6 +18,7 @@ function Body(): React.ReactElement {
             <ShowForPermission slice={'metadata'} permission={'create'}>
                 <TypeAdder />
             </ShowForPermission>
+            <div style={{marginTop: "1em"}} />
             <Table />
         </Box>
     );

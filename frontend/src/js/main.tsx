@@ -9,6 +9,7 @@ import Loader from './Loader';
 import { NavBar, PageBody } from './pages';
 import { fetch_user, close_toast } from "./state/global"
 import { useCCDispatch, useCCSelector, usePrevious } from './hooks';
+import Footer from "./pages/Footer";
 
 /*
  * Main entry point of the application
@@ -20,6 +21,7 @@ function Main(): React.ReactElement {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     useEffect(() => {
+        //Enqueue a snackbar for every toast that wasnt there previously
         const newToasts = prevToasts == null ? 
             [] :
             toasts.filter(toast =>
@@ -43,6 +45,7 @@ function Main(): React.ReactElement {
             }
         ))
 
+        //Close all snackbars that were in the previous toasts but not current
         if (prevToasts != null) {
             const oldToasts = prevToasts.filter(toast =>
                 toasts.every(lastToast => lastToast.key !== toast.key)
@@ -60,6 +63,7 @@ function Main(): React.ReactElement {
         <NavBar />
         <PageBody />
         <Loader />
+        <Footer />
     </>)
 }
 

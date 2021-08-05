@@ -25,6 +25,7 @@ import type { MyEpic } from './types';
 const fetchContentEpic: MyEpic = (action$, state$) =>
     action$.pipe(
         filter(fetch_content.match),
+        filter(() => state$.value.global.user.user_id !== 0),
         mergeMap(_ =>
             fromWrapper(from(api.get(
                 APP_URLS.CONTENT_LIST(
