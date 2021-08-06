@@ -215,9 +215,20 @@ const rangeToQuery = (range: Range<number|string>): {
     return finalRange;
 }
 
+/**
+ * Utility type for specifying reducers in reduceQuery.
+ * Function should return whether to stop evaluation of future reducers or not.
+ */
 type QueryReducer =
     (key: keyof Query, val: Query[keyof Query], params: string[]) => boolean
 
+/**
+ * Reduces a Query into array of strings according to reducer functions.
+ * @param query The Query object to reduce
+ * @param reducers The array of reducer functions.
+ *                 Reducers are evaluated from first to last
+ * @returns An array of strings, derived from the Query
+ */
 const reduceQuery = (query: Query, reducers: QueryReducer[]): string[] => {
     const params: string[] = [];
 
