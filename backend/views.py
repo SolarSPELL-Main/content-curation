@@ -244,9 +244,9 @@ def search(request):
 @api_view(('GET',))
 @renderer_classes((JSONRenderer,))
 def check_duplicate(request):
-    hash = request.GET.get("hash", None)
-    if hash is not None:
-        return build_response(Content.objects.filter(hash=hash).exists())
+    file_hash = request.GET.get("hash", None)
+    if file_hash is not None:
+        return build_response(Content.objects.filter(hash=file_hash).exists())
     else:
         return build_response(
             status=status.HTTP_400_BAD_REQUEST,
@@ -317,12 +317,12 @@ def zipdownloadcsv(request):
                 })
 
                 try:
-                    for folderName, subfolders, filenames in os.walk(
+                    for folder_name, subfolders, filenames in os.walk(
                             zip_subdir):
                         for filename in filenames:
                             if filename == con.file_name:
-                                filePath = os.path.join(folderName, filename)
-                                zip_file.write(filePath, basename(filePath))
+                                file_path = os.path.join(folder_name, filename)
+                                zip_file.write(file_path, basename(file_path))
 
                 except zipfile.BadZipfile:
                     return build_response(

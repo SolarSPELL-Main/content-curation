@@ -57,7 +57,9 @@ export const contentSlice = createSlice({
         /**
          * Triggers Epic to fetch content from backend
          */
-        fetch_content: () => {},
+        fetch_content: () => {
+            // Triggers corresponding epic
+        },
 
         /**
          * Updates content in current state
@@ -139,7 +141,9 @@ export const contentSlice = createSlice({
          * @param _state The current state
          * @param _action.payload The content to post
          */
-        add_content: (_state, _action: PayloadAction<Content>) => {},
+        add_content: (_state, _action: PayloadAction<Content>) => {
+            // Triggers corresponding epic
+        },
 
         /**
          * DELETEs content from backend
@@ -162,7 +166,9 @@ export const contentSlice = createSlice({
          * @param _state The current state
          * @param _action.payload The new piece of content (with valid ID)
          */
-        edit_content: (_state, _action: PayloadAction<Content>) => {},
+        edit_content: (_state, _action: PayloadAction<Content>) => {
+            // Triggers corresponding epic
+        },
 
         /**
          * Updates the filter in current state

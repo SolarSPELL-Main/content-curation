@@ -4,8 +4,8 @@ import type { Query } from "js/types"
 
 import { CONTENT_FIELDS, queryToParams } from './utils';
 
-//All hardcoded end-points live in this file
-const APP_URLS = {
+// All hardcoded end-points live in this file
+export default {
     BUG_REPORT: "https://docs.google.com/forms/d/e/"
         + "1FAIpQLScdPbE0AGVuNCvhy2gnTvmVNyQcQtd4vt6zBjjBgAwprb4VKg/viewform",
     EXPORT: `/api/export/`,
@@ -74,5 +74,3 @@ const APP_URLS = {
     CHECK_DUPLICATE: (hash: string) => `/api/check_duplicate?hash=${hash}`,
     USER_INFO: `/api/get_user/`,
 }
-
-export default APP_URLS
