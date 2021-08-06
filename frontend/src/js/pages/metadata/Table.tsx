@@ -1,10 +1,9 @@
-//Importing from outside the project
 import React from 'react';
+
 import type {
     GridSortModel,
 } from '@material-ui/data-grid';
 
-//Importing from other files in the project
 import { MetadataDisplay } from 'solarspell-react-lib';
 import { useCCSelector } from '../../hooks';
 import { hasPermission } from '../../utils';

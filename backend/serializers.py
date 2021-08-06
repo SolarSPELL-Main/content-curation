@@ -1,8 +1,6 @@
-'''Importing from outside the project'''
 from rest_framework.serializers import ModelSerializer, StringRelatedField
 from rest_framework.validators import UniqueTogetherValidator
 
-'''Importing from other files in the project'''
 from backend.models import Metadata, MetadataType, Content
 
 class MetadataTypeSerializer(ModelSerializer):

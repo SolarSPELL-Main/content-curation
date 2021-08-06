@@ -1,4 +1,3 @@
-//Importing from outside the project
 import {
     configureStore,
     getDefaultMiddleware,
@@ -7,7 +6,6 @@ import {
 } from '@reduxjs/toolkit'
 import { createEpicMiddleware } from "redux-observable"
 
-//Importing from other files in the project
 import globalReducer from './global'
 import metadataReducer from './metadata'
 import contentReducer, {
@@ -15,7 +13,6 @@ import contentReducer, {
     add_content,
     edit_content,
 } from './content'
-
 import epics from './epics';
 
 const reducer = combineReducers({

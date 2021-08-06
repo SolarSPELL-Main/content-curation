@@ -1,4 +1,5 @@
 import type { AnyAction } from '@reduxjs/toolkit';
+
 import { of, concat, ObservableInput } from 'rxjs'
 import { catchError } from 'rxjs/operators';
 

@@ -1,10 +1,9 @@
-//Importing from outside the project
 import React from 'react';
+
 import type {
   GridColDef,
 } from '@material-ui/data-grid';
 
-//Importing from other files in the project
 import { ContentTable } from 'solarspell-react-lib';
 import * as ContentActions from '../../state/content';
 import { useCCDispatch, useCCSelector } from '../../hooks';

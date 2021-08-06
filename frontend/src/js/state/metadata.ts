@@ -1,7 +1,5 @@
-//Importing from outside the project
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-//Importing from other files in the project
 import { Metadata, MetadataType } from "../types"
 
 type MetadataByType = Record<number, Metadata[]>

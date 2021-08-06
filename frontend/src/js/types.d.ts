@@ -1,4 +1,3 @@
-//Importing from other files in the project
 import type {
     BaseMetadata,
     BaseMetadataType,

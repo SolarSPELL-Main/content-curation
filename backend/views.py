@@ -1,28 +1,21 @@
-'''Importing from outside the project'''
 from django.db.utils import IntegrityError, Error
 from django.shortcuts import render
 from django.http.response import JsonResponse, HttpResponse, FileResponse
+from django.middleware.csrf import get_token
+from django.views.generic import TemplateView
+from django.contrib.auth.models import Group
+from django_filters import rest_framework as filters
+from django.core.paginator import QuerySetPaginator
+from django.conf import settings
+
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view, renderer_classes, action
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework import permissions
-from django.middleware.csrf import get_token
-from django.views.generic import TemplateView
-from allauth.socialaccount.models import SocialToken
-from django.contrib.auth.models import Group
 from rest_framework.permissions import DjangoModelPermissions
-from django_filters import rest_framework as filters
 
-from django.core.paginator import QuerySetPaginator
-from django.conf import settings
-
-'''Importing from other files in the project'''
-from backend.models import MetadataType, Metadata, Content
-from backend.serializers import MetadataTypeSerializer, MetadataSerializer, \
-    ContentSerializer
-from backend.standardize_format import build_response
-from .filters import ContentFilter
+from allauth.socialaccount.models import SocialToken
 import datetime
 import csv
 import datetime
@@ -31,6 +24,12 @@ import io
 import os
 from os.path import basename
 import tempfile
+
+from backend.models import MetadataType, Metadata, Content
+from backend.serializers import MetadataTypeSerializer, MetadataSerializer, \
+    ContentSerializer
+from backend.standardize_format import build_response
+from .filters import ContentFilter
 
 
 class StandardDataView:

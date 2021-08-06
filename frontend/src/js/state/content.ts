@@ -1,10 +1,9 @@
-//Importing from outside the project
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+
 import type {
     GridSortModel,
 } from '@material-ui/data-grid';
 
-//Importing from other files in the project
 import { Content, Query } from "../types"
 
 export const contentSlice = createSlice({

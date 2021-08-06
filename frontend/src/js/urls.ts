@@ -1,4 +1,5 @@
 import type { GridSortModel } from '@material-ui/data-grid';
+
 import type { Query } from "js/types"
 
 import { CONTENT_FIELDS, queryToParams } from './utils';
