@@ -29,6 +29,7 @@ from backend.models import MetadataType, Metadata, Content
 from backend.serializers import MetadataTypeSerializer, MetadataSerializer, \
     ContentSerializer, ProfileSerializer
 from backend.standardize_format import build_response
+from backend.enums import STATUS
 from .filters import ContentFilter
 
 
@@ -184,6 +185,11 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         request.data["created_by"] = request.user.id
+
+        # If status is Review, then reviewed date should be none
+        if "status" in request.data and request.data["status"] == "Review":
+            request.data["reviewed_on"] = None
+
         return super().create(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
@@ -200,17 +206,23 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
         instance = self.get_object()
         if not instance:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        data = request.data.copy()
 
         # New file has been uploaded for content
         # Removes old one
-        if 'content_file' in request.data:
+        if "content_file" in data:
             file_path = os.path.join(settings.MEDIA_ROOT, instance.file_name)
             if os.path.exists(file_path):
                 os.remove(file_path)
+        
+        # If status is Review, then reviewed date should be none
+        if "status" in data and data["status"] == "Review":
+            data["reviewed_on"] = None
 
         serializer = self.get_serializer(instance,
-                                         data=request.data,
-                                         many=isinstance(request.data, list),
+                                         data=data,
+                                         many=isinstance(data, list),
                                          partial=True)
         if not serializer.is_valid():
             return Response(serializer.errors,
