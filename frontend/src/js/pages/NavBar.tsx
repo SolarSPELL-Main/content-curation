@@ -4,35 +4,74 @@ import { Link as RouterLink } from 'react-router-dom';
 import Tab from '@material-ui/core/Tab';
 
 //Importing from other files in the project
-import Tabs from './Tabs';
+import CCTabs from './Tabs';
 import { useCCSelector } from '../hooks';
 import { hasPermission } from '../utils';
-import type { Permissions, CRUD, SpecialPermissions } from 'js/types';
-
-type TabProps = React.ComponentProps<typeof Tab> &
-    React.ComponentProps<typeof RouterLink>
+import type { CheckedPermissions } from './ShowForPermission';
+import { Tabs } from '../enums';
+import Logo from '../../assets/logo.png';
 
 type SlicePermission = {
-    slice?: never
-    permission?: never
-    mode?: never
-} | {
-    slice: 'special'
-    permission: keyof SpecialPermissions|string[]
-    mode?: 'some'|'every'
-} | {
-    slice: Exclude<keyof Permissions, 'special'>
-    permission: keyof CRUD|string[]
-    mode?: 'some'|'every'
-}
+    [k in keyof CheckedPermissions]?: never
+} | CheckedPermissions
 
 type TabDescriptor = {
-    props: TabProps
+    props: React.ComponentProps<typeof Tab> &
+        React.ComponentProps<typeof RouterLink>
 } & SlicePermission
 
-type NavBarProps = {
-    tabDescriptors: TabDescriptor[]
-}
+// Style for the logo itself
+const logoStyle: React.CSSProperties = {
+    height: '75px',
+    width: '300px',
+    margin: '10px',
+};
+
+// Style for the tab associated with the logo
+const logoTabStyle: React.CSSProperties = {
+    width: '320px',
+    maxWidth: '320px',
+    backgroundColor: 'var(--ocean-blue)',
+};
+
+// Add tab props here for it to show up on the NavBar
+const tabDescriptors: TabDescriptor[] = [
+    {
+        props: {
+            component: RouterLink,
+            to: '/home',
+            style: logoTabStyle,
+            label: (
+                <img src={Logo} style={logoStyle} />
+            ),
+            value: Tabs.HOME,
+        },
+    },
+    {
+        props: {
+            component: RouterLink,
+            to: '/metadata',
+            label: 'Metadata',
+            value: Tabs.METADATA,
+        },
+    },
+    {
+        props: {
+            component: RouterLink,
+            to: '/content',
+            label: 'Content',
+            value: Tabs.CONTENT,
+        },
+    },
+    {
+        props: {
+            component: RouterLink,
+            to: "/profile",
+            label: "Profile",
+            value: Tabs.PROFILE,
+        },
+    },
+];
 
 /**
  * This component is the full nav bar integrated with Redux global state.
@@ -40,9 +79,7 @@ type NavBarProps = {
  * @param props The properties of the nav bar.
  * @returns The nav bar.
  */
-function NavBar({
-    tabDescriptors,
-}: NavBarProps): React.ReactElement {
+function NavBar(): React.ReactElement {
     const stateTab = useCCSelector(state => state.global.current_tab);
     const permissions = useCCSelector(state => state.global.user.permissions);
 
@@ -55,12 +92,11 @@ function NavBar({
     });
 
     return (
-        <Tabs
+        <CCTabs
             tabs={filteredDescriptors.map(v => v.props)}
             currentTab={stateTab}
         />
     );
 }
 
-export type { TabDescriptor };
 export default NavBar;

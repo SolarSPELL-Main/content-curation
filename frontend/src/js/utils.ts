@@ -207,20 +207,32 @@ const rangeToQuery = (range: Range<number|string>): {
         to: '',
     };
 
-    finalRange.from = range.from != null ?
-        range.from.toString()
-        :
-        // null/undefined casts to 'null'/'undefined' in string
-        // conversion, hence must explicitly set query value
-        // to empty string.
-        '';
-    
-    finalRange.to = range.to != null ?
-        range.to.toString()
-        :
-        '';
+    // null/undefined casts to 'null' and 'undefined' as string, hence must
+    // add explicit empty string.
+    finalRange.from = range.from?.toString() ?? '';
+    finalRange.to = range.to?.toString() ?? '';
     
     return finalRange;
+}
+
+type QueryReducer =
+    (key: keyof Query, val: Query[keyof Query], params: string[]) => boolean
+
+const reduceQuery = (query: Query, reducers: QueryReducer[]): string[] => {
+    const params: string[] = [];
+
+    Object.entries(query).forEach(([key_, val]) => {
+        const key = key_ as keyof Query;
+
+        if (val == null) {
+            return;
+        }
+
+        // Relies on the fact .some short-circuits on first true value
+        reducers.some(reducer => reducer(key,val,params));
+    });
+
+    return params;
 }
 
 /**
@@ -237,54 +249,60 @@ export const queryToParams = (
         return;
     }
 
-    const queryParams: string[] = [];
+    const reducers: QueryReducer[] = [
+        (key, val, params) => {
+            if (key !== 'metadata') {
+                return false;
+            }
 
-    Object.entries(query).forEach(([key_, val]) => {
-        const key = key_ as keyof Query;
-
-        if (val == null) {
-            return;
-        }
-
-        if (key === 'metadata') {
             // Special case, metadata must be converted to array of numbers
             // then repeatedly included in query parameters.
             const metadataRecord = val as Record<number,Metadata[]>;
             Object.values(metadataRecord).reduce<number[]>(
                 (accum, metadata) => accum.concat(metadata.map(m => m.id)),
                 [],
-            ).forEach(v => queryParams.push(`metadata=${v}`));
-        } else if (key === 'status') {
+            ).forEach(v => params.push(`${key}=${v}`));
+
+            return true;
+        },
+        (key, val) => {
             // Special case, 'all' must be treated as null for query
-            if (val !== 'all') {
-                queryParams.push(`${key}=${val}`);
+            // If this is true, reducer short-circuits evaluation and implicitly
+            // excludes val
+            // Otherwise, val is included into query params under 'status'
+            return key === 'status' && val === 'all';
+        },
+        (key, val, params) => {
+            if (key !== 'created_by') {
+                return false;
             }
-        } else if (key === "created_by") {
+
             // Special case, defaults to created_by logged in user
             // unless otherwise specified
             if (creator != null && val !== 'false') {
-                queryParams.push(`${key}=${creator ?? ''}`)
+                params.push(`${key}=${creator ?? ''}`)
             }
-        } else {
+
+            return true;
+        },
+        (key, val, params) => {
             // Simplest case, search value is a string
             if (isString(val)) {
-                queryParams.push(`${key}=${val}`)
+                params.push(`${key}=${val}`)
             // Assumes that if the Query value is an object, it represents a
             // Range object. Hence, ${key}_min and ${key}_max should exist in
             // the query parameters.
             } else if (isPlainObject(val)) {
                 const finalRange = rangeToQuery(val as Range<number|string>)
-                queryParams.push(`${key}_min=${finalRange.from}`);
-                queryParams.push(`${key}_max=${finalRange.to}`);
+                params.push(`${key}_min=${finalRange.from}`);
+                params.push(`${key}_max=${finalRange.to}`);
             }
-        }
-    });
 
-    if (queryParams.length > 0) {
-        return queryParams;
-    } else {
-        return;
-    }
+            return true;
+        },
+    ];
+
+    return reduceQuery(query, reducers);
 }
 
 /**
