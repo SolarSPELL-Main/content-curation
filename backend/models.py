@@ -1,4 +1,4 @@
-import os
+
 import datetime
 import logging
 from hashlib import sha256
@@ -9,9 +9,9 @@ from django.db.models.signals import post_save
 from django.utils.text import get_valid_filename
 from django.contrib.auth.models import User
 
-from backend.validators import validate_unique_filename, validate_unique_file
+from backend.validators import validate_unique_filename
 from backend.enums import STATUS
-from content_curation import settings
+
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +71,7 @@ class Content(models.Model):
     # duplicatable = models.BooleanField(default=0)
     # Cataloger/Curator from loggedIn
     created_by = models.ForeignKey(
-        "auth.User", default=None, null=True, on_delete=models.SET_DEFAULT,
+       User, default=None, null=True, on_delete=models.SET_DEFAULT,
     )
     created_on = models.DateField(default=datetime.date.today, null=True)
     # further modified by curators/metadataaides/library specialist(s)to edit the filename and metadata record

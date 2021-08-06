@@ -1,9 +1,9 @@
-from django.db.utils import IntegrityError, Error
+from django.db.utils import IntegrityError
 from django.shortcuts import render
-from django.http.response import JsonResponse, HttpResponse, FileResponse
-from django.middleware.csrf import get_token
+from django.http.response import  HttpResponse
+
 from django.views.generic import TemplateView
-from django.contrib.auth.models import Group
+
 from django_filters import rest_framework as filters
 from django.core.paginator import QuerySetPaginator
 from django.conf import settings
@@ -16,7 +16,7 @@ from rest_framework import permissions
 from rest_framework.permissions import DjangoModelPermissions
 
 from allauth.socialaccount.models import SocialToken
-import datetime
+
 import csv
 import datetime
 import zipfile
