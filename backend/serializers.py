@@ -1,7 +1,7 @@
-from rest_framework.serializers import ModelSerializer, StringRelatedField
+from rest_framework.serializers import ModelSerializer
 from rest_framework.validators import UniqueTogetherValidator
 
-from backend.models import Metadata, MetadataType, Content
+from backend.models import Metadata, MetadataType, Content, Profile
 
 class MetadataTypeSerializer(ModelSerializer):
     class Meta:
@@ -21,7 +21,8 @@ class MetadataSerializer(ModelSerializer):
         ]
         model = Metadata
         fields = ('id', 'name', 'type','metadataType')
-    
+
+
 class ContentSerializer(ModelSerializer):
     #created_by = StringRelatedField()
     class Meta:
@@ -34,3 +35,12 @@ class ContentSerializer(ModelSerializer):
             'copyright_by', 'published_year', 'hash', 'original_source',
             'copyright_site', 'status', 'filesize', 'created_by_name',
         )
+
+
+class ProfileSerializer(ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = (
+            'num_content',
+        )
+

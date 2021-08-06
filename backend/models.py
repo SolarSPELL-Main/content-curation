@@ -5,7 +5,9 @@ from hashlib import sha256
 
 from django.db import models
 from django.dispatch import receiver
+from django.db.models.signals import post_save
 from django.utils.text import get_valid_filename
+from django.contrib.auth.models import User
 
 from backend.validators import validate_unique_filename, validate_unique_file
 from backend.enums import STATUS
@@ -104,3 +106,20 @@ class Content(models.Model):
             "type_name": metadata.type.name,
             "type": metadata.type.id
         } for metadata in self.metadata.all()]
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def num_content(self):
+        return Content.objects.filter(created_by=self.user.id).count()
+
+    @receiver(post_save, sender=User)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            Profile.objects.create(user=instance)
+
+    @receiver(post_save, sender=User)
+    def save_user_profile(sender, instance, **kwargs):
+        instance.profile.save()
+

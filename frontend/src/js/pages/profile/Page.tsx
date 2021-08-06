@@ -49,6 +49,8 @@ export default () => {
                             key={idx}
                             label={group}
                         />)}
+                        <Typography variant="subtitle2">Content Created</Typography>
+                        <Typography>{user.profile?.num_content ?? 0}</Typography>
                         <div style={{marginTop: "2em"}}/>
                         <Button
                             style={{marginRight: "1em"}}
