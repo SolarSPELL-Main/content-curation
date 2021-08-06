@@ -6,10 +6,9 @@ import { useSnackbar } from "notistack"
 
 //Importing from other files in the project
 import Loader from './Loader';
-import { NavBar, PageBody } from './pages';
+import { NavBar, PageBody, Footer } from './pages';
 import { fetch_user, close_toast } from "./state/global"
 import { useCCDispatch, useCCSelector, usePrevious } from './hooks';
-import Footer from "./pages/Footer";
 
 /*
  * Main entry point of the application
