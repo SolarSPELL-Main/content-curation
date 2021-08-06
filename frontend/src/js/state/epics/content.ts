@@ -1,5 +1,5 @@
 import { from } from 'rxjs'
-import { filter, map, mergeMap, mapTo } from 'rxjs/operators'
+import { filter, map, mergeMap, mapTo, debounceTime } from 'rxjs/operators'
 
 import {
     fetch_content,
@@ -23,8 +23,12 @@ const fetchContentEpic: MyEpic = (action$, state$, { api }) =>
     action$.pipe(
         filter(fetch_content.match),
         filter(() => state$.value.global.user.user_id !== 0),
-        mergeMap(_ =>
-            fromWrapper(from(api.get(
+        // Reduces lag from constant search bar requests
+        debounceTime(100),
+        mergeMap(_ => {
+            const timestamp = Date.now();
+
+            return fromWrapper(from(api.get(
                 APP_URLS.CONTENT_LIST(
                     state$.value.content.filters,
                     state$.value.content.pageSize,
@@ -97,11 +101,12 @@ const fetchContentEpic: MyEpic = (action$, state$, { api }) =>
                                 }),
                             ),
                             total: data.data.total,
+                            timestamp: timestamp,
                         },
                     ),
                 ),
-            )),
-        ),
+            ));
+        }),
     )
 
 const addContentEpic: MyEpic = (action$, _, { api }) =>

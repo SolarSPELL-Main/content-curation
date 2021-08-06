@@ -14,6 +14,10 @@ export const contentSlice = createSlice({
          */
         content: [] as Content[],
         /**
+         * Timestamp for when last request to update Content was made
+         */
+        timestamp: -1,
+        /**
          * All selected Content IDs. Stored in Redux state to allow selection
          * to persist between pages
          */
@@ -58,14 +62,21 @@ export const contentSlice = createSlice({
         /**
          * Updates content in current state
          * @param state The current state
-         * @param action.payload The new content to display and number of items
+         * @param action.payload The new content to display, number of items,
+         *                       and timestamp for when the request was made.
          */
         update_content: (state, action: PayloadAction<{
             content: Content[]
             total: number
+            timestamp: number
         }>) => {
-            state.content = action.payload.content;
-            state.total = action.payload.total;
+            // If request was made earlier than when the current content's
+            // request was made, then ignore
+            if (action.payload.timestamp > state.timestamp) {
+                state.content = action.payload.content;
+                state.total = action.payload.total;
+                state.timestamp = action.payload.timestamp;
+            }
         },
 
         /**
