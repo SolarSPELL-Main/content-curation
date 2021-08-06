@@ -1,5 +1,7 @@
-[![Test frontend build](https://github.com/SolarSPELL-Main/content-curation/actions/workflows/frontend_build.yml/badge.svg)](https://github.com/SolarSPELL-Main/content-curation/actions/workflows/frontend_build.yml)
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/dashboard?id=SolarSPELL-Main_content-curation)
 
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=SolarSPELL-Main_content-curation&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=SolarSPELL-Main_content-curation)
+[![Test frontend build](https://github.com/SolarSPELL-Main/content-curation/actions/workflows/frontend_build.yml/badge.svg)](https://github.com/SolarSPELL-Main/content-curation/actions/workflows/frontend_build.yml)
 [![Test django build](https://github.com/SolarSPELL-Main/content-curation/actions/workflows/django_build.yml/badge.svg)](https://github.com/SolarSPELL-Main/content-curation/actions/workflows/django_build.yml)
 
 # Content Curation
