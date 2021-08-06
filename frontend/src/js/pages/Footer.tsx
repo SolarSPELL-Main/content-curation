@@ -5,6 +5,10 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 
+/**
+ * The footer with social media icons at the bottom of the page
+ * @returns The static footer with all icons
+ */
 export default () => <Box
     marginLeft="20%"
     marginRight="20%"

@@ -8,6 +8,7 @@ import { useCCSelector } from '../hooks';
 import { hasPermission } from '../utils';
 import type { CheckedPermissions } from './ShowForPermission';
 import { Tabs } from '../enums';
+import { OCEAN_BLUE } from '../theme';
 import Logo from '../../assets/logo.png';
 
 type SlicePermission = {
@@ -30,7 +31,7 @@ const logoStyle: React.CSSProperties = {
 const logoTabStyle: React.CSSProperties = {
     width: '320px',
     maxWidth: '320px',
-    backgroundColor: 'var(--ocean-blue)',
+    backgroundColor: OCEAN_BLUE,
 };
 
 // Add tab props here for it to show up on the NavBar
