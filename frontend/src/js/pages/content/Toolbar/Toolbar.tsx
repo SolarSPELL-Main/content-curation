@@ -1,24 +1,17 @@
 import React from 'react';
+
 import Box from '@material-ui/core/Box';
 import { GridColDef } from '@material-ui/data-grid';
 
-import ShowForPermission from '../ShowForPermission';
+import ShowForPermission from '../../ShowForPermission';
 import Add from './Add';
 import ColumnSelection from './ColumnSelection';
-import { Content, Metadata, MetadataType } from 'js/types';
 
 type ToolbarActionProps = {
-    onAdd: (content?: Content) => void
-    onCreate: (
-        metadataType: MetadataType,
-        newTags: Metadata[],
-    ) => Promise<Metadata[]>
     onColumnSelect: (cols: GridColDef[]) => void
 }
 
 type ToolbarProps = {
-    metadata: Record<number, Metadata[]>
-    metadataTypes: MetadataType[]
     actions: ToolbarActionProps
     initialColumns: Record<string, boolean>
 }
@@ -29,26 +22,18 @@ type ToolbarProps = {
  * @returns A toolbar with buttons for several actions.
  */
 function Toolbar({
-    metadata,
-    metadataTypes,
     actions,
-    initialColumns
+    initialColumns,
 }: ToolbarProps): React.ReactElement {
     return (
         <Box mb={2} display={'flex'} justifyContent={'space-between'}>
             <Box>
                 <ShowForPermission slice={'content'} permission={'create'}>
-                    <Add
-                        metadata={metadata}
-                        metadataTypes={metadataTypes}
-                        onAdd={actions.onAdd}
-                        onCreate={actions.onCreate}
-                    />
+                    <Add />
                 </ShowForPermission>
             </Box>
             <Box>
                 <ColumnSelection
-                    metadataTypes={metadataTypes}
                     onClose={actions.onColumnSelect}
                     initialColumns={initialColumns}
                 />

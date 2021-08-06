@@ -1,4 +1,3 @@
-//Importing from other files in the project
 import type {
     BaseMetadata,
     BaseMetadataType,
@@ -59,7 +58,12 @@ type User = {
     token: string
     user_id: number
     groups: AuthGroup[]
+    profile?: Profile
     permissions: Permissions
+}
+
+type Profile = {
+    num_content: number
 }
 
 type CRUD = {

@@ -1,13 +1,14 @@
-'''Importing from outside the project'''
 import os
 import datetime
-from django.db import models
-from django.dispatch import receiver
 import logging
 from hashlib import sha256
-from django.utils.text import get_valid_filename
 
-'''Importing from other files in the project'''
+from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from django.utils.text import get_valid_filename
+from django.contrib.auth.models import User
+
 from backend.validators import validate_unique_filename, validate_unique_file
 from backend.enums import STATUS
 from content_curation import settings
@@ -40,13 +41,12 @@ class Metadata(models.Model):
 
 class Content(models.Model):
     def set_file_name(self, file_name):
-        path = "media/contents/" + file_name
         # get file size if this content was saved individually
         if (self.content_file):
             self.hash = sha256(self.content_file.read()).hexdigest()
             self.filesize = self.content_file.size
             self.file_name = get_valid_filename(file_name)
-        return path
+        return file_name
 
     content_file = models.FileField(
         "File",
@@ -93,7 +93,7 @@ class Content(models.Model):
     )
 
     def created_by_name(self):
-        return self.created_by.username
+        return self.created_by.username if self.created_by else ""
 
     def published_year(self):
         return None if self.published_date == None else str(
@@ -106,3 +106,20 @@ class Content(models.Model):
             "type_name": metadata.type.name,
             "type": metadata.type.id
         } for metadata in self.metadata.all()]
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def num_content(self):
+        return Content.objects.filter(created_by=self.user.id).count()
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()

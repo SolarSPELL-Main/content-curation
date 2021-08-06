@@ -1,45 +1,32 @@
-//Importing from outside the project
 import React from 'react';
+
 import { Edit, Delete } from '@material-ui/icons';
 
-//Importing from other files in the project
 import {
     ActionPanel as SolarSPELLActionPanel,
     ActionPanelItem,
 } from 'solarspell-react-lib';
+import * as Actions from '../../state/metadata';
+import { useCCDispatch } from '../../hooks';
 import ShowForPermission from '../ShowForPermission';
 import { Metadata, MetadataType } from 'js/types';
-
-type ActionPanelActionProps = {
-    onEdit: (item: Metadata, val: string) => void
-    onDelete: (item: Metadata) => void
-}
 
 type ActionPanelProps = {
     metadata: Metadata
     metadataType: MetadataType
-} & ActionPanelActionProps
+}
 
 /**
  * The 'Actions' column in the MetadataEditor component.
  * This component displays the icons for editing/deleting metadata.
- * @param props The context and action callbacks.
+ * @param props The metadata and metadata type associated with the actions.
  * @returns An action panel containing the Edit and Delete options for metadata.
  */
 function ActionPanel({
-    onEdit,
-    onDelete,
     metadata,
     metadataType,
 }: ActionPanelProps): React.ReactElement {
-    const onAction = React.useCallback(
-        (val: string) => onEdit(metadata, val), 
-        [onEdit, metadata],
-    );
-    const onDelete_ = React.useCallback(
-        () => onDelete(metadata), 
-        [onDelete, metadata],
-    );
+    const dispatch = useCCDispatch();
 
     return (
         <SolarSPELLActionPanel>
@@ -48,7 +35,12 @@ function ActionPanel({
                     type={'text_input'}
                     tooltip={'Edit'}
                     icon={Edit}
-                    onAction={onAction}
+                    onAction={name =>
+                        dispatch(Actions.edit_metadata({
+                            name: name,
+                            id: metadata.id
+                        }))
+                    }
                     textInputTitle={`Edit Metadata ${metadata.name}`}
                     textInputLabel={'Metadata Name'}
                     textInputDefaultValue={metadata.name}
@@ -60,7 +52,13 @@ function ActionPanel({
                     type={'confirm'}
                     tooltip={'Delete'}
                     icon={Delete}
-                    onAction={onDelete_}
+                    onAction={() =>
+                        dispatch(Actions.delete_metadata({
+                            type_id: metadata.metadataType.id,
+                            id: metadata.id,
+                            name: metadata.name,
+                        }))
+                    }
                     confirmationTitle={`Delete Metadata item ${metadata.name} of type ${metadataType.name}?`}
                     confirmationDescription={'WARNING: Deleting a metadata will also delete each of that metadata on every content and is irreversible.'}
                 />
@@ -69,5 +67,4 @@ function ActionPanel({
     );
 }
 
-export type { ActionPanelActionProps };
 export default ActionPanel;

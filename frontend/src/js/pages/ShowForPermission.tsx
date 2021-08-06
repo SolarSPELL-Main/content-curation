@@ -4,12 +4,15 @@ import { useCCSelector } from '../hooks';
 import { hasPermission } from '../utils';
 import type { Permissions, CRUD, SpecialPermissions } from 'js/types';
 
-type ShowForPermissionProps = {
+type CheckedPermissions = {
     slice: keyof Permissions
     permission: keyof CRUD|keyof SpecialPermissions|string[]
     mode?: 'some'|'every'
-    children?: React.ReactElement
 }
+
+type ShowForPermissionProps = {
+    children?: React.ReactElement | React.ReactElement[]
+} & CheckedPermissions
 
 /**
  * Shows a component only if the user has permission for it.
@@ -43,4 +46,5 @@ const ForwardedShowForPermission = React.forwardRef(
     ),
 );
 
+export type { CheckedPermissions };
 export default ForwardedShowForPermission;

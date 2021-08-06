@@ -1,54 +1,54 @@
 import React from 'react';
+
+import { GridColDef } from '@material-ui/data-grid';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import SvgIcon from '@material-ui/core/SvgIcon';
-import { GridColDef } from '@material-ui/data-grid';
 import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import HighlightOff from '@material-ui/icons/HighlightOff';
+
 import PrettyBytes from 'pretty-bytes';
 
 import { ContentColumnSelection } from 'solarspell-react-lib';
+import { useCCSelector } from '../../../hooks';
 import { MetadataType, Content } from 'js/types';
 
 type ColumnSelectionProps = {
     onClose: (cols: GridColDef[]) => void
-    metadataTypes: MetadataType[]
-    initialColumns: Record<string, boolean>
+    initialColumns: Record<string,boolean>
 }
 
+/**
+ * The column selection factory for the content tab.
+ * Allows the user to select which pieces of information related to content
+ * they want displayed in the columns of the table.
+ * It is displayed in the top right of the content tab.
+ * @param props The context and callback for the column selection.
+ * @returns A button associated with a dialog for column selection.
+ */
 function ColumnSelection({
     onClose,
-    metadataTypes,
-    initialColumns
+    initialColumns,
 }: ColumnSelectionProps): React.ReactElement {
+    const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
     const [open, setOpen] = React.useState(false);
-
-    const open_ = React.useCallback(
-        () => setOpen(true),
-        [setOpen],
-    );
-
-    const close_ = React.useCallback(
-        (cols: GridColDef[]) => {
-            setOpen(false);
-            onClose(cols);
-        },
-        [onClose, setOpen],
-    );
 
     return (
         <>
             <Button
                 variant={'contained'}
                 color={'primary'}
-                onClick={open_}
+                onClick={() => setOpen(true)}
                 style={{ marginRight: "0px" }}
             >
                 Column Select
             </Button>
             <ContentColumnSelection<Content, MetadataType>
                 open={open}
-                onClose={close_}
+                onClose={cols => {
+                    setOpen(false);
+                    onClose(cols);
+                }}
                 fields={[
                     {
                         field: 'creator',

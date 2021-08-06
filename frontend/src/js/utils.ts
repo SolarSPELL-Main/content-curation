@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { isPlainObject, isString } from 'lodash';
+
 import { Status } from './enums';
 import type {
     Content,
@@ -11,35 +12,20 @@ import type {
     SpecialPermissions,
     Range,
 } from 'js/types';
+import APP_URLS from './urls';
 
 /*
- * Taken from Django documentation https://docs.djangoproject.com/en/3.2/ref/csrf/
- * Takes the name of a cookie and returns its value
+ * Custom axios object with headers set to the csrftoken
  */
-export const getCookie = (name: string): string | null => {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
 export const api = axios.create({
     headers: { 'X-CSRFToken': Cookies.get("csrftoken") }
 })
 
+//If axios sees a 403 it will redirect the browser to the login page
 api.interceptors.response.use(r => r, err => {
     const code = err?.response?.status
     if (code === 403) {
-        window.location.href = "/accounts/google/login/"
+        window.location.href = APP_URLS.LOGIN_GOOGLE
     }
     throw err
 })
@@ -209,6 +195,59 @@ export const CONTENT_FIELDS: Record<string,string> = {
 }
 
 /**
+ * Converts a Range object into a query-compatible format.
+ * @param range The Range object to convert
+ * @returns The Range object with its values converted to strings
+ */
+const rangeToQuery = (range: Range<number|string>): {
+    from: string,
+    to: string,
+} => {
+    const finalRange = {
+        from: '',
+        to: '',
+    };
+
+    // null/undefined casts to 'null' and 'undefined' as string, hence must
+    // add explicit empty string.
+    finalRange.from = range.from?.toString() ?? '';
+    finalRange.to = range.to?.toString() ?? '';
+    
+    return finalRange;
+}
+
+/**
+ * Utility type for specifying reducers in reduceQuery.
+ * Function should return whether to stop evaluation of future reducers or not.
+ */
+type QueryReducer =
+    (key: keyof Query, val: Query[keyof Query], params: string[]) => boolean
+
+/**
+ * Reduces a Query into array of strings according to reducer functions.
+ * @param query The Query object to reduce
+ * @param reducers The array of reducer functions.
+ *                 Reducers are evaluated from first to last
+ * @returns An array of strings, derived from the Query
+ */
+const reduceQuery = (query: Query, reducers: QueryReducer[]): string[] => {
+    const params: string[] = [];
+
+    Object.entries(query).forEach(([key_, val]) => {
+        const key = key_ as keyof Query;
+
+        if (val == null) {
+            return;
+        }
+
+        // Relies on the fact .some short-circuits on first true value
+        reducers.some(reducer => reducer(key,val,params));
+    });
+
+    return params;
+}
+
+/**
  * Constructs an array of query parameters from a Query object.
  * @param query The Query object.
  * @param creator The current logged-in user (used for Created By Me).
@@ -222,70 +261,86 @@ export const queryToParams = (
         return;
     }
 
-    const queryParams: string[] = [];
+    const reducers: QueryReducer[] = [
+        (key, val, params) => {
+            if (key !== 'metadata') {
+                return false;
+            }
 
-    Object.entries(query).forEach(([key_, val]) => {
-        const key = key_ as keyof Query;
-
-        if (val == null) {
-            return;
-        }
-
-        if (key === 'metadata') {
             // Special case, metadata must be converted to array of numbers
             // then repeatedly included in query parameters.
-            const metadata = val as Record<number,Metadata[]>;
-            Object.values(metadata).reduce<number[]>(
-                (accum, val) => accum.concat(val.map(m => m.id)),
+            const metadataRecord = val as Record<number,Metadata[]>;
+            Object.values(metadataRecord).reduce<number[]>(
+                (accum, metadata) => accum.concat(metadata.map(m => m.id)),
                 [],
-            ).forEach(v => queryParams.push(`metadata=${v}`));
-        } else if (key === 'status') {
+            ).forEach(v => params.push(`${key}=${v}`));
+
+            return true;
+        },
+        (key, val) => {
             // Special case, 'all' must be treated as null for query
-            if (val !== 'all') {
-                queryParams.push(`${key}=${val}`);
+            // If this is true, reducer short-circuits evaluation and implicitly
+            // excludes val
+            // Otherwise, val is included into query params under 'status'
+            return key === 'status' && val === 'all';
+        },
+        (key, val, params) => {
+            if (key !== 'created_by') {
+                return false;
             }
-        } else if (key === "created_by") {
+
             // Special case, defaults to created_by logged in user
             // unless otherwise specified
             if (creator != null && val !== 'false') {
-                queryParams.push(`${key}=${creator ?? ''}`)
+                params.push(`${key}=${creator ?? ''}`)
             }
-        } else {
+
+            return true;
+        },
+        (key, val, params) => {
             // Simplest case, search value is a string
             if (isString(val)) {
-                queryParams.push(`${key}=${val}`)
+                params.push(`${key}=${val}`)
             // Assumes that if the Query value is an object, it represents a
             // Range object. Hence, ${key}_min and ${key}_max should exist in
             // the query parameters.
             } else if (isPlainObject(val)) {
-                const range = val as Range<number|string>;
-                const finalRange = {
-                    from: '',
-                    to: '',
-                };
-
-                finalRange.from = range.from != null ?
-                    range.from.toString()
-                    :
-                    // null/undefined casts to 'null'/'undefined' in string
-                    // conversion, hence must explicitly set query value
-                    // to empty string.
-                    '';
-                
-                finalRange.to = range.to != null ?
-                    range.to.toString()
-                    :
-                    '';
-
-                queryParams.push(`${key}_min=${finalRange.from}`);
-                queryParams.push(`${key}_max=${finalRange.to}`);
+                const finalRange = rangeToQuery(val as Range<number|string>)
+                params.push(`${key}_min=${finalRange.from}`);
+                params.push(`${key}_max=${finalRange.to}`);
             }
-        }
-    });
 
-    if (queryParams.length > 0) {
-        return queryParams;
-    } else {
-        return;
-    }
+            return true;
+        },
+    ];
+
+    return reduceQuery(query, reducers);
+}
+
+/**
+ * Triggers a download of a blob object with a given filename. Creates a
+ * temporary hidden <a> tag that downloads the file and triggers a click event
+ *
+ * Credit to David Walsh at https://davidwalsh.name/javascript-download
+ */
+export const downloadFile = (file: Blob, fileName: string) => {
+    // Create an invisible A element
+    const a = document.createElement("a");
+    a.style.display = "none";
+    document.body.appendChild(a);
+
+    // Set the HREF to a Blob representation of the data to be downloaded
+    a.href = window.URL.createObjectURL(
+        file
+    );
+
+    // Use download attribute to set set desired file name
+    a.setAttribute("download", fileName);
+
+    // Trigger the download by simulating click
+    a.click();
+
+    // Cleanup
+    window.URL.revokeObjectURL(a.href);
+    document.body.removeChild(a);
 }

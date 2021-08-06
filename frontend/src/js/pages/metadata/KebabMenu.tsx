@@ -1,55 +1,30 @@
-//Importing from outside the project
 import React from 'react';
 
-//Importing from other files in the project
 import {
     KebabMenu as SolarSPELLKebabMenu,
     KebabMenuItem,
 } from 'solarspell-react-lib';
+import * as Actions from '../../state/metadata';
+import { useCCDispatch } from '../../hooks';
+import APP_URLS from '../../urls';
 import ShowForPermission from '../ShowForPermission';
 import { MetadataType } from 'js/types';
 
-type KebabMenuActionProps = {
-    onAdd: (type: MetadataType, val: string) => void
-    onEditType: (type: MetadataType, val: string) => void
-    onDeleteType: (type: MetadataType) => void
-    onExport: (type: MetadataType) => void
-}
-
 type KebabMenuProps = {
     metadataType: MetadataType
-} & KebabMenuActionProps
+}
 
 /**
- * The kebab menu for the metadata editor.
+ * The kebab menu displayed in the top right of each metadata type.
  * This displays a menu for editing metadata types.
  * All dialogs are integrated as part of the menu items.
- * @param props The context and callbacks for the menu items.
+ * @param props The metadata type associated with the menu.
  * @returns A clickable kebab menu icon.
  */
 function KebabMenu({
-    onAdd,
-    onEditType,
-    onDeleteType,
-    onExport,
     metadataType,
 }: KebabMenuProps): React.ReactElement {
-    const onAdd_ = React.useCallback(
-        (val: string) => onAdd(metadataType, val),
-        [onAdd, metadataType],
-    );
-    const onEditType_ = React.useCallback(
-        (val: string) => onEditType(metadataType, val),
-        [onEditType, metadataType],
-    );
-    const onDeleteType_ = React.useCallback(
-        (confirmation: string) => {
-            if (confirmation === metadataType.name) {
-                onDeleteType(metadataType);
-            }
-        },
-        [onDeleteType, metadataType],
-    );
+    const dispatch = useCCDispatch();
 
     return (
         <ShowForPermission
@@ -66,17 +41,28 @@ function KebabMenu({
                     <KebabMenuItem
                         type={'text_input'}
                         label={'Add Metadata'}
-                        onAction={onAdd_}
+                        onAction={name =>
+                            dispatch(Actions.add_metadata({
+                                name: name,
+                                type_id: metadataType.id,
+                            }))
+                        }
                         textInputTitle={`Create a new Metadata of type ${metadataType.name}`}
                         textInputLabel={'Metadata Name'}
                         submitButtonText={'Create'}
+                        allowEnter
                     />
                 </ShowForPermission>
                 <ShowForPermission slice={'metadata'} permission={'update'}>
                     <KebabMenuItem
                         type={'text_input'}
                         label={'Edit Metadata Type'}
-                        onAction={onEditType_}
+                        onAction={name => 
+                            dispatch(Actions.edit_metadatatype({
+                                name: name,
+                                type_id: metadataType.id,
+                            }))
+                        }
                         textInputTitle={`Edit Metadata Type ${metadataType.name}`}
                         textInputLabel={'Metadata Type Name'}
                         textInputDefaultValue={metadataType.name}
@@ -88,7 +74,14 @@ function KebabMenu({
                     <KebabMenuItem
                         type={'text_input'}
                         label={'Delete Metadata Type'}
-                        onAction={onDeleteType_}
+                        onAction={confirmation => {
+                            if (confirmation === metadataType.name) {
+                                dispatch(Actions.delete_metadatatype({
+                                    type_id: metadataType.id,
+                                    name: metadataType.name,
+                                }));
+                            }
+                        }}
                         textInputTitle={`Delete Metadata Type ${metadataType.name}`}
                         textInputDescription={`WARNING: Deleting a metadata type will also delete all metadata of that type and is irreversible. Enter "${metadataType.name}" to confirm deletion`}
                         textInputLabel={`Enter "${metadataType.name}" here to confirm deletion`}
@@ -101,7 +94,11 @@ function KebabMenu({
                     <KebabMenuItem
                         type={'button'}
                         label={'Export as CSV'}
-                        onAction={() => onExport(metadataType)}
+                        onAction={() =>
+                            window.open(
+                                APP_URLS.METADATA_TYPE_EXPORT(metadataType.id),
+                            )
+                        }
                     />
                 </ShowForPermission>
             </SolarSPELLKebabMenu>
@@ -109,5 +106,4 @@ function KebabMenu({
     );
 }
 
-export type { KebabMenuActionProps };
 export default KebabMenu;

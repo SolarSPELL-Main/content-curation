@@ -1,30 +1,25 @@
 import React from 'react';
+
 import { format } from 'date-fns';
 
 import {
     ContentSearch,
     ContentMetadataDisplay,
 } from 'solarspell-react-lib';
-
+import * as Actions from '../../state/content';
+import { useCCDispatch, useCCSelector } from '../../hooks';
 import { Status } from '../../enums';
 import { Metadata, MetadataType, Query } from 'js/types';
 
-type SearchBarProps = {
-    metadata: Record<number,Metadata[]>
-    metadataTypes: MetadataType[]
-    onQueryChange: (vals: Query) => void
-}
-
 /**
  * Boilerplate implementation of search bar for content.
- * @param props Callback for query changes.
  * @returns A search bar for content.
  */
-function SearchBar({
-    metadata,
-    metadataTypes,
-    onQueryChange,
-}: SearchBarProps): React.ReactElement {
+function SearchBar(): React.ReactElement {
+    const dispatch = useCCDispatch();
+    const metadata = useCCSelector(state => state.metadata.metadata);
+    const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
+
     return (
         <ContentSearch
             fields={[
@@ -144,7 +139,14 @@ function SearchBar({
                     }),
                   },
             ]}
-            onQueryChange={onQueryChange}
+            onQueryChange={query => {
+                // Reset page back to start to avoid out-of-range errors
+                dispatch(Actions.update_pagination({
+                    page: 0,
+                }));
+                
+                dispatch(Actions.update_filters(query as Query));
+            }}
         />
     );
 }

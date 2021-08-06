@@ -1,5 +1,5 @@
-//Importing from outside the project
 import React from 'react';
+
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -7,15 +7,16 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { KeyboardDatePicker } from '@material-ui/pickers';
+
 import { format, parseISO } from 'date-fns';
 
-//Importing from other files in the project
 import {
     ContentModal,
     ContentMetadataDisplay,
     FormFieldDescriptor,
 } from 'solarspell-react-lib';
-import { useCCSelector } from '../../hooks';
+import * as MetadataActions from '../../state/metadata';
+import { useCCDispatch, useCCSelector } from '../../hooks';
 import { Status } from '../../enums';
 import { Metadata, MetadataType, Content } from 'js/types';
 import APP_URLS from "../../urls"
@@ -30,30 +31,23 @@ type TypeProps = {
 }
 
 type ContentFormProps = {
-    metadata: Record<number, Metadata[]>
-    metadataTypes: MetadataType[]
     onSubmit: (content?: Partial<Content>) => void
-    onCreate: (
-        metadataType: MetadataType,
-        newTags: Metadata[],
-    ) => Promise<Metadata[]>
     open: boolean
 } & TypeProps
 
 /**
- * Form for editing/adding content.
+ * Dialog form for editing/adding content.
+ * Also allows creation of metadata tags using its taggers.
  * @params props The context / callbacks of the component.
  * @returns A form for adding/editing content.
  */
 function ContentForm({
-    metadata,
-    metadataTypes,
     onSubmit,
-    onCreate,
     open,
     content,
     type,
 }: ContentFormProps): React.ReactElement {
+    const dispatch = useCCDispatch();
     // Maps newly_added array to Record of type ids -> metadata arrays
     const newMetadata = useCCSelector(
         state => state.metadata.newly_added
@@ -64,6 +58,8 @@ function ContentForm({
                 accum[val.metadataType.id].concat(val) : [val]
         }), {} as Record<number, Metadata[]>,
     );
+    const metadata = useCCSelector(state => state.metadata.metadata);
+    const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
     const permissions = useCCSelector(state => state.global.user.permissions);
     const canReview = hasPermission(permissions, 'special', 'review');
 
@@ -306,7 +302,7 @@ function ContentForm({
             field: 'copyright',
             initialValue: '',
         },
-        (canReview ? {
+        {
             component: (props) => (
                 <>
                     <Typography>Copyright Approved</Typography>
@@ -327,10 +323,7 @@ function ContentForm({
             field: 'copyrightApproved',
             initialValue: false,
             mb: 0,
-        } : {
-            field: 'copyrightApproved',
-            initialValue: false,
-        }),
+        },
         {
             component: TextField,
             propFactory: (state, _r, setter) => {
@@ -369,16 +362,22 @@ function ContentForm({
                         creatable: true,
                         onCreate: (
                             metadataType: MetadataType,
-                            newTags: Metadata[],
+                            newTags_: Metadata[],
                         ) => {
-                            return onCreate(
-                                metadataType,
-                                // Gets rid of 'Add ""' formatting
-                                newTags.map(tag => ({
-                                    ...tag,
-                                    name: tag.name.substring(5, tag.name.length - 1),
-                                }))
-                            );
+                            // Gets rid of 'Add ""' formatting
+                            const newTags = newTags_.map(tag => ({
+                                ...tag,
+                                name: tag.name.substring(5, tag.name.length - 1),
+                            }));
+
+                            newTags.forEach(tag => dispatch(
+                                MetadataActions.add_metadata({
+                                    name: tag.name,
+                                    type_id: metadataType.id,
+                                })
+                            ));
+                
+                            return (async () => [])();
                         },
                     },
                 };
@@ -449,13 +448,22 @@ function ContentForm({
                         onChange: (date: Date, val?: string) => {
                             setter(
                                 (oldState: Date) => {
-                                    return val ?
-                                        date && !isNaN(date.getTime()) ?
-                                            format(date, 'yyyy-MM-dd')
-                                            :
-                                            oldState
-                                        :
-                                        null;
+                                    // If no user input, no date should be
+                                    // recorded, hence return null
+                                    if (!val) {
+                                        return null;
+                                    }
+
+                                    // Checks if date parsed from user input
+                                    // is valid
+                                    const isValidDate = date
+                                        && !isNaN(date.getTime());
+                                    
+                                    if (isValidDate) {
+                                        return format(date, 'yyyy-MM-dd');
+                                    } else {
+                                        return oldState;
+                                    }
                                 }
                             );
 
@@ -466,8 +474,6 @@ function ContentForm({
                             :
                             Date.now(),
                         inputValue: state['rawReviewedDate'] ?? '',
-                        minDate: null,
-                        maxDate: null,
                     },
                 };
             },

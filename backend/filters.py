@@ -1,11 +1,12 @@
+from .models import Content, Metadata
+from .enums import STATUS
+
 from django_filters import rest_framework as filters
 from django_filters import widgets
 from django_filters.widgets import RangeWidget
-from .models import Content, Metadata
 from django import forms
 from django.http import QueryDict
 from django_filters.widgets import BooleanWidget
-from .enums import STATUS
 from django.contrib.auth import get_user_model
 
 

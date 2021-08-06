@@ -3,3 +3,9 @@
     --ocean-blue: #00a3e0;
     --bright-blue: #0676d8;
 }
+
+#container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}

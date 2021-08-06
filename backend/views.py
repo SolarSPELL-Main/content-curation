@@ -1,26 +1,21 @@
-'''Importing from outside the project'''
 from django.db.utils import IntegrityError, Error
 from django.shortcuts import render
-from django.http.response import JsonResponse, HttpResponse
+from django.http.response import JsonResponse, HttpResponse, FileResponse
+from django.middleware.csrf import get_token
+from django.views.generic import TemplateView
+from django.contrib.auth.models import Group
+from django_filters import rest_framework as filters
+from django.core.paginator import QuerySetPaginator
+from django.conf import settings
+
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view, renderer_classes, action
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-from django.middleware.csrf import get_token
-from django.views.generic import TemplateView
-from allauth.socialaccount.models import SocialToken
-from django.contrib.auth.models import Group
+from rest_framework import permissions
 from rest_framework.permissions import DjangoModelPermissions
-from django_filters import rest_framework as filters
 
-from django.core.paginator import QuerySetPaginator
-
-'''Importing from other files in the project'''
-from backend.models import MetadataType, Metadata, Content
-from backend.serializers import MetadataTypeSerializer, MetadataSerializer, \
-    ContentSerializer
-from backend.standardize_format import build_response
-from .filters import ContentFilter
+from allauth.socialaccount.models import SocialToken
 import datetime
 import csv
 import datetime
@@ -28,30 +23,36 @@ import zipfile
 import io
 import os
 from os.path import basename
+import tempfile
+
+from backend.models import MetadataType, Metadata, Content
+from backend.serializers import MetadataTypeSerializer, MetadataSerializer, \
+    ContentSerializer, ProfileSerializer
+from backend.standardize_format import build_response
+from .filters import ContentFilter
 
 
 class StandardDataView:
-    # permission_classes = (IsAdminUser,)
-    print("StandardDataView")
-
     page_size_query_param = "page_size"
 
     def create(self, request, *args, **kwargs):
         print("create Standard View")
         try:
             serializer = self.get_serializer(data=request.data)
-            print("request.data ", request.data)
-            # print("serializer valid ",serializer.is_valid)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)
-            print(headers)
-            return Response(serializer.data, status=status.HTTP_201_CREATED,
-                            headers=headers)
-        except IntegrityError as e:
-            return build_response(status=status.HTTP_400_BAD_REQUEST,
-                                  success=False,
-                                  error="Already Exists in Database")
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED,
+                headers=headers
+            )
+        except IntegrityError:
+            return build_response(
+                status=status.HTTP_400_BAD_REQUEST,
+                success=False,
+                error="Already Exists in Database"
+            )
 
     def retrieve(self, request, *args, **kwargs):
         print("retreieve")
@@ -60,7 +61,6 @@ class StandardDataView:
         return build_response(serializer.data)
 
     def list(self, request, *args, **kwargs):
-        print("list")
         queryset = self.filter_queryset(self.get_queryset())
         # print("list ",queryset)
         # page = self.paginate_queryset(queryset)
@@ -73,8 +73,10 @@ class StandardDataView:
         page = request.GET.get('page')
 
         if page != None:
-            paginator = QuerySetPaginator(queryset,
-                                          per_page=request.GET.get('page_size'))
+            paginator = QuerySetPaginator(
+                queryset,
+                per_page=request.GET.get('page_size')
+            )
             serializer = self.get_serializer(paginator.page(page), many=True)
             return build_response({
                 'total': queryset.count(),
@@ -92,7 +94,6 @@ class MetadataViewSet(StandardDataView, viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions]
     queryset = Metadata.objects.all()
     serializer_class = MetadataSerializer
-    print("Metadataviewset  query ", queryset.query)
 
 
 class MetadataTypeViewSet(StandardDataView, viewsets.ModelViewSet):
@@ -141,13 +142,16 @@ def get_user(request, *args, **kwargs):
             ).token
         except SocialToken.DoesNotExist:
             pass
+        
+        serializer = ProfileSerializer(request.user.profile)
 
         return build_response({
             "token_key": token,
             "username": request.user.username,
             "email": request.user.email,
             "groups": [group.name for group in request.user.groups.all()],
-            "user_id": request.user.id
+            "user_id": request.user.id,
+            "profile": serializer.data,
         })
     else:
         return build_response({
@@ -156,15 +160,25 @@ def get_user(request, *args, **kwargs):
             "email": "",
             "groups": "",
             "user_id": "",
+            "profile": None,
         })
 
 
 class Welcome(TemplateView):
     template_name = 'welcome.html'
 
+# Permission object that verifies that a user modifying content
+# either owns that content or is a Library Specialist
+class ContentOwnerPermissions(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj: Content):
+        if request.method == "GET":
+            return True
+        else:
+            return request.user == obj.created_by or \
+            request.user.groups.filter(name="Library Specialist").exists()
 
 class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissions]
+    permission_classes = [DjangoModelPermissions, ContentOwnerPermissions]
     queryset = Content.objects.all()
     serializer_class = ContentSerializer
     filter_backends = (filters.DjangoFilterBackend,)
@@ -176,13 +190,30 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
         print(kwargs.keys())
         request.data["created_by"] = request.user.id
         return super().create(request, *args, **kwargs)
-
-    @api_view(['PATCH'])
-    def patch(self, request, pk=None):
-        print("Content View Set Patch")
-        instance = self.get_object(pk)
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
         if not instance:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            file_path = os.path.join(settings.MEDIA_ROOT, instance.file_name)
+            if os.path.exists(file_path):
+                os.remove(file_path)
+        return super().destroy(request, *args, **kwargs)
+
+    def partial_update(self, request, pk=None):
+        print("Content View Set Patch")
+        instance = self.get_object()
+        if not instance:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # New file has been uploaded for content
+        # Removes old one
+        if 'content_file' in request.data:
+            file_path = os.path.join(settings.MEDIA_ROOT, instance.file_name)
+            if os.path.exists(file_path):
+                os.remove(file_path)
+        
         serializer = self.get_serializer(instance,
                                          data=request.data,
                                          many=isinstance(request.data, list),
@@ -195,6 +226,8 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
         print(headers)
         return Response(serializer.data, status=status.HTTP_200_OK,
                         headers=headers)
+
+
 
 # Search Content Queryset
 def search(request):
@@ -219,82 +252,97 @@ def check_duplicate(request):
 
 
 # Export content as CSV file
+@api_view(('POST',))
+@renderer_classes((JSONRenderer,))
 def zipdownloadcsv(request):
-    print("zipdownloadcssv")
+    #Parse string "[a,b,c]" into array [a, b, c]
+    content_ids = [
+        int(s) for s in request.POST.get("content", None)[1:-1].split(",")
+    ]
 
-    print(request.GET.get("id", None))
+    #SpooledTemporaryFile represents a temp file in memory that only uses disk
+    #if it runs out of ram, kind of like swap space
+    with tempfile.SpooledTemporaryFile() as temp_zip:
+        #path to look for content
+        zip_subdir = settings.MEDIA_ROOT
+        filename = 'content-curation_webapp_Content-{}.zip'.format(
+            datetime.datetime.now().strftime("%m-%d-%Y")
+        )
+        csvfilename = 'content-curation_webapp_Content-{}.csv'.format(
+            datetime.datetime.now().strftime("%m-%d-%Y")
+        )
+        metadataname = ""
+        field_names = [
+            'file_name', 'title', 'description', 'metadata_info', 'active',
+            'copyright_notes', 'rights_statement', 'additional_notes',
+            'published_date', 'created_by', 'created_on', 'reviewed_by',
+            'reviewed_on', 'copyright_approved', 'copyright_by',
+            'published_year', 'original_source', 'copyright_site', 'status',
+            'filesize'
+        ]
 
-    content_ids = request.GET.get("id", None)
+        string_buffer = io.StringIO()
+        writer = csv.DictWriter(string_buffer, fieldnames=field_names)
+        writer.writeheader()
 
-    zip_subdir = "media/contents/media/contents/"
-    filename = 'content-curation_webapp_Content-{}.zip'.format(
-        datetime.datetime.now().strftime("%m-%d-%Y"))
-    csvfilename = 'content-curation_webapp_Content-{}.csv'.format(
-        datetime.datetime.now().strftime("%m-%d-%Y"))
-    response = HttpResponse(content_type='application/zip')
-    response['Content-Disposition'] = 'attachment; filename={}'. \
-        format(filename)
-    metadataname = ""
-    field_names = ['file_name', 'title', 'description', 'metadata_info',
-                   'active', 'copyright_notes',
-                   'rights_statement',
-                   'additional_notes', 'published_date', 'created_by',
-                   'created_on',
-                   'reviewed_by', 'reviewed_on', 'reviewed',
-                   'copyright_approved',
-                   'copyright_by', 'published_year',
-                   'original_source', 'copyright_site', 'status',
-                   'filesize']
+        #Iterate through content objects, add CSV data to the CSV buffer and
+        #the resepective files to the zip file
+        content = Content.objects.filter(id__in=content_ids)
+        with zipfile.ZipFile(
+            temp_zip, 'w', zipfile.ZIP_DEFLATED, allowZip64=True
+        ) as zip_file:
+            for con in content:
+                for obj in con.metadata_info():
+                    metadataname += obj["name"] + " | " + metadataname
+                writer.writerow({
+                    'file_name': con.file_name,
+                    'title': con.title,
+                    'description': con.description,
+                    'active': con.active,
+                    'copyright_notes': con.copyright_notes,
+                    'rights_statement': con.rights_statement,
+                    'additional_notes': con.additional_notes,
+                    'published_date': con.published_date,
+                    'created_by': con.created_by,
+                    'created_on': con.created_on,
+                    'reviewed_by': con.reviewed_by,
+                    'reviewed_on': con.reviewed_on,
+                    'copyright_approved': con.copyright_approved,
+                    'copyright_by': con.copyright_by,
+                    'published_year': con.published_year(),
+                    'original_source': con.original_source,
+                    'copyright_site': con.copyright_site,
+                    'status': con.status,
+                    'filesize': con.filesize
+                })
+                
+                try:
+                    for folderName, subfolders, filenames in os.walk(
+                        zip_subdir):
+                        for filename in filenames:
+                            if filename == con.file_name:
+                                filePath = os.path.join(folderName, filename)
+                                zip_file.write(filePath, basename(filePath))
 
-    string_buffer = io.StringIO()
-    writer = csv.DictWriter(string_buffer, fieldnames=field_names)
-    writer.writeheader()
-
-    content = Content.objects.filter(id=content_ids)
-    for con in content:
-        for obj in con.metadata_info():
-            metadataname += obj["name"] + " | " + metadataname
-        writer.writerow({'file_name': con.file_name,
-                         'title': con.title,
-                         'description': con.description,
-                         'metadata_info': metadataname,
-                         'active': con.active,
-                         'copyright_notes': con.copyright_notes,
-                         'rights_statement': con.rights_statement,
-                         'additional_notes': con.additional_notes,
-                         'published_date': con.published_date,
-                         'created_by': con.created_by,
-                         'created_on': con.created_on,
-                         'reviewed_by': con.reviewed_by,
-                         'reviewed_on': con.reviewed_on,
-                         'reviewed': con.reviewed,
-                         'copyright_approved': con.copyright_approved,
-                         'copyright_by': con.copyright_by,
-                         'published_year': con.published_year(),
-                         'original_source': con.original_source,
-                         'copyright_site': con.copyright_site,
-                         'status': con.status,
-                         'filesize': con.filesize
-                         })
-        try:
-            with zipfile.ZipFile(response, 'w', zipfile.ZIP_DEFLATED,
-                             allowZip64=True) as zip_file:
-                zip_file.writestr(csvfilename, string_buffer.getvalue())
-                for folderName, subfolders, filenames in os.walk(
-                    zip_subdir):
-                    for filename in filenames:
-                        if filename == con.file_name:
-                            filePath = os.path.join(folderName, filename)
-                            zip_file.write(filePath, basename(filePath))
-
-        except zipfile.BadZipfile:
-            return build_response(
-                status=status.HTTP_400_BAD_REQUEST,
-                error="Bad Zip File"
-                )
-        except zipfile.LargeZipFile:
-            return build_response(
-                status=status.HTTP_400_BAD_REQUEST,
-                error="Large Zip File"
-                )
-    return response
+                except zipfile.BadZipfile:
+                    return build_response(
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        error="Bad Zip File"
+                    )
+                except zipfile.LargeZipFile:
+                    return build_response(
+                        status=status.HTTP_400_BAD_REQUEST,
+                        error="Large Zip File"
+                    )
+            #Write the csv buffer to the zip file
+            zip_file.writestr(csvfilename, string_buffer.getvalue())
+        #Needed to keep the file open
+        temp_zip.seek(0)
+        return HttpResponse(
+            temp_zip.read(),
+            content_type="application/x-zip-compressed"
+        )
+    return build_response(
+        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        error="Could not create temp file"
+    )

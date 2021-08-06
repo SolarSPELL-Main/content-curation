@@ -1,4 +1,5 @@
 import React from "react"
+
 import Button from "@material-ui/core/Button"
 import Typography from "@material-ui/core/Typography"
 import Grid from "@material-ui/core/Grid"
@@ -23,6 +24,13 @@ export default () => {
         [dispatch],
     );
 
+    const adminButton = hasPermission(user.permissions, 'special', 'admin') ?
+        <Button href="/admin/" style={{marginRight: "1em"}}>
+            Admin Site
+        </Button>
+        :
+        <></>;
+
     return (
         <Box pt={'4em'} p={2}>
             <Grid container spacing={2}>
@@ -41,6 +49,8 @@ export default () => {
                             key={idx}
                             label={group}
                         />)}
+                        <Typography variant="subtitle2">Content Created</Typography>
+                        <Typography>{user.profile?.num_content ?? 0}</Typography>
                         <div style={{marginTop: "2em"}}/>
                         <Button
                             style={{marginRight: "1em"}}
@@ -54,16 +64,15 @@ export default () => {
                         >
                             REPORT A BUG
                         </Button>
-                        {hasPermission(user.permissions, 'special', 'admin') ?
-                            <Button href="/admin/" style={{marginRight: "1em"}}>
-                                Admin Site
-                            </Button> : <></>
-                        }
+                        {adminButton}
                     </> : <>
                         <Typography variant="h2">
                             You are logged out
                         </Typography>
-                        <Button style={{marginTop: "2em"}} href="/accounts/google/login/">
+                        <Button
+                            style={{marginTop: "2em"}}
+                            href={APP_URLS.LOGIN_GOOGLE}
+                        >
                             Login
                         </Button>
                     </>}

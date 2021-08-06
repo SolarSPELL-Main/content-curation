@@ -9,22 +9,20 @@ import {
     edit_content,
     update_filters,
 } from '../content';
-
 import {
     show_toast,
 } from '../global';
-
 import { fromWrapper } from './util';
 import APP_URLS from '../../urls';
 import { api, contentToFormData } from '../../utils';
 import { Status } from '../../enums';
-
 import type { Content, Metadata } from '../../types';
 import type { MyEpic } from './types';
 
 const fetchContentEpic: MyEpic = (action$, state$) =>
     action$.pipe(
         filter(fetch_content.match),
+        filter(() => state$.value.global.user.user_id !== 0),
         mergeMap(_ =>
             fromWrapper(from(api.get(
                 APP_URLS.CONTENT_LIST(
@@ -39,9 +37,7 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                 ),
             )).pipe(
                 map(({ data }) => 
-                    {
-                        console.log(data);
-                        return update_content(
+                    update_content(
                         // Maps API response to Content array
                         {
                             content: data.data.items.map(
@@ -78,14 +74,14 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                                     metadata: val.metadata_info.reduce(
                                         (
                                             accum: Record<number,Metadata[]>,
-                                            val: any,
+                                            m: any,
                                         ) => {
-                                            const key: number = val.type;
+                                            const key: number = m.type;
                                             const metadata: Metadata = {
-                                                id: val.id,
-                                                name: val.name,
+                                                id: m.id,
+                                                name: m.name,
                                                 metadataType: {
-                                                    name: val.type_name,
+                                                    name: m.type_name,
                                                     id: key,
                                                 },
                                             };
@@ -102,7 +98,7 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                             ),
                             total: data.data.total,
                         },
-                    )},
+                    ),
                 ),
             )),
         ),
@@ -187,14 +183,14 @@ const editContentEpic: MyEpic = action$ =>
                         mergeMap(_ => {
                             // Second request
                             // Explicitly empty metadata in JSON
-                            const req = api.patch(
+                            const reqEmpty = api.patch(
                                 APP_URLS.CONTENT(content.id),
                                 {
                                     metadata: [],
                                 }
                             );
 
-                            return from(req).pipe(
+                            return from(reqEmpty).pipe(
                                 map(_ => fetch_content()),
                             );
                         }),
