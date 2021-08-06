@@ -20,7 +20,7 @@ from django.conf import settings
 '''Importing from other files in the project'''
 from backend.models import MetadataType, Metadata, Content
 from backend.serializers import MetadataTypeSerializer, MetadataSerializer, \
-    ContentSerializer
+    ContentSerializer, ProfileSerializer
 from backend.standardize_format import build_response
 from .filters import ContentFilter
 import datetime
@@ -143,13 +143,16 @@ def get_user(request, *args, **kwargs):
             ).token
         except SocialToken.DoesNotExist:
             pass
+        
+        serializer = ProfileSerializer(request.user.profile)
 
         return build_response({
             "token_key": token,
             "username": request.user.username,
             "email": request.user.email,
             "groups": [group.name for group in request.user.groups.all()],
-            "user_id": request.user.id
+            "user_id": request.user.id,
+            "profile": serializer.data,
         })
     else:
         return build_response({
@@ -158,6 +161,7 @@ def get_user(request, *args, **kwargs):
             "email": "",
             "groups": "",
             "user_id": "",
+            "profile": None,
         })
 
 
