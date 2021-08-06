@@ -10,10 +10,9 @@ import {
 } from '../global';
 import { fromWrapper } from './util';
 import APP_URLS from '../../urls';
-import { api } from '../../utils';
 import type { MyEpic } from './types';
 
-const fetchUserEpic: MyEpic = action$ =>
+const fetchUserEpic: MyEpic = (action$, _, { api }) =>
     action$.pipe(
         filter(fetch_user.match),
         mergeMap(_ =>
@@ -23,7 +22,7 @@ const fetchUserEpic: MyEpic = action$ =>
         ),
     )
 
-const logoutEpic: MyEpic = action$ =>
+const logoutEpic: MyEpic = (action$, _, { api }) =>
     action$.pipe(
         filter(logout.match),
         mergeMap(_ =>
