@@ -1,8 +1,7 @@
-//Importing from outside the project
 import React from 'react';
+
 import { Edit, Delete, Visibility } from '@material-ui/icons';
 
-//Importing from other files in the project
 import {
   ActionPanel as SolarSPELLActionPanel,
   ActionPanelItem,

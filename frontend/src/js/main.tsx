@@ -1,10 +1,10 @@
-//Importing from outside the project
 import React, { useEffect } from "react";
+
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+
 import { useSnackbar } from "notistack"
 
-//Importing from other files in the project
 import Loader from './Loader';
 import { NavBar, PageBody, Footer } from './pages';
 import { fetch_user, close_toast } from "./state/global"

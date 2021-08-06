@@ -8,11 +8,9 @@ import {
     close_toast,
     logout,
 } from '../global';
-
 import { fromWrapper } from './util';
 import APP_URLS from '../../urls';
 import { api } from '../../utils';
-
 import type { MyEpic } from './types';
 
 const fetchUserEpic: MyEpic = action$ =>

@@ -1,7 +1,5 @@
-//Importing from outside the project
 import React from 'react';
 
-//Importing from other files in the project
 import {
     KebabMenu as SolarSPELLKebabMenu,
     KebabMenuItem,

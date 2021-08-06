@@ -1,15 +1,14 @@
-'''Importing from outside the project'''
 import os
 import datetime
+import logging
+from hashlib import sha256
+
 from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-import logging
-from hashlib import sha256
 from django.utils.text import get_valid_filename
 from django.contrib.auth.models import User
 
-'''Importing from other files in the project'''
 from backend.validators import validate_unique_filename, validate_unique_file
 from backend.enums import STATUS
 from content_curation import settings

@@ -1,8 +1,7 @@
-//Importing from outside the project
 import React from 'react';
+
 import Button from '@material-ui/core/Button';
 
-//Importing from other files in the project
 import * as ContentActions from '../../../state/content';
 import * as MetadataActions from '../../../state/metadata';
 import { useCCDispatch } from '../../../hooks';

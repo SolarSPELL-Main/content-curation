@@ -1,10 +1,12 @@
 import React from 'react';
+
 import { GridColDef } from '@material-ui/data-grid';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import HighlightOff from '@material-ui/icons/HighlightOff';
+
 import PrettyBytes from 'pretty-bytes';
 
 import { ContentColumnSelection } from 'solarspell-react-lib';

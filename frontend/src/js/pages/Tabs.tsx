@@ -1,5 +1,5 @@
-//Importing from outside the project
 import React from 'react';
+
 import MUITabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 

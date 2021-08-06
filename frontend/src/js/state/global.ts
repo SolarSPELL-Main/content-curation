@@ -1,7 +1,5 @@
-//Importing from outside the project
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-//Importing from other files in the project
 import { createCRUDPermissions, updateCRUDPermissions } from '../utils';
 import { AuthGroup, Tabs } from '../enums';
 import type { User, Toast } from "js/types"
