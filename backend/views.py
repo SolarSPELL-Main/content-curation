@@ -1,9 +1,9 @@
-from django.db.utils import IntegrityError, Error
+from django.db.utils import IntegrityError
 from django.shortcuts import render
-from django.http.response import JsonResponse, HttpResponse, FileResponse
-from django.middleware.csrf import get_token
+from django.http.response import  HttpResponse
+
 from django.views.generic import TemplateView
-from django.contrib.auth.models import Group
+
 from django_filters import rest_framework as filters
 from django.core.paginator import QuerySetPaginator
 from django.conf import settings
@@ -16,7 +16,7 @@ from rest_framework import permissions
 from rest_framework.permissions import DjangoModelPermissions
 
 from allauth.socialaccount.models import SocialToken
-import datetime
+
 import csv
 import datetime
 import zipfile
@@ -36,7 +36,6 @@ class StandardDataView:
     page_size_query_param = "page_size"
 
     def create(self, request, *args, **kwargs):
-        print("create Standard View")
         try:
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
@@ -55,16 +54,12 @@ class StandardDataView:
             )
 
     def retrieve(self, request, *args, **kwargs):
-        print("retreieve")
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return build_response(serializer.data)
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-        # print("list ",queryset)
-        # page = self.paginate_queryset(queryset)
-        
         sort_model = request.GET.getlist('sort_by')
 
         if sort_model != None:
@@ -142,7 +137,7 @@ def get_user(request, *args, **kwargs):
             ).token
         except SocialToken.DoesNotExist:
             pass
-        
+
         serializer = ProfileSerializer(request.user.profile)
 
         return build_response({
@@ -167,6 +162,7 @@ def get_user(request, *args, **kwargs):
 class Welcome(TemplateView):
     template_name = 'welcome.html'
 
+
 # Permission object that verifies that a user modifying content
 # either owns that content or is a Library Specialist
 class ContentOwnerPermissions(permissions.BasePermission):
@@ -175,7 +171,9 @@ class ContentOwnerPermissions(permissions.BasePermission):
             return True
         else:
             return request.user == obj.created_by or \
-            request.user.groups.filter(name="Library Specialist").exists()
+                   request.user.groups.filter(
+                       name="Library Specialist").exists()
+
 
 class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions, ContentOwnerPermissions]
@@ -185,12 +183,9 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
     filterset_class = ContentFilter
 
     def create(self, request, *args, **kwargs):
-        print("Intercepted", request.user)
-
-        print(kwargs.keys())
         request.data["created_by"] = request.user.id
         return super().create(request, *args, **kwargs)
-    
+
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         if not instance:
@@ -202,7 +197,6 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
     def partial_update(self, request, pk=None):
-        print("Content View Set Patch")
         instance = self.get_object()
         if not instance:
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -213,7 +207,7 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
             file_path = os.path.join(settings.MEDIA_ROOT, instance.file_name)
             if os.path.exists(file_path):
                 os.remove(file_path)
-        
+
         serializer = self.get_serializer(instance,
                                          data=request.data,
                                          many=isinstance(request.data, list),
@@ -223,15 +217,12 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
                             status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
         headers = self.get_success_headers(serializer.data)
-        print(headers)
         return Response(serializer.data, status=status.HTTP_200_OK,
                         headers=headers)
 
 
-
 # Search Content Queryset
 def search(request):
-    print("Search Content Filter")
     content_list = Content.objects.all()
     content_filter = ContentFilter(request.GET, queryset=content_list)
     return render(request, 'content_list.html',
@@ -255,23 +246,20 @@ def check_duplicate(request):
 @api_view(('POST',))
 @renderer_classes((JSONRenderer,))
 def zipdownloadcsv(request):
-    #Parse string "[a,b,c]" into array [a, b, c]
+    # Parse string "[a,b,c]" into array [a, b, c]
     content_ids = [
         int(s) for s in request.POST.get("content", None)[1:-1].split(",")
     ]
 
-    #SpooledTemporaryFile represents a temp file in memory that only uses disk
-    #if it runs out of ram, kind of like swap space
+    # SpooledTemporaryFile represents a temp file in memory that only uses disk
+    # if it runs out of ram, kind of like swap space
     with tempfile.SpooledTemporaryFile() as temp_zip:
-        #path to look for content
+        # path to look for content
         zip_subdir = settings.MEDIA_ROOT
-        filename = 'content-curation_webapp_Content-{}.zip'.format(
-            datetime.datetime.now().strftime("%m-%d-%Y")
-        )
         csvfilename = 'content-curation_webapp_Content-{}.csv'.format(
             datetime.datetime.now().strftime("%m-%d-%Y")
         )
-        metadataname = ""
+
         field_names = [
             'file_name', 'title', 'description', 'metadata_info', 'active',
             'copyright_notes', 'rights_statement', 'additional_notes',
@@ -285,19 +273,19 @@ def zipdownloadcsv(request):
         writer = csv.DictWriter(string_buffer, fieldnames=field_names)
         writer.writeheader()
 
-        #Iterate through content objects, add CSV data to the CSV buffer and
-        #the resepective files to the zip file
+        # Iterate through content objects, add CSV data to the CSV buffer and
+        # the resepective files to the zip file
         content = Content.objects.filter(id__in=content_ids)
         with zipfile.ZipFile(
-            temp_zip, 'w', zipfile.ZIP_DEFLATED, allowZip64=True
+                temp_zip, 'w', zipfile.ZIP_DEFLATED, allowZip64=True
         ) as zip_file:
             for con in content:
-                for obj in con.metadata_info():
-                    metadataname += obj["name"] + " | " + metadataname
                 writer.writerow({
                     'file_name': con.file_name,
                     'title': con.title,
                     'description': con.description,
+                    'metadata_info': " | ".join(
+                        str(obj["name"]) for obj in con.metadata_info()),
                     'active': con.active,
                     'copyright_notes': con.copyright_notes,
                     'rights_statement': con.rights_statement,
@@ -315,10 +303,10 @@ def zipdownloadcsv(request):
                     'status': con.status,
                     'filesize': con.filesize
                 })
-                
+
                 try:
                     for folderName, subfolders, filenames in os.walk(
-                        zip_subdir):
+                            zip_subdir):
                         for filename in filenames:
                             if filename == con.file_name:
                                 filePath = os.path.join(folderName, filename)
@@ -334,9 +322,9 @@ def zipdownloadcsv(request):
                         status=status.HTTP_400_BAD_REQUEST,
                         error="Large Zip File"
                     )
-            #Write the csv buffer to the zip file
+            # Write the csv buffer to the zip file
             zip_file.writestr(csvfilename, string_buffer.getvalue())
-        #Needed to keep the file open
+        # Needed to keep the file open
         temp_zip.seek(0)
         return HttpResponse(
             temp_zip.read(),
