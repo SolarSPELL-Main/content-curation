@@ -22,13 +22,12 @@ import {
 
 import { fromWrapper } from './util';
 import APP_URLS from '../../urls';
-import { api } from '../../utils';
 
 import type { MyEpic } from './types';
 
 //what the preload metadata epic does is take each metadata type stored in the 
 //state and updates the MetadataByType with metadata of that type
-const preloadMetadataEpic: MyEpic = (action$, state$) => action$.pipe(
+const preloadMetadataEpic: MyEpic = (action$, state$, { api }) => action$.pipe(
     filter(preload_all_metadata.match),
     mergeMap(_ =>
         fromWrapper(from(state$.value.metadata.metadata_types).pipe(
@@ -40,7 +39,7 @@ const preloadMetadataEpic: MyEpic = (action$, state$) => action$.pipe(
 )
 
 //Epic to add metadata to the application state
-const addMetadataEpic: MyEpic = action$ =>
+const addMetadataEpic: MyEpic = (action$, _, { api }) =>
     action$.pipe(
         filter(add_metadata.match),
         mergeMap(action =>
@@ -63,7 +62,7 @@ const addMetadataEpic: MyEpic = action$ =>
     )
 
 //Epic to edit metadata of the application state
-const editMetadataEpic: MyEpic = action$ =>
+const editMetadataEpic: MyEpic = (action$, _, { api }) =>
     action$.pipe(
         filter(edit_metadata.match),
         mergeMap(action =>
@@ -81,7 +80,7 @@ const editMetadataEpic: MyEpic = action$ =>
     )
 
 //Epic to delete a metadata from the application state
-const deleteMetadataEpic: MyEpic = action$ =>
+const deleteMetadataEpic: MyEpic = (action$, _, { api }) =>
     action$.pipe(
         filter(delete_metadata.match),
         mergeMap(action =>
@@ -97,7 +96,7 @@ const deleteMetadataEpic: MyEpic = action$ =>
 
 //Fetch metadata stored in the current application state so it can shown on the 
 //screen
-const fetchMetadataEpic: MyEpic = action$ =>
+const fetchMetadataEpic: MyEpic = (action$, _, { api }) =>
     action$.pipe(
         filter(fetch_metadata.match),
         mergeMap(action =>
@@ -110,7 +109,7 @@ const fetchMetadataEpic: MyEpic = action$ =>
     )
 
 //add a metadata to the application state
-const addMetadataTypeEpic: MyEpic = action$ =>
+const addMetadataTypeEpic: MyEpic = (action$, _, { api }) =>
     action$.pipe(
         filter(add_metadatatype.match),
         mergeMap(action =>
@@ -127,7 +126,7 @@ const addMetadataTypeEpic: MyEpic = action$ =>
     )
 
 //Epic to edit a metadata type in the application state
-const editMetadataTypeEpic: MyEpic = action$ =>
+const editMetadataTypeEpic: MyEpic = (action$, _, { api }) =>
     action$.pipe(
         filter(edit_metadatatype.match),
         mergeMap(action =>
@@ -144,7 +143,7 @@ const editMetadataTypeEpic: MyEpic = action$ =>
     )
 
 //Epic to delete a metadata type in the application state
-const deleteMetadataTypeEpic: MyEpic = action$ =>
+const deleteMetadataTypeEpic: MyEpic = (action$, _, { api }) =>
     action$.pipe(
         filter(delete_metadatatype.match),
         mergeMap(action =>
@@ -160,7 +159,7 @@ const deleteMetadataTypeEpic: MyEpic = action$ =>
 
 //Epic to fetch metadata type from the application state so it can be displayed
 //on the screen
-const fetchMetadataTypesEpic: MyEpic = action$ =>
+const fetchMetadataTypesEpic: MyEpic = (action$, _, { api }) =>
     action$.pipe(
         filter(fetch_metadatatype.match),
         mergeMap(_ =>

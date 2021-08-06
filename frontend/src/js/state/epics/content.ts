@@ -1,5 +1,5 @@
 import { from } from 'rxjs'
-import { filter, map, mergeMap, mapTo } from 'rxjs/operators'
+import { filter, map, mergeMap, mapTo, debounceTime } from 'rxjs/operators'
 
 import {
     fetch_content,
@@ -14,17 +14,21 @@ import {
 } from '../global';
 import { fromWrapper } from './util';
 import APP_URLS from '../../urls';
-import { api, contentToFormData } from '../../utils';
+import { contentToFormData } from '../../utils';
 import { Status } from '../../enums';
 import type { Content, Metadata } from '../../types';
 import type { MyEpic } from './types';
 
-const fetchContentEpic: MyEpic = (action$, state$) =>
+const fetchContentEpic: MyEpic = (action$, state$, { api }) =>
     action$.pipe(
         filter(fetch_content.match),
         filter(() => state$.value.global.user.user_id !== 0),
-        mergeMap(_ =>
-            fromWrapper(from(api.get(
+        // Reduces lag from constant search bar requests
+        debounceTime(100),
+        mergeMap(_ => {
+            const timestamp = Date.now();
+
+            return fromWrapper(from(api.get(
                 APP_URLS.CONTENT_LIST(
                     state$.value.content.filters,
                     state$.value.content.pageSize,
@@ -97,14 +101,15 @@ const fetchContentEpic: MyEpic = (action$, state$) =>
                                 }),
                             ),
                             total: data.data.total,
+                            timestamp: timestamp,
                         },
                     ),
                 ),
-            )),
-        ),
+            ));
+        }),
     )
 
-const addContentEpic: MyEpic = action$ =>
+const addContentEpic: MyEpic = (action$, _, { api }) =>
     action$.pipe(
         filter(add_content.match),
         mergeMap(action =>
@@ -123,7 +128,7 @@ const addContentEpic: MyEpic = action$ =>
         ),
     )
 
-const deleteContentEpic: MyEpic = action$ =>
+const deleteContentEpic: MyEpic = (action$, _, { api }) =>
     action$.pipe(
         filter(delete_content.match),
         mergeMap(action => {
@@ -152,7 +157,7 @@ const deleteContentEpic: MyEpic = action$ =>
         ),
     )
 
-const editContentEpic: MyEpic = action$ =>
+const editContentEpic: MyEpic = (action$, _, { api }) =>
     action$.pipe(
         filter(edit_content.match),
         mergeMap(action =>
