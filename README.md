@@ -30,9 +30,11 @@ As well as with `pip`, `python3` may be replaced with `python` depending on your
 
 8. Open a django shell using `python3 manage.py shell`. Enter the following commands. If you aren't running this on localhost, replace 127.0.0.1 with your domain name (ex. example.com)
 
-```>>> from django.contrib.sites.models import Site
+```
+>>> from django.contrib.sites.models import Site
 >>> site = Site.objects.create(domain='127.0.0.1', name='127.0.0.1')
->>> site.save()```
+>>> site.save()
+```
 
 (credit https://stackoverflow.com/questions/16068518/django-site-matching-query-does-not-exist)
 
