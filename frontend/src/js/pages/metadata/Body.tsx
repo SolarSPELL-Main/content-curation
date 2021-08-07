@@ -1,8 +1,7 @@
-//Importing from outside the project
 import React from 'react';
+
 import Box from '@material-ui/core/Box';
 
-//Importing from other files in the project
 import ShowForPermission from '../ShowForPermission';
 import TypeAdder from './TypeAdder';
 import Table from './Table';

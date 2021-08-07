@@ -1,7 +1,9 @@
-//Importing from outside the project
 import React from 'react';
+
 import MUITabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+
+import { BRIGHT_BLUE } from '../theme';
 
 type TabsProps<T> = {
     tabs: React.ComponentProps<typeof Tab>[]
@@ -10,7 +12,7 @@ type TabsProps<T> = {
 }
 
 const defaultIndicatorStyle: React.CSSProperties = {
-    backgroundColor: 'var(--bright-blue)',
+    backgroundColor: BRIGHT_BLUE,
     height: '5px',
     borderRadius: '5px',
 };

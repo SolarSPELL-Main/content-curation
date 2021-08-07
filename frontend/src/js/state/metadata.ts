@@ -1,7 +1,5 @@
-//Importing from outside the project
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-//Importing from other files in the project
 import { Metadata, MetadataType } from "../types"
 
 type MetadataByType = Record<number, Metadata[]>
@@ -34,14 +32,18 @@ export const metadataSlice = createSlice({
         fetch_metadata: (_state, _action: PayloadAction<{
             type_id: number
             string_filter?: number
-        }>) => {},
+        }>) => {
+            // Triggers corresponding epic
+        },
 
         /**
          * Fetches metadata associated with all metadata types in current state
          * @param _state The current state
          * @param _action.payload Unused
          */
-        preload_all_metadata: (_state, _action: PayloadAction) => {},
+        preload_all_metadata: (_state, _action: PayloadAction) => {
+            // Triggers corresponding epic
+        },
 
         /**
          * DELETEs a metadata from the backend
@@ -54,7 +56,9 @@ export const metadataSlice = createSlice({
             id: number
             type_id: number
             name: string
-        }>) => {},
+        }>) => {
+            // Triggers corresponding epic
+        },
 
         /**
          * Updates metadata in current state with new values while partially
@@ -75,7 +79,9 @@ export const metadataSlice = createSlice({
         add_metadata: (_state, _action: PayloadAction<{
             name: string
             type_id: number
-        }>) => {},
+        }>) => {
+            // Triggers corresponding epic
+        },
 
         /**
          * PATCHes metadata to the backend
@@ -87,12 +93,16 @@ export const metadataSlice = createSlice({
             id: number
             name?: string
             new_type_id?: number
-        }>) => {},
+        }>) => {
+            // Triggers corresponding epic
+        },
 
         /**
          * Fetches list of metadata types from the backend
          */
-        fetch_metadatatype: () => {},
+        fetch_metadatatype: () => {
+            // Triggers corresponding epic
+        },
 
         /**
          * DELETEs a metadata type from the backend
@@ -103,7 +113,9 @@ export const metadataSlice = createSlice({
         delete_metadatatype: (_state: any, _action: PayloadAction<{
             type_id: number
             name: string
-        }>) => {},
+        }>) => {
+            // Triggers corresponding epic
+        },
 
         /**
          * Replace all metadata types in current state
@@ -121,7 +133,9 @@ export const metadataSlice = createSlice({
          */
         add_metadatatype: (_state, _action: PayloadAction<{
             name: string,
-        }>) => {},
+        }>) => {
+            // Triggers corresponding epic
+        },
 
         /**
          * Replace value of newly_added in current state
@@ -140,7 +154,9 @@ export const metadataSlice = createSlice({
         edit_metadatatype: (_state, _action: PayloadAction<{
             name: string
             type_id: number
-        }>) => {}
+        }>) => {
+            // Triggers corresponding epic
+        }
     },
 })
 

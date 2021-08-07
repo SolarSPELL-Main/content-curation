@@ -1,4 +1,3 @@
-//Importing from outside the project
 import {
     configureStore,
     getDefaultMiddleware,
@@ -7,18 +6,15 @@ import {
 } from '@reduxjs/toolkit'
 import { createEpicMiddleware } from "redux-observable"
 
-//Importing from other files in the project
 import globalReducer from './global'
 import metadataReducer from './metadata'
-import contentReducer from './content'
-
-import epics from './epics';
-
-// Imported for exclusion from Redux serialization check
-import {
+import contentReducer, {
+    // Imported for exclusion from Redux serialization check
     add_content,
     edit_content,
 } from './content'
+import epics from './epics';
+import { api } from '../utils';
 
 const reducer = combineReducers({
     global: globalReducer,
@@ -26,7 +22,13 @@ const reducer = combineReducers({
     content: contentReducer,
 });
 
-const epicMiddleware = createEpicMiddleware<AnyAction, AnyAction, MyState>();
+const dependencies = {
+    api,
+}
+
+const epicMiddleware = createEpicMiddleware<AnyAction, AnyAction, MyState>({
+    dependencies,
+});
 
 const store = configureStore({
     reducer,
@@ -52,3 +54,4 @@ export default store
 export type RootState = ReturnType<typeof store.getState>
 export type MyState = ReturnType<typeof reducer>
 export type Dispatch = typeof store.dispatch
+export type Dependencies = typeof dependencies

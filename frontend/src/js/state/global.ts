@@ -1,7 +1,5 @@
-//Importing from outside the project
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-//Importing from other files in the project
 import { createCRUDPermissions, updateCRUDPermissions } from '../utils';
 import { AuthGroup, Tabs } from '../enums';
 import type { User, Toast } from "js/types"
@@ -82,7 +80,9 @@ export const globalSlice = createSlice({
         /**
          * Fetches the user's information from the backend
          */
-        fetch_user: () => {},
+        fetch_user: () => {
+            // Triggers corresponding epic
+        },
 
         /**
          * Updates the value of user in current state
@@ -148,7 +148,9 @@ export const globalSlice = createSlice({
         /**
          * Logs user out on backend
          */
-        logout: () => {},
+        logout: () => {
+            // Triggers corresponding epic
+        },
 
         /**
          * Updates toasts in current state and subsequently shows the toast

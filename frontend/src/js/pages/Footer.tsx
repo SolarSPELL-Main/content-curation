@@ -1,11 +1,14 @@
 import React from "react"
 
 import {Box, Link} from "@material-ui/core"
-
 import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 
+/**
+ * The footer with social media icons at the bottom of the page
+ * @returns The static footer with all icons
+ */
 export default () => <Box
     marginLeft="20%"
     marginRight="20%"
@@ -24,7 +27,7 @@ export default () => <Box
         ["https://solarspell.org/newsletter", "Newsletter"],
         ["mailto:team@solarspell.org", "team@solarspell.org"],
     ] as [string, string][]).map(([url, text]) =>
-        <Box p={1}>
+        <Box p={1} key={url}>
             <Link
                 href={url}
                 target="_blank"

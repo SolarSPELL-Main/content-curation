@@ -5,7 +5,6 @@ import {
     logoutEpic,
     showToastEpic,
 } from './global';
-
 import {
     preloadMetadataEpic,
     addMetadataEpic,
@@ -18,7 +17,6 @@ import {
     fetchMetadataTypesEpic,
     updateMetadataTypeEpic,
 } from './metadata';
-
 import {
     fetchContentEpic,
     addContentEpic,
@@ -26,7 +24,6 @@ import {
     editContentEpic,
     updateFiltersEpic,
 } from './content';
-
 import * as Utils from './util';
 
 const epics = combineEpics(...[

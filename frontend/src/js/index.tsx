@@ -1,15 +1,15 @@
-//Importing from outside the project
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom';
+
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
-import { SnackbarProvider } from 'notistack'
 import { MuiThemeProvider } from "@material-ui/core/styles"
 
-//Importing from other files in the project
+import DateFnsUtils from '@date-io/date-fns';
+import { SnackbarProvider } from 'notistack'
+
 import store from './state/store'
 import Main from './main'
 import './styles.css';

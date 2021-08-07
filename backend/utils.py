@@ -1,4 +1,3 @@
-'''Importing from outside the project'''
 import hashlib
 
 

@@ -1,10 +1,9 @@
-//Importing from outside the project
 import React from 'react';
+
 import type {
   GridColDef,
 } from '@material-ui/data-grid';
 
-//Importing from other files in the project
 import { ContentTable } from 'solarspell-react-lib';
 import * as ContentActions from '../../state/content';
 import { useCCDispatch, useCCSelector } from '../../hooks';
@@ -79,13 +78,13 @@ function Table({
         // to only currently displayed content
         selectionModel: selected.filter(id => ids.includes(id)),
         onSelectionModelChange: params => {
-          const ids = params.selectionModel as number[];
+          const selectionIDs = params.selectionModel as number[];
 
           // This callback seems to fire infinitely without an
           // equality check of some kind. Likely since array
           // equality is almost never true between renders.
-          const isNew = ids.some(id => !selectionModel.includes(id))
-              || ids.length !== selectionModel.length;
+          const isNew = selectionIDs.some(id => !selectionModel.includes(id))
+              || selectionIDs.length !== selectionModel.length;
 
           if (isNew) {
               dispatch(ContentActions.update_selected(

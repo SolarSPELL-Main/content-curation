@@ -1,9 +1,8 @@
-//Importing from outside the project
 import React, {useState} from 'react';
+
 import Box from '@material-ui/core/Box';
 import { GridColDef } from '@material-ui/data-grid';
 
-//Importing from other files in the project
 import Toolbar from './Toolbar';
 import SearchBar from './SearchBar';
 import SelectedToolbar from './SelectedToolbar';

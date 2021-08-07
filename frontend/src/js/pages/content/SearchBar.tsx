@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { format } from 'date-fns';
 
 import {
@@ -68,7 +69,8 @@ function SearchBar(): React.ReactElement {
                     width: 2,
                     min: 0,
                     // Convert megabytes to bytes
-                    formatter: val => val * 1024 * 1024,
+                    formatter: val => Math.round(val * 1024 * 1024),
+                    parseAs: 'float',
                 },
                 {
                     field: 'reviewed_on',

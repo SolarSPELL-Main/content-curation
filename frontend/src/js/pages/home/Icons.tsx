@@ -1,8 +1,8 @@
-//Importing from outside the project
 import React from 'react';
-import Grid, { GridSize } from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
 import { Link } from 'react-router-dom';
+
+import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
 
 type IconsProps = {
     icons: Record<string, any>

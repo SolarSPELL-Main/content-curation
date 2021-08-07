@@ -1,10 +1,9 @@
-//Importing from outside the project
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+
 import type {
     GridSortModel,
 } from '@material-ui/data-grid';
 
-//Importing from other files in the project
 import { Content, Query } from "../types"
 
 export const contentSlice = createSlice({
@@ -14,6 +13,10 @@ export const contentSlice = createSlice({
          * All Content objects currently displayed in the Content tab
          */
         content: [] as Content[],
+        /**
+         * Timestamp for when last request to update Content was made
+         */
+        timestamp: -1,
         /**
          * All selected Content IDs. Stored in Redux state to allow selection
          * to persist between pages
@@ -54,19 +57,28 @@ export const contentSlice = createSlice({
         /**
          * Triggers Epic to fetch content from backend
          */
-        fetch_content: () => {},
+        fetch_content: () => {
+            // Triggers corresponding epic
+        },
 
         /**
          * Updates content in current state
          * @param state The current state
-         * @param action.payload The new content to display and number of items
+         * @param action.payload The new content to display, number of items,
+         *                       and timestamp for when the request was made.
          */
         update_content: (state, action: PayloadAction<{
             content: Content[]
             total: number
+            timestamp: number
         }>) => {
-            state.content = action.payload.content;
-            state.total = action.payload.total;
+            // If request was made earlier than when the current content's
+            // request was made, then ignore
+            if (action.payload.timestamp > state.timestamp) {
+                state.content = action.payload.content;
+                state.total = action.payload.total;
+                state.timestamp = action.payload.timestamp;
+            }
         },
 
         /**
@@ -129,7 +141,9 @@ export const contentSlice = createSlice({
          * @param _state The current state
          * @param _action.payload The content to post
          */
-        add_content: (_state, _action: PayloadAction<Content>) => {},
+        add_content: (_state, _action: PayloadAction<Content>) => {
+            // Triggers corresponding epic
+        },
 
         /**
          * DELETEs content from backend
@@ -152,7 +166,9 @@ export const contentSlice = createSlice({
          * @param _state The current state
          * @param _action.payload The new piece of content (with valid ID)
          */
-        edit_content: (_state, _action: PayloadAction<Content>) => {},
+        edit_content: (_state, _action: PayloadAction<Content>) => {
+            // Triggers corresponding epic
+        },
 
         /**
          * Updates the filter in current state

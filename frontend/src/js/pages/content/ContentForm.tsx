@@ -1,5 +1,5 @@
-//Importing from outside the project
 import React from 'react';
+
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -7,9 +7,9 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { KeyboardDatePicker } from '@material-ui/pickers';
+
 import { format, parseISO } from 'date-fns';
 
-//Importing from other files in the project
 import {
     ContentModal,
     ContentMetadataDisplay,
@@ -448,13 +448,22 @@ function ContentForm({
                         onChange: (date: Date, val?: string) => {
                             setter(
                                 (oldState: Date) => {
-                                    return val ?
-                                        date && !isNaN(date.getTime()) ?
-                                            format(date, 'yyyy-MM-dd')
-                                            :
-                                            oldState
-                                        :
-                                        null;
+                                    // If no user input, no date should be
+                                    // recorded, hence return null
+                                    if (!val) {
+                                        return null;
+                                    }
+
+                                    // Checks if date parsed from user input
+                                    // is valid
+                                    const isValidDate = date
+                                        && !isNaN(date.getTime());
+                                    
+                                    if (isValidDate) {
+                                        return format(date, 'yyyy-MM-dd');
+                                    } else {
+                                        return oldState;
+                                    }
                                 }
                             );
 
