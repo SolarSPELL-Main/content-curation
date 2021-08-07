@@ -1,4 +1,4 @@
-import axios from 'axios';
+  import axios from 'axios';
 import Cookies from 'js-cookie';
 import { isPlainObject, isString } from 'lodash';
 import { Status } from './enums';
