@@ -12,7 +12,7 @@ SolarSPELL Content Curation service (CC). The Content Curation service provides 
 
 Install the latest versions of Git, npm, Python, and Postgresql.
 
-1. Using git, clone the project into a new directory `https://github.com/SolarSPELL-Main/content-curation.git`.
+1. Using git, clone the project into a new directory `git clone https://github.com/SolarSPELL-Main/content-curation.git`.
 
 2. In the frontend directory, run `npm install`. This installs all the packages npm needs to build the frontend. Then, build the frontend using `npm run-script build`.
 
