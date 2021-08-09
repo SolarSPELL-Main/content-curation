@@ -54,6 +54,7 @@ function Table(): React.ReactElement {
                     onSortModelChange: params => 
                         setSortModel(params.sortModel),
                 },
+                mountContents: false,
             }}
         />
     );

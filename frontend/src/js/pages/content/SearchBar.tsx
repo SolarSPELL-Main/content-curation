@@ -148,6 +148,7 @@ function SearchBar(): React.ReactElement {
                 
                 dispatch(Actions.update_filters(query as Query));
             }}
+            mountContents={false}
         />
     );
 }
