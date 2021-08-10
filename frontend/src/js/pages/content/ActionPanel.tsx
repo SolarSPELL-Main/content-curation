@@ -8,13 +8,15 @@ import {
 } from 'solarspell-react-lib';
 import * as ContentActions from '../../state/content';
 import { useCCDispatch } from '../../hooks';
-import ShowForPermission from '../ShowForPermission';
 import { Content } from 'js/types';
 
 type ActionPanelProps = {
   content: Content
   onEdit: (content: Content) => void
   onView: (content: Content) => void
+  showEdit?: boolean
+  showDelete?: boolean
+  showView?: boolean
 }
 
 /**
@@ -28,43 +30,40 @@ function ActionPanel({
   content,
   onEdit,
   onView,
+  showEdit=true,
+  showDelete=true,
+  showView=true,
 }: ActionPanelProps): React.ReactElement {
   const dispatch = useCCDispatch();
 
   return (
     <SolarSPELLActionPanel>
-      <ShowForPermission slice={'content'} permission={'update'}>
-        <ActionPanelItem
-          type={'button'}
-          icon={Edit}
-          onAction={() => onEdit(content)}
-          tooltip={'Edit Content'}
-        />
-      </ShowForPermission>
-      <ShowForPermission slice={'content'} permission={'delete'}>
-        <ActionPanelItem
-          type={'confirm'}
-          icon={Delete}
-          confirmationTitle={`Delete content titled "${content.title}"?`}
-          onAction={() => {
-            // To avoid dealing with pages that no longer exist
-            dispatch(ContentActions.update_pagination({
-              page: 0,
-            }));
+      {showEdit && <ActionPanelItem
+        type={'button'}
+        icon={Edit}
+        onAction={() => onEdit(content)}
+        tooltip={'Edit Content'}
+      />}
+      {showDelete && <ActionPanelItem
+        type={'confirm'}
+        icon={Delete}
+        confirmationTitle={`Delete content titled "${content.title}"?`}
+        onAction={() => {
+          // To avoid dealing with pages that no longer exist
+          dispatch(ContentActions.update_pagination({
+            page: 0,
+          }));
 
-            dispatch(ContentActions.delete_content(content.id));
-          }}
-          tooltip={'Delete'}
-          confirmationSize={'xs'}
-        />
-      </ShowForPermission>
-      <ShowForPermission slice={'content'} permission={'read'}>
-        <ActionPanelItem
-          type={'button'}
-          icon={Visibility}
-          onAction={() => onView(content)}
-        />
-      </ShowForPermission>
+          dispatch(ContentActions.delete_content(content.id));
+        }}
+        tooltip={'Delete'}
+        confirmationSize={'xs'}
+      />}
+      {showView && <ActionPanelItem
+        type={'button'}
+        icon={Visibility}
+        onAction={() => onView(content)}
+      />}
     </SolarSPELLActionPanel>
   );
 }
