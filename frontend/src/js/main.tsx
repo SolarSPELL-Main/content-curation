@@ -15,6 +15,12 @@ import { useCCDispatch, useCCSelector, usePrevious } from './hooks';
  */
 function Main(): React.ReactElement {
     const dispatch = useCCDispatch();
+    
+    // Check if any async operations are occurring
+    // If so, show the loader
+    const requests = useCCSelector(state => state.global.outstandingRequests);
+    const showLoader = requests.length > 0;
+
     const toasts = useCCSelector(state => state.global.toasts)
     const prevToasts = usePrevious(toasts)
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -61,7 +67,7 @@ function Main(): React.ReactElement {
     return (<>
         <NavBar />
         <PageBody />
-        <Loader />
+        <Loader open={showLoader} />
         <Footer />
     </>)
 }

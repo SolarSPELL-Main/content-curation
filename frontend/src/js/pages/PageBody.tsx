@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import HomePage from './home';
-import MetadataPage, { Icon as MetadataIcon } from './metadata';
-import ContentPage, { Icon as ContentIcon } from './content';
-import ProfilePage, { Icon as ProfileIcon } from './profile';
+import Loader from '../Loader';
+
+const HomePage = lazy(() => import('./home'));
+const MetadataPage = lazy(() => import('./metadata'));
+const ContentPage = lazy(() => import('./content'));
+const ProfilePage = lazy(() => import('./profile'));
+
+import MetadataIcon from '../../assets/icons/metadata.png';
+import ContentIcon from '../../assets/icons/content.png';
+import ProfileIcon from '../../assets/icons/profile.png';
 
 // Add Icon assets here if you would like it to appear in the homepage
 // Key values should be corresponding paths
@@ -24,19 +30,21 @@ export default function PageBody(): React.ReactElement {
     // The home path ['/'] is all-consuming, so any unmatched URLs
     // will redirect to that Route.
     return (
-        <Switch>
-            <Route path={'/content'}>
-                <ContentPage />
-            </Route>
-            <Route path={'/metadata'}>
-                <MetadataPage />
-            </Route>
-            <Route path={'/profile'}>
-                <ProfilePage />
-            </Route>
-            <Route path={['/home', '/']}>
-                <HomePage icons={icons} />
-            </Route>
-        </Switch>
+        <Suspense fallback={<Loader />}>
+            <Switch>
+                <Route path={'/content'}>
+                    <ContentPage />
+                </Route>
+                <Route path={'/metadata'}>
+                    <MetadataPage />
+                </Route>
+                <Route path={'/profile'}>
+                    <ProfilePage />
+                </Route>
+                <Route path={['/home', '/']}>
+                    <HomePage icons={icons} />
+                </Route>
+            </Switch>
+        </Suspense>
     );
 }
