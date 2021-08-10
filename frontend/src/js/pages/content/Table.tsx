@@ -111,8 +111,8 @@ function Table({
         }}
         componentProps={{
           ActionPanel: {
-            onEdit: (content: Content) => setEditedContent(content),
-            onView: (content: Content) => setViewedContent(content),
+            onEdit: (c: Content) => setEditedContent(c),
+            onView: (c: Content) => setViewedContent(c),
             showEdit,
             showDelete,
             showView,
