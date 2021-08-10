@@ -22,15 +22,13 @@ type TabDescriptor = {
 
 // Style for the logo itself
 const logoStyle: React.CSSProperties = {
-    height: '75px',
-    width: '300px',
+    maxHeight: '75px',
     margin: '10px',
 };
 
 // Style for the tab associated with the logo
 const logoTabStyle: React.CSSProperties = {
-    width: '320px',
-    maxWidth: '320px',
+    maxWidth: '350px',
     backgroundColor: OCEAN_BLUE,
 };
 

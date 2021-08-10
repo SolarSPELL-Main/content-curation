@@ -11,12 +11,17 @@ export default createMuiTheme({
         h2: {
             color: BRIGHT_BLUE,
             fontWeight: "bolder",
-            marginRight: "1em"
+            marginRight: "1em",
+            fontFamily: '"Akzidenz-Grotesk", "Arial", sans-serif'
         },
         subtitle2: {
             fontWeight: "bold",
             marginTop: "1em",
             marginRight: "1em"
+        },
+        fontFamily: '"Helvetica", "Arial", sans-serif',
+        button: {
+            fontWeight: "bold"
         }
     },
     props: {
