@@ -6,9 +6,13 @@ import type {
 
 import { ContentTable } from 'solarspell-react-lib';
 import * as ContentActions from '../../state/content';
+import * as MetadataActions from '../../state/metadata';
 import { useCCDispatch, useCCSelector } from '../../hooks';
 import { hasPermission } from '../../utils';
+import ContentForm from './ContentForm';
+import Viewer from './Viewer';
 import ActionPanel from './ActionPanel';
+import { Content } from 'js/types';
 
 type TableProps = {
   additionalColumns: GridColDef[]
@@ -62,56 +66,86 @@ function Table({
     'export',
   );
 
+  // Other state
+  const [editedContent, setEditedContent] = React.useState<Content>();
+  const [viewedContent, setViewedContent] = React.useState<Content>();
+
   const ids = content.map(c => c.id);
 
   return (
-    <ContentTable
-      content={content}
-      selectable={showSelection}
-      components={{
-        ActionPanel: showActionPanel ? ActionPanel : undefined,
-      }}
-      additionalColumns={additionalColumns}
-      additionalProps={{
-        // DataGrid does not take it well when selection model includes
-        // IDs that are not within its rows, so selected must be filtered
-        // to only currently displayed content
-        selectionModel: selected.filter(id => ids.includes(id)),
-        onSelectionModelChange: params => {
-          const selectionIDs = params.selectionModel as number[];
+    <>
+      {
+        editedContent && <ContentForm
+          open={!!editedContent}
+          onSubmit={newContent => {
+            setEditedContent(undefined);
+            if (newContent) {
+              newContent.id = editedContent.id;
+              dispatch(ContentActions.edit_content(newContent as Content));
+            }
 
-          // This callback seems to fire infinitely without an
-          // equality check of some kind. Likely since array
-          // equality is almost never true between renders.
-          const isNew = selectionIDs.some(id => !selectionModel.includes(id))
-              || selectionIDs.length !== selectionModel.length;
+            // Clear newly added
+            dispatch(MetadataActions.update_newly_added([]));
+          }}
+          content={editedContent}
+          type={'edit'}
+        />
+      }
+      {
+        viewedContent && <Viewer
+          open={!!viewedContent}
+          content={viewedContent}
+          onClose={() => setViewedContent(undefined)}
+        />
+      }
+      <ContentTable
+        content={content}
+        selectable={showSelection}
+        components={{
+          ActionPanel: showActionPanel ? ActionPanel : undefined,
+        }}
+        additionalColumns={additionalColumns}
+        additionalProps={{
+          // DataGrid does not take it well when selection model includes
+          // IDs that are not within its rows, so selected must be filtered
+          // to only currently displayed content
+          selectionModel: selected.filter(id => ids.includes(id)),
+          onSelectionModelChange: params => {
+            const selectionIDs = params.selectionModel as number[];
 
-          if (isNew) {
-              dispatch(ContentActions.update_selected(
-                  params.selectionModel as number[],
-              ));
-          }
-        },
-        rowsPerPageOptions: [10, 25, 100],
-        onPageSizeChange: params => 
-          dispatch(ContentActions.update_pagination({
-            pageSize: params.pageSize,
-            page: params.page,
-          })),
-        onPageChange: params => 
-          dispatch(ContentActions.update_pagination({
-            page: params.page,
-          })),
-        paginationMode: 'server',
-        sortingMode: 'server',
-        pageSize: pageSize,
-        page: page,
-        rowCount: rowCount,
-        sortModel: sortModel,
-        onSortModelChange: params => 
-          dispatch(ContentActions.update_sortmodel(params.sortModel)),
-      }}
-    />
+            // This callback seems to fire infinitely without an
+            // equality check of some kind. Likely since array
+            // equality is almost never true between renders.
+            const isNew = selectionIDs.some(id => !selectionModel.includes(id))
+                || selectionIDs.length !== selectionModel.length;
+
+            if (isNew) {
+                dispatch(ContentActions.update_selected(
+                    params.selectionModel as number[],
+                ));
+            }
+          },
+          rowsPerPageOptions: [10, 25, 100],
+          onPageSizeChange: params => 
+            dispatch(ContentActions.update_pagination({
+              pageSize: params.pageSize,
+              page: params.page,
+            })),
+          onPageChange: params => 
+            dispatch(ContentActions.update_pagination({
+              page: params.page,
+            })),
+          paginationMode: 'server',
+          sortingMode: 'server',
+          pageSize: pageSize,
+          page: page,
+          rowCount: rowCount,
+          sortModel: sortModel,
+          onSortModelChange: params => 
+            dispatch(ContentActions.update_sortmodel(params.sortModel)),
+        }}
+      />
+    </>
   )
 }
 

@@ -7,30 +7,29 @@ import {
   ActionPanelItem,
 } from 'solarspell-react-lib';
 import * as ContentActions from '../../state/content';
-import * as MetadataActions from '../../state/metadata';
 import { useCCDispatch } from '../../hooks';
 import ShowForPermission from '../ShowForPermission';
-import ContentForm from './ContentForm';
-import Viewer from './Viewer';
 import { Content } from 'js/types';
 
 type ActionPanelProps = {
   content: Content
+  onEdit: (content: Content) => void
+  onView: (content: Content) => void
 }
 
 /**
  * This component renders the icons displayed in the 'Actions' column of the
  * table. It also implements its corresponding functionality.
  * The associated icons allow for editing, deleting, and viewing content.
- * @param props The content associated with the actions.
+ * @param props The content and callbacks associated with the actions.
  * @returns The action panel.
  */
 function ActionPanel({
   content,
+  onEdit,
+  onView,
 }: ActionPanelProps): React.ReactElement {
   const dispatch = useCCDispatch();
-  const [editOpen, setEditOpen] = React.useState(false);
-  const [viewOpen, setViewOpen] = React.useState(false);
 
   return (
     <SolarSPELLActionPanel>
@@ -38,23 +37,8 @@ function ActionPanel({
         <ActionPanelItem
           type={'button'}
           icon={Edit}
-          onAction={() => setEditOpen(true)}
+          onAction={() => onEdit(content)}
           tooltip={'Edit Content'}
-        />
-        <ContentForm
-          open={editOpen}
-          onSubmit={newContent => {
-            setEditOpen(false);
-            if (newContent) {
-              newContent.id = content.id;
-              dispatch(ContentActions.edit_content(newContent as Content));
-            }
-
-            // Clear newly added
-            dispatch(MetadataActions.update_newly_added([]));
-          }}
-          content={content}
-          type={'edit'}
         />
       </ShowForPermission>
       <ShowForPermission slice={'content'} permission={'delete'}>
@@ -78,12 +62,7 @@ function ActionPanel({
         <ActionPanelItem
           type={'button'}
           icon={Visibility}
-          onAction={() => setViewOpen(true)}
-        />
-        <Viewer
-          open={viewOpen}
-          content={content}
-          onClose={() => setViewOpen(false)}
+          onAction={() => onView(content)}
         />
       </ShowForPermission>
     </SolarSPELLActionPanel>
