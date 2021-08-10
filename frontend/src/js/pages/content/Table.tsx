@@ -53,6 +53,11 @@ function Table({
     ['read', 'update', 'delete'],
     'some',
   );
+
+  // Permissions for individual Action icons
+  const showEdit = hasPermission(permissions, 'content', 'update');
+  const showDelete = hasPermission(permissions, 'content', 'delete');
+  const showView = hasPermission(permissions, 'content', 'read');
   
   // Only users who can delete or export content should have the option to
   // select rows of content in the table.
@@ -103,6 +108,15 @@ function Table({
         selectable={showSelection}
         components={{
           ActionPanel: showActionPanel ? ActionPanel : undefined,
+        }}
+        componentProps={{
+          ActionPanel: {
+            onEdit: (content: Content) => setEditedContent(content),
+            onView: (content: Content) => setViewedContent(content),
+            showEdit,
+            showDelete,
+            showView,
+          },
         }}
         additionalColumns={additionalColumns}
         additionalProps={{
