@@ -6,9 +6,13 @@ import { ContentViewer } from 'solarspell-react-lib';
 import { useCCSelector } from '../../hooks';
 import { Content } from 'js/types';
 
+/** Main props type */
 type ViewerProps = {
+    /** Content to display */
     content: Content
+    /** Whether the dialog is open */
     open: boolean
+    /** Callback on dialog close */
     onClose: () => void
 }
 

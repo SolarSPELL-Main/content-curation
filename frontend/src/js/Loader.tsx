@@ -3,7 +3,9 @@ import React from 'react';
 import Box from '@material-ui/core/Box';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+/** Main props type */
 type LoaderProps = {
+    /** Whether to show the loader. Defaults to true */
     open?: boolean
 }
 
@@ -13,9 +15,9 @@ type LoaderProps = {
  * @returns A loading icon
  */
 function Loader({
-    open,
+    open=true,
 }: LoaderProps): React.ReactElement|null {
-    return (open ?? true) ? (
+    return open ? (
         <Box
             position="absolute"
             display="flex"

@@ -11,8 +11,11 @@ import { useCCDispatch } from '../../hooks';
 import ShowForPermission from '../ShowForPermission';
 import { Metadata, MetadataType } from 'js/types';
 
+/** Main props type */
 type ActionPanelProps = {
+    /** Metadata object associated with these actions */
     metadata: Metadata
+    /** Metadata type associated with above metadata object */
     metadataType: MetadataType
 }
 

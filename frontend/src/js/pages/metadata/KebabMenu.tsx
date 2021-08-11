@@ -10,7 +10,9 @@ import APP_URLS from '../../urls';
 import ShowForPermission from '../ShowForPermission';
 import { MetadataType } from 'js/types';
 
+/** Main props type */
 type KebabMenuProps = {
+    /** Metadata type associated with this kebab menu */
     metadataType: MetadataType
 }
 

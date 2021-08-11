@@ -7,12 +7,17 @@ import ShowForPermission from '../../ShowForPermission';
 import Add from './Add';
 import ColumnSelection from './ColumnSelection';
 
+/** Callbacks associated with the toolbar */
 type ToolbarActionProps = {
+    /** Callback on closing the Column Select dialog */
     onColumnSelect: (cols: GridColDef[]) => void
 }
 
+/** Main props type */
 type ToolbarProps = {
+    /** Callbacks associated with the toolbar */
     actions: ToolbarActionProps
+    /** Initial column selection state of the Column Select dialog */
     initialColumns: Record<string, boolean>
 }
 

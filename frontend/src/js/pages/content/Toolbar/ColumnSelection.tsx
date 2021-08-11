@@ -13,8 +13,11 @@ import { ContentColumnSelection } from 'solarspell-react-lib';
 import { useCCSelector } from '../../../hooks';
 import { MetadataType, Content } from 'js/types';
 
+/** Main props type */
 type ColumnSelectionProps = {
+    /** Callback on closing the dialog */
     onClose: (cols: GridColDef[]) => void
+    /** Initial state of the ContentColumnSelection component */
     initialColumns: Record<string,boolean>
 }
 
