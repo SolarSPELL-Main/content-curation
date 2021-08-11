@@ -170,3 +170,41 @@ REST_FRAMEWORK = {
         "django_filters.rest_framework.DjangoFilterBackend",
     )
 }
+
+# Logging Configuration
+LOGGING = {
+    'version': 1,
+    # Version of logging
+    'disable_existing_loggers': False,
+
+    'formatters': {
+        'Simple_Formatters': {
+            'format': '{asctime} {levelname} {message}',
+            'style': '{',
+        }
+    },
+
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': './logs/log_file.log',
+            'formatter': 'Simple_Formatters',
+        },
+
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+        },
+    },
+
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': 'DEBUG',
+            'propagate': True,
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO')
+        },
+    },
+
+}

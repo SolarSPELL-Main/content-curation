@@ -1,6 +1,6 @@
 from django.db.utils import IntegrityError
 from django.shortcuts import render
-from django.http.response import  HttpResponse
+from django.http.response import HttpResponse
 
 from django.views.generic import TemplateView
 
@@ -29,8 +29,11 @@ from backend.models import MetadataType, Metadata, Content
 from backend.serializers import MetadataTypeSerializer, MetadataSerializer, \
     ContentSerializer, ProfileSerializer
 from backend.standardize_format import build_response
-from backend.enums import STATUS
+
 from .filters import ContentFilter
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class StandardDataView:
@@ -206,7 +209,7 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
         instance = self.get_object()
         if not instance:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        
+
         data = request.data.copy()
 
         # New file has been uploaded for content
@@ -215,7 +218,7 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
             file_path = os.path.join(settings.MEDIA_ROOT, instance.file_name)
             if os.path.exists(file_path):
                 os.remove(file_path)
-        
+
         # If status is Review, then reviewed date should be none
         if "status" in data and data["status"] == "Review":
             data["reviewed_on"] = None
@@ -325,14 +328,18 @@ def zipdownloadcsv(request):
                                 zip_file.write(file_path, basename(file_path))
 
                 except zipfile.BadZipfile:
+                    error = "Bad Zip File"
+                    logger.error(error)
                     return build_response(
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        error="Bad Zip File"
+                        error=error
                     )
                 except zipfile.LargeZipFile:
+                    error = "Large Zip File"
+                    logger.error(error)
                     return build_response(
                         status=status.HTTP_400_BAD_REQUEST,
-                        error="Large Zip File"
+                        error=error
                     )
             # Write the csv buffer to the zip file
             zip_file.writestr(csvfilename, string_buffer.getvalue())
