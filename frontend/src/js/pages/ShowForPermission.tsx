@@ -4,13 +4,19 @@ import { useCCSelector } from '../hooks';
 import { hasPermission } from '../utils';
 import type { Permissions, CRUD, SpecialPermissions } from 'js/types';
 
+/** Arguments passed to hasPermission */
 type CheckedPermissions = {
+    /** Which slice of permissions to check */
     slice: keyof Permissions
+    /** Which permission to check for */
     permission: keyof CRUD|keyof SpecialPermissions|string[]
+    /** Whether to check for some or all permissions */
     mode?: 'some'|'every'
 }
 
+/** Main props type */
 type ShowForPermissionProps = {
+    /** Elements to conditionally show */
     children?: React.ReactElement | React.ReactElement[]
 } & CheckedPermissions
 

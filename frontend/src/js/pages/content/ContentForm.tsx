@@ -22,16 +22,27 @@ import { Metadata, MetadataType, Content } from 'js/types';
 import APP_URLS from "../../urls"
 import { api, hasPermission } from "../../utils"
 
+/** Describes purpose of this form */
 type TypeProps = {
+    /** Form is used for adding a new piece of content */
     type: 'add'
+    /** No prior content, hence this prop should not exist */
     content?: never
 } | {
+    /** Form is used for editing an existing piece of content */
     type: 'edit'
+    /** Content being edited */
     content: Content
 }
 
+/** Main props type */
 type ContentFormProps = {
+    /** 
+     * Callback on dialog close
+     * Content is undefined when form is not submitted
+     */
     onSubmit: (content?: Partial<Content>) => void
+    /** Whether the dialog is open */
     open: boolean
 } & TypeProps
 

@@ -5,7 +5,9 @@ import { useCCDispatch } from '../../hooks';
 import { update_current_tab } from '../../state/global';
 import { Tabs } from '../../enums';
 
+/** Main props type */
 type PageProps = {
+    /** See Icons for prop description */
     icons: Record<string,any>
 }
 

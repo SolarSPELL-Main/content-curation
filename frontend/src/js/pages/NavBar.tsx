@@ -11,11 +11,18 @@ import { Tabs } from '../enums';
 import { OCEAN_BLUE } from '../theme';
 import Logo from '../../assets/logo.png';
 
+/** Permissions associated with each tab */
 type SlicePermission = {
+    /** Provides option to have no permissions associated with a tab */
     [k in keyof CheckedPermissions]?: never
 } | CheckedPermissions
 
+/** Contains information about each tab in the navbar */
 type TabDescriptor = {
+    /** 
+     * Properties passed to the underlying Tab component.
+     * To work with react-dom, Tab must use RouterLink
+     */
     props: React.ComponentProps<typeof Tab> &
         React.ComponentProps<typeof RouterLink>
 } & SlicePermission

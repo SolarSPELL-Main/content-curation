@@ -10,12 +10,19 @@ import * as ContentActions from '../../state/content';
 import { useCCDispatch } from '../../hooks';
 import { Content } from 'js/types';
 
+/** Main props type */
 type ActionPanelProps = {
+  /** Content associated with these actions */
   content: Content
+  /** Callback on clicking the 'edit' icon */
   onEdit: (content: Content) => void
+  /** Callback on clicking the 'view' icon */
   onView: (content: Content) => void
+  /** Whether to show edit icon */
   showEdit?: boolean
+  /** Whether to show delete icon */
   showDelete?: boolean
+  /** Whether to show view icon */
   showView?: boolean
 }
 
@@ -36,6 +43,11 @@ function ActionPanel({
 }: ActionPanelProps): React.ReactElement {
   const dispatch = useCCDispatch();
 
+  // NOTE: The edit/view actions are lifted into Table.tsx for performance
+  //       reasons. Rendering a single ContentForm/Viewer is faster than
+  //       rendering one for each row of the table.
+  //       If needed, the same philosophy can be applied to the dialogs
+  //       associated with the ActionPanelItems here and in the metadata tab.
   return (
     <SolarSPELLActionPanel>
       {showEdit && <ActionPanelItem

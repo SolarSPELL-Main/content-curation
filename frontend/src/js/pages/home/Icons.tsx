@@ -4,7 +4,9 @@ import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 
+/** Main props type */
 type IconsProps = {
+    /** URL paths mapped to image assets */
     icons: Record<string, any>
 }
 

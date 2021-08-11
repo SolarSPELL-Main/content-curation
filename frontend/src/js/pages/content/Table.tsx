@@ -14,7 +14,9 @@ import Viewer from './Viewer';
 import ActionPanel from './ActionPanel';
 import { Content } from 'js/types';
 
+/** Main props type */
 type TableProps = {
+  /** Columns to display in addition to default columns */
   additionalColumns: GridColDef[]
 }
 

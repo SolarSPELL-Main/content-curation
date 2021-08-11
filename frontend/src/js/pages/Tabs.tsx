@@ -5,9 +5,13 @@ import Tab from '@material-ui/core/Tab';
 
 import { BRIGHT_BLUE } from '../theme';
 
+/** Main props type */
 type TabsProps<T> = {
+    /** Props passed to each tab */
     tabs: React.ComponentProps<typeof Tab>[]
+    /** Current selected tab */
     currentTab: T
+    /** Style of the indicator below selected tab */
     indicatorStyle?: React.CSSProperties
 }
 
