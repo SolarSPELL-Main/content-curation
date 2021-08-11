@@ -17,18 +17,21 @@ const iconStyle: React.CSSProperties = {
     marginRight: 'auto',
     display: 'block',
     borderRadius: '40px',
+    boxShadow: "0px 3px 1px -2px rgba(0,0,0,0.2),"
+        + "0px 2px 2px 0px rgba(0,0,0,0.14),"
+        + "0px 1px 5px 0px rgba(0,0,0,0.12)"
 };
 
 function Icons({
     icons,
 }: IconsProps): React.ReactElement {
     return (
-        <Box p={2}>
+        <Box p={2} style={{paddingTop: "10vh"}}>
             <Grid container justify={'center'}>
-                {Object.entries(icons).map((entry, idx: number) => (
+                {Object.entries(icons).map(([href, icon], idx: number) => (
                     <Grid item key={idx} xs={4}>
-                        <Link to={entry[0]} style={iconStyle} >
-                            <img src={entry[1]} style={iconStyle} />
+                        <Link to={href} style={iconStyle}>
+                            <img src={icon} style={iconStyle} />
                         </Link>
                     </Grid>
                 ))}
