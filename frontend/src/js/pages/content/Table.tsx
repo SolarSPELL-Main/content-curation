@@ -40,9 +40,9 @@ function Table({
 
   // Re-fetch content everytime pagination/sorting/user changes
   React.useEffect(() => {
-      if (userID !== 0) {
-          dispatch(ContentActions.fetch_content());
-      }
+    if (userID !== 0) {
+      dispatch(ContentActions.fetch_content());
+    }
   }, [dispatch, page, pageSize, sortModel, userID]);
 
   const permissions = useCCSelector(state => state.global.user.permissions);
@@ -136,9 +136,9 @@ function Table({
                 || selectionIDs.length !== selectionModel.length;
 
             if (isNew) {
-                dispatch(ContentActions.update_selected(
+              dispatch(ContentActions.update_selected(
                     params.selectionModel as number[],
-                ));
+              ));
             }
           },
           rowsPerPageOptions: [10, 25, 100],
@@ -162,7 +162,7 @@ function Table({
         }}
       />
     </>
-  )
+  );
 }
 
 export default Table;

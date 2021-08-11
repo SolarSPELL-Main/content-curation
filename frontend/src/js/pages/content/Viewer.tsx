@@ -22,94 +22,94 @@ type ViewerProps = {
  * @returns A dialog displaying information about a single piece of content.
  */
 function Viewer(props: ViewerProps): React.ReactElement {
-    const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
+  const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
 
-    return (
-        <ContentViewer
-            {...props}
-            metadataTypes={metadataTypes}
-            fields={[
-                {
-                    title: 'Title',
-                    field: 'title',
-                },
-                {
-                    title: 'Description',
-                    field: 'description',
-                },
-                {
-                    title: 'Filename',
-                    field: 'fileName',
-                },
-                {
-                    title: 'Filesize',
-                    field: 'filesize',
-                    formatter: (val: number) => prettyBytes(val),
-                },
-                {
-                    title: 'Original Source',
-                    field: 'originalSource',
-                },
-                {
-                    title: 'Created On',
-                    field: 'createdDate',
-                },
-                {
-                    title: 'Created By',
-                    field: 'creator',
-                },
-                {
-                    title: 'Year of Publication',
-                    field: 'datePublished',
-                },
-                {
-                    title: 'Status',
-                    field: 'status',
-                },
-                {
-                    title: 'Reviewed Date',
-                    field: 'reviewedDate',
-                },
-                {
-                    title: 'Reviewed By',
-                    field: 'reviewer',
-                },
-                {
-                    title: 'Copyright Site',
-                    field: 'copyrightSite',
-                },
-                {
-                    title: 'Copyright Approved',
-                    field: 'copyrightApproved',
-                    formatter: (b: boolean) => b ? 'Yes' : 'No',
-                },
-                {
-                    title: 'Copyright Notes',
-                    field: 'copyright',
-                },
-                {
-                    title: 'Rights Statement',
-                    field: 'rightsStatement',
-                },
-                {
-                    title: 'Additional Notes',
-                    field: 'notes',
-                },
-            ]}
-            fileDisplay={{
-                field: 'fileURL',
-                formatter: (url: string) => (
-                    <object
-                        width={600}
-                        height={600}
-                        data={new URL(url).href}
-                    >
-                        <i>File display</i>
-                    </object>
-                )
-            }}
-        />
-    )
+  return (
+    <ContentViewer
+      {...props}
+      metadataTypes={metadataTypes}
+      fields={[
+        {
+          title: 'Title',
+          field: 'title',
+        },
+        {
+          title: 'Description',
+          field: 'description',
+        },
+        {
+          title: 'Filename',
+          field: 'fileName',
+        },
+        {
+          title: 'Filesize',
+          field: 'filesize',
+          formatter: (val: number) => prettyBytes(val),
+        },
+        {
+          title: 'Original Source',
+          field: 'originalSource',
+        },
+        {
+          title: 'Created On',
+          field: 'createdDate',
+        },
+        {
+          title: 'Created By',
+          field: 'creator',
+        },
+        {
+          title: 'Year of Publication',
+          field: 'datePublished',
+        },
+        {
+          title: 'Status',
+          field: 'status',
+        },
+        {
+          title: 'Reviewed Date',
+          field: 'reviewedDate',
+        },
+        {
+          title: 'Reviewed By',
+          field: 'reviewer',
+        },
+        {
+          title: 'Copyright Site',
+          field: 'copyrightSite',
+        },
+        {
+          title: 'Copyright Approved',
+          field: 'copyrightApproved',
+          formatter: (b: boolean) => b ? 'Yes' : 'No',
+        },
+        {
+          title: 'Copyright Notes',
+          field: 'copyright',
+        },
+        {
+          title: 'Rights Statement',
+          field: 'rightsStatement',
+        },
+        {
+          title: 'Additional Notes',
+          field: 'notes',
+        },
+      ]}
+      fileDisplay={{
+        field: 'fileURL',
+        formatter: (url: string) => (
+          <object
+            width={600}
+            height={600}
+            data={new URL(url).href}
+          >
+            <i>File display</i>
+          </object>
+        ),
+      }}
+    />
+  );
 }
 
 export default Viewer;

@@ -16,9 +16,9 @@ type TabsProps<T> = {
 }
 
 const defaultIndicatorStyle: React.CSSProperties = {
-    backgroundColor: BRIGHT_BLUE,
-    height: '5px',
-    borderRadius: '5px',
+  backgroundColor: BRIGHT_BLUE,
+  height: '5px',
+  borderRadius: '5px',
 };
 
 /**
@@ -28,21 +28,21 @@ const defaultIndicatorStyle: React.CSSProperties = {
  * @returns The tabs.
  */
 function Tabs<T>({
-    tabs,
-    currentTab,
-    indicatorStyle = defaultIndicatorStyle,
+  tabs,
+  currentTab,
+  indicatorStyle = defaultIndicatorStyle,
 }: TabsProps<T>): React.ReactElement {
-    return (
-        <MUITabs
-            value={currentTab}
-            TabIndicatorProps={{style: indicatorStyle}}
-            variant={'scrollable'}
-        >
-            {tabs.map((props, idx) => (
-                <Tab {...props} key={idx} />
-            ))}
-        </MUITabs>
-    );
+  return (
+    <MUITabs
+      value={currentTab}
+      TabIndicatorProps={{style: indicatorStyle}}
+      variant={'scrollable'}
+    >
+      {tabs.map((props, idx) => (
+        <Tab {...props} key={idx} />
+      ))}
+    </MUITabs>
+  );
 }
 
 export default Tabs;

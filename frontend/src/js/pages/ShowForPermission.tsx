@@ -26,30 +26,30 @@ type ShowForPermissionProps = {
  * @returns The component or null.
  */
 function ShowForPermission({
+  slice,
+  permission,
+  mode='every',
+  children,
+}: ShowForPermissionProps): React.ReactElement {
+  const permissions = useCCSelector(state => state.global.user.permissions);
+  const canShow = hasPermission(
+    permissions,
     slice,
     permission,
-    mode='every',
-    children,
-}: ShowForPermissionProps): React.ReactElement {
-    const permissions = useCCSelector(state => state.global.user.permissions);
-    const canShow = hasPermission(
-        permissions,
-        slice,
-        permission,
-        mode,
-    );
+    mode,
+  );
 
-    return (
-        <>
-            {canShow && children}
-        </>
-    );
+  return (
+    <>
+      {canShow && children}
+    </>
+  );
 }
 
 const ForwardedShowForPermission = React.forwardRef(
-    (props: ShowForPermissionProps, _ref) => (
-        <ShowForPermission {...props} />
-    ),
+  (props: ShowForPermissionProps, _ref) => (
+    <ShowForPermission {...props} />
+  ),
 );
 
 export type { CheckedPermissions };

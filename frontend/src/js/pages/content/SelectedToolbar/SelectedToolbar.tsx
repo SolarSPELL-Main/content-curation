@@ -19,27 +19,27 @@ import ExportSelected from './ExportSelected';
  * @returns An animated toolbar.
  */
 function SelectedToolbar(): React.ReactElement {
-    const selected = useCCSelector(state => state.content.selected);
+  const selected = useCCSelector(state => state.content.selected);
 
-    return (
-        <Collapse in={selected.length > 0}>
-            <Box mb={2} mt={2} display={'flex'}>
-                <Box mr={2} >
-                    <ClearSelected />
-                </Box>
-                <ShowForPermission slice={'content'} permission={'delete'}>
-                    <Box mr={2} >
-                        <DeleteSelected />
-                    </Box>
-                </ShowForPermission>
-                <ShowForPermission slice={"special"} permission={"export"}>
-                    <Box mr={2} >
-                        <ExportSelected />
-                    </Box>
-                </ShowForPermission>
-            </Box>
-        </Collapse>
-    );
+  return (
+    <Collapse in={selected.length > 0}>
+      <Box mb={2} mt={2} display={'flex'}>
+        <Box mr={2} >
+          <ClearSelected />
+        </Box>
+        <ShowForPermission slice={'content'} permission={'delete'}>
+          <Box mr={2} >
+            <DeleteSelected />
+          </Box>
+        </ShowForPermission>
+        <ShowForPermission slice={'special'} permission={'export'}>
+          <Box mr={2} >
+            <ExportSelected />
+          </Box>
+        </ShowForPermission>
+      </Box>
+    </Collapse>
+  );
 }
 
 export default SelectedToolbar;

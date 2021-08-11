@@ -11,16 +11,16 @@ import { Tabs } from '../../enums';
  * @returns The full page.
  */
 function Page(): React.ReactElement {
-    const dispatch = useCCDispatch();
+  const dispatch = useCCDispatch();
     
-    useEffect(() => {
-        dispatch(update_current_tab(Tabs.METADATA));
-        dispatch(Actions.fetch_metadatatype());
-    }, [dispatch]);
+  useEffect(() => {
+    dispatch(update_current_tab(Tabs.METADATA));
+    dispatch(Actions.fetch_metadatatype());
+  }, [dispatch]);
 
-    return (
-        <Body />
-    );
+  return (
+    <Body />
+  );
 }
 
 export default Page;

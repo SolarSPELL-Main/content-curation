@@ -1,2 +1,2 @@
-import SelectedToolbar from "./SelectedToolbar";
+import SelectedToolbar from './SelectedToolbar';
 export default SelectedToolbar;

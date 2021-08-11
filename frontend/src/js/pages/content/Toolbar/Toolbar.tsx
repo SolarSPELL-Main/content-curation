@@ -27,24 +27,24 @@ type ToolbarProps = {
  * @returns A toolbar with buttons for several actions.
  */
 function Toolbar({
-    actions,
-    initialColumns,
+  actions,
+  initialColumns,
 }: ToolbarProps): React.ReactElement {
-    return (
-        <Box mb={2} display={'flex'} justifyContent={'space-between'}>
-            <Box>
-                <ShowForPermission slice={'content'} permission={'create'}>
-                    <Add />
-                </ShowForPermission>
-            </Box>
-            <Box>
-                <ColumnSelection
-                    onClose={actions.onColumnSelect}
-                    initialColumns={initialColumns}
-                />
-            </Box>
-        </Box>
-    );
+  return (
+    <Box mb={2} display={'flex'} justifyContent={'space-between'}>
+      <Box>
+        <ShowForPermission slice={'content'} permission={'create'}>
+          <Add />
+        </ShowForPermission>
+      </Box>
+      <Box>
+        <ColumnSelection
+          onClose={actions.onColumnSelect}
+          initialColumns={initialColumns}
+        />
+      </Box>
+    </Box>
+  );
 }
 
 export type { ToolbarActionProps };
