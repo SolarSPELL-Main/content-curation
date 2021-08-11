@@ -1,10 +1,10 @@
-import { useRef, useEffect } from "react"
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import { useRef, useEffect } from 'react';
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
-import type { RootState, Dispatch } from './state/store'
+import type { RootState, Dispatch } from './state/store';
 
-export const useCCDispatch = () => useDispatch<Dispatch>()
-export const useCCSelector: TypedUseSelectorHook<RootState> = useSelector
+export const useCCDispatch = (): Dispatch => useDispatch<Dispatch>();
+export const useCCSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 /**
  * Returns the immediately previous value associated with a changing value.

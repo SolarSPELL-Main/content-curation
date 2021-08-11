@@ -1,7 +1,7 @@
 import React from 'react';
 
 import type {
-    GridSortModel,
+  GridSortModel,
 } from '@material-ui/data-grid';
 
 import { MetadataDisplay } from 'solarspell-react-lib';
@@ -17,47 +17,47 @@ import ActionPanel from './ActionPanel';
  *          and metadata.
  */
 function Table(): React.ReactElement {
-    const metadata = useCCSelector(state => state.metadata.metadata);
-    const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
+  const metadata = useCCSelector(state => state.metadata.metadata);
+  const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
 
-    const [pageSize, setPageSize] = React.useState(5);
-    // Default sort metadata by name
-    const [sortModel, setSortModel] = React.useState<GridSortModel>([{
-        field: 'name',
-        sort: 'asc',
-    }]);
+  const [pageSize, setPageSize] = React.useState(5);
+  // Default sort metadata by name
+  const [sortModel, setSortModel] = React.useState<GridSortModel>([{
+    field: 'name',
+    sort: 'asc',
+  }]);
 
-    // Users who do not have any of the following permissions should not see the
-    // empty Actions column.
-    const permissions = useCCSelector(state => state.global.user.permissions);
-    const showActionPanel = hasPermission(
-        permissions,
-        'metadata',
-        ['update', 'delete'],
-        'some',
-    );
+  // Users who do not have any of the following permissions should not see the
+  // empty Actions column.
+  const permissions = useCCSelector(state => state.global.user.permissions);
+  const showActionPanel = hasPermission(
+    permissions,
+    'metadata',
+    ['update', 'delete'],
+    'some',
+  );
 
-    return (
-        <MetadataDisplay
-            metadata={metadata}
-            metadataTypes={metadataTypes}
-            tableProps={{
-                components: {
-                    KebabMenu: KebabMenu,
-                    ActionPanel: showActionPanel ? ActionPanel : undefined,
-                },
-                additionalProps: {
-                    pageSize: pageSize,
-                    onPageSizeChange: params => setPageSize(params.pageSize),
-                    rowsPerPageOptions: [5, 10, 25],
-                    sortModel: sortModel,
-                    onSortModelChange: params => 
-                        setSortModel(params.sortModel),
-                },
-                mountContents: false,
-            }}
-        />
-    );
+  return (
+    <MetadataDisplay
+      metadata={metadata}
+      metadataTypes={metadataTypes}
+      tableProps={{
+        components: {
+          KebabMenu: KebabMenu,
+          ActionPanel: showActionPanel ? ActionPanel : undefined,
+        },
+        additionalProps: {
+          pageSize: pageSize,
+          onPageSizeChange: params => setPageSize(params.pageSize),
+          rowsPerPageOptions: [5, 10, 25],
+          sortModel: sortModel,
+          onSortModelChange: params => 
+            setSortModel(params.sortModel),
+        },
+        mountContents: false,
+      }}
+    />
+  );
 }
 
 export default Table;
