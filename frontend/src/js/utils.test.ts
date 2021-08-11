@@ -1,7 +1,7 @@
 import { updateCRUDPermissions, createCRUDPermissions } from './utils';
 import type { CRUD } from './types';
 
-describe('checking CRUD permissions are updated appropriately', () => {
+describe('CRUD permissions should be updated appropriately', () => {
   const crud: CRUD = {
     create: false,
     read: false,
@@ -39,6 +39,17 @@ describe('checking CRUD permissions are updated appropriately', () => {
     expect(newCrud).toMatchObject(expectedCrud);
   });
 
+  test('updating does not flip true permissions to false', () => {
+    const trueCrud: CRUD = {
+      create: true,
+      read: true,
+      update: true,
+      delete: true,
+    };
+    const newCrud = updateCRUDPermissions(trueCrud, 'CRUD');
+    expect(newCrud).toMatchObject(trueCrud);
+  });
+
   test('original CRUD is not mutated by updates', () => {
     expect(crud).toMatchObject(<CRUD>{
       create: false,
@@ -49,7 +60,7 @@ describe('checking CRUD permissions are updated appropriately', () => {
   });
 });
 
-describe('checking CRUD permissions are created appropriately', () => {
+describe('CRUD permissions should be created appropriately', () => {
   test.each([
     ['', {
       create: false,
