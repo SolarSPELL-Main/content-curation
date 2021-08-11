@@ -2,6 +2,8 @@ from django.contrib.auth.models import Group, Permission
 
 import logging
 
+logger = logging.getLogger(__name__)
+
 GROUPS = {
     "Admin": {
         # general permissions
@@ -41,7 +43,7 @@ def handle(self, *args, **options):
                 try:
                     model_add_perm = Permission.objects.get(name=name)
                 except Permission.DoesNotExist:
-                    logging.warning(
+                    logger.warning(
                         "Permission not found with name '{}'.".format(name))
                     continue
                 new_group.permissions.add(model_add_perm)
