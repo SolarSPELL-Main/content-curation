@@ -8,7 +8,7 @@ import {
   close_toast,
   logout,
 } from '../global';
-import { fromWrapper } from './util';
+import { fromWrapper } from './epicUtils';
 import APP_URLS from '../../urls';
 import type { MyEpic } from './types';
 

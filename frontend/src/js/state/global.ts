@@ -1,6 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { createCRUDPermissions, updateCRUDPermissions } from '../utils';
+import {
+  createCRUDPermissions,
+  updateCRUDPermissions,
+} from '../utils/permissions';
 import { AuthGroup, Tabs } from '../enums';
 import type { User, Toast } from 'js/types';
 

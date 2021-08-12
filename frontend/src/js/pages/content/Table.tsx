@@ -9,7 +9,7 @@ import { ContentTable } from 'solarspell-react-lib';
 import * as ContentActions from '../../state/content';
 import * as MetadataActions from '../../state/metadata';
 import { useCCDispatch, useCCSelector } from '../../hooks';
-import { hasPermission } from '../../utils';
+import { hasPermission } from '../../utils/permissions';
 import ContentForm from './ContentForm';
 import Viewer from './Viewer';
 import ActionPanel from './ActionPanel';

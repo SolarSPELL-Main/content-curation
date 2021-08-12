@@ -6,7 +6,7 @@ import type {
 
 import { MetadataDisplay } from 'solarspell-react-lib';
 import { useCCSelector } from '../../hooks';
-import { hasPermission } from '../../utils';
+import { hasPermission } from '../../utils/permissions';
 import KebabMenu from './KebabMenu';
 import ActionPanel from './ActionPanel';
 

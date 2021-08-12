@@ -21,7 +21,8 @@ import { useCCDispatch, useCCSelector } from '../../hooks';
 import { Status } from '../../enums';
 import { Metadata, MetadataType, Content } from 'js/types';
 import APP_URLS from '../../urls';
-import { api, hasPermission } from '../../utils';
+import { hasPermission } from '../../utils/permissions';
+import { api } from '../../utils/misc';
 
 type UploadFileProps = {
   onChange: (e: React.SyntheticEvent<HTMLLabelElement>) => void

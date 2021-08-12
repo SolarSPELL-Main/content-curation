@@ -10,7 +10,7 @@ import ProfileImpact from '../../../assets/profileimpact.jpg';
 import { useCCSelector, useCCDispatch } from '../../hooks';
 import { logout, update_current_tab } from '../../state/global';
 import { Tabs } from '../../enums';
-import { hasPermission } from '../../utils';
+import { hasPermission } from '../../utils/permissions';
 import APP_URLS from '../../urls';
 
 export default (): React.ReactElement => {

@@ -4,13 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest src/tests --verbose",
     "build": "npm run-script clean && webpack --mode=development",
     "build:prod": "npm run-script clean && webpack --mode=production",
     "clean": "rimraf ./static",
     "watch": "npm run-script clean && webpack --watch --mode=development",
     "update-lib": "npm update solarspell-react-lib",
-    "lint": "eslint src/js --ext .js,.ts,.tsx"
+    "lint": "eslint src/js src/tests --ext .js,.ts,.tsx",
+    "lint:fix": "eslint src/js src/tests --ext .js,.ts,.tsx --fix"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",

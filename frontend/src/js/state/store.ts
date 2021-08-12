@@ -14,7 +14,7 @@ import contentReducer, {
   edit_content,
 } from './content';
 import epics from './epics';
-import { api } from '../utils';
+import { api } from '../utils/misc';
 
 const reducer = combineReducers({
   global: globalReducer,

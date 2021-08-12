@@ -13,11 +13,11 @@ import {
 import {
   show_toast,
 } from '../global';
-import { fromWrapper } from './util';
+import { fromWrapper } from './epicUtils';
 import APP_URLS from '../../urls';
-import { contentToFormData } from '../../utils';
 import { Status } from '../../enums';
-import type { Content, Metadata } from '../../types';
+import { contentToFormData, getContentQueryString } from '../../utils/content';
+import type { Content, Metadata } from 'js/types';
 import type { MyEpic } from './types';
 
 const fetchContentEpic: MyEpic = (action$, state$, { api }) =>
@@ -31,14 +31,16 @@ const fetchContentEpic: MyEpic = (action$, state$, { api }) =>
 
       return fromWrapper(from(api.get(
         APP_URLS.CONTENT_LIST(
-          state$.value.content.filters,
-          state$.value.content.pageSize,
-          // Backend pagination starts at 1, not 0
-          state$.value.content.page + 1,
-          state$.value.content.sortModel,
-          state$.value.global.user.user_id === 0 ?
-            undefined :
-            state$.value.global.user.user_id + '',
+          getContentQueryString(
+            state$.value.content.filters,
+            state$.value.content.pageSize,
+            // Backend pagination starts at 1, not 0
+            state$.value.content.page + 1,
+            state$.value.content.sortModel,
+            state$.value.global.user.user_id === 0 ?
+              undefined :
+              state$.value.global.user.user_id + '',
+          ),
         ),
       )).pipe(
         map(({ data }) => 

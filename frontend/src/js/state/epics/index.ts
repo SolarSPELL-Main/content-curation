@@ -24,7 +24,7 @@ import {
   editContentEpic,
   updateFiltersEpic,
 } from './content';
-import * as Utils from './util';
+import * as Utils from './epicUtils';
 
 const epics = combineEpics(...[
   fetchUserEpic,
