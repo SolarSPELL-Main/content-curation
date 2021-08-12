@@ -1,5 +1,9 @@
-import { updateCRUDPermissions, createCRUDPermissions } from './utils';
-import type { CRUD } from './types';
+import {
+  updateCRUDPermissions,
+  createCRUDPermissions,
+  hasPermission,
+} from 'js/utils/permissions';
+import type { CRUD, Permissions } from 'js/types';
 
 describe('CRUD permissions should be updated appropriately', () => {
   const crud: CRUD = {
@@ -89,5 +93,57 @@ describe('CRUD permissions should be created appropriately', () => {
   ])('.createCRUDPermissions(%s)', (str: string, expectedCrud: CRUD) => {
     const newCrud = createCRUDPermissions(str);
     expect(newCrud).toMatchObject(expectedCrud);
+  });
+});
+  
+describe('user permissions should be checked correctly', () => {
+  const permissions: Permissions = {
+    content: {
+      create: false,
+      read: false,
+      update: false,
+      delete: true,
+    },
+    metadata: {
+      create: true,
+      read: true,
+      update: true,
+      delete: false,
+    },
+    special: {
+      admin: true,
+      export: false,
+      review: false,
+    },
+  };
+  
+  test.each([
+    ['content', ['create', 'read', 'update', 'delete'], 'some', true],
+    ['content', ['create', 'read', 'update', 'delete'], 'every', false],
+    ['content', ['delete'], 'every', true],
+    ['metadata', ['create', 'read', 'update', 'delete'], 'some', true],
+    ['metadata', ['create', 'read', 'update', 'delete'], 'every', false],
+    ['metadata', ['create', 'read', 'update'], 'every', true],
+    ['special', ['admin', 'export', 'review'], 'some', true],
+    ['special', ['admin', 'export', 'review'], 'every', false],
+    ['content', 'create', undefined, false],
+    ['content', 'read', undefined, false],
+    ['content', 'update', undefined, false],
+    ['content', 'delete', undefined, true],
+    ['metadata', 'create', undefined, true],
+    ['metadata', 'read', undefined, true],
+    ['metadata', 'update', undefined, true],
+    ['metadata', 'delete', undefined, false],
+    ['special', 'admin', undefined, true],
+    ['special', 'export', undefined, false],
+    ['special', 'review', undefined, false],
+  ])('.hasPermission(%s, %o, %s)', (slice, perms, mode, expected) => {
+    const permitted = hasPermission(
+      permissions,
+      slice as keyof Permissions,
+      perms,
+      mode as 'some'|'every',
+    );
+    expect(permitted).toBe(expected);
   });
 });

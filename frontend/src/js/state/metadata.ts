@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { Metadata, MetadataType } from '../types';
+import { Metadata, MetadataType } from 'js/types';
 
 type MetadataByType = Record<number, Metadata[]>
 

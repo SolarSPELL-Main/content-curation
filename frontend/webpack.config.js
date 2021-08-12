@@ -12,7 +12,11 @@ module.exports = {
         publicPath: "/static/"
     },
     resolve: {
-        extensions: ['.ts', '.tsx', '.js']
+        extensions: ['.ts', '.tsx', '.js'],
+        // Uncomment if you would like webpack to also resolve imports of the
+        // form js/... or assets/...
+        // This is similar to the allowed import for js/types
+        // modules: ['./node_modules/', './src/'],
     },
     module: {
         rules: [{

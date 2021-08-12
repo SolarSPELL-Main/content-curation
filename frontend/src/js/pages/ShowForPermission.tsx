@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useCCSelector } from '../hooks';
-import { hasPermission } from '../utils';
+import { hasPermission } from '../utils/permissions';
 import type { Permissions, CRUD, SpecialPermissions } from 'js/types';
 
 /** Arguments passed to hasPermission */

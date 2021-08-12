@@ -5,7 +5,7 @@ import Tab from '@material-ui/core/Tab';
 
 import CCTabs from './Tabs';
 import { useCCSelector } from '../hooks';
-import { hasPermission } from '../utils';
+import { hasPermission } from '../utils/permissions';
 import type { CheckedPermissions } from './ShowForPermission';
 import { Tabs } from '../enums';
 import { OCEAN_BLUE } from '../theme';

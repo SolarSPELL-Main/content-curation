@@ -3,7 +3,7 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 
 import { useCCSelector } from '../../../hooks';
-import { api, downloadFile } from '../../../utils';
+import { api, downloadFile } from '../../../utils/misc';
 import APP_URLS from '../../../urls';
 
 /**
