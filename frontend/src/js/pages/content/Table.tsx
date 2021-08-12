@@ -1,5 +1,6 @@
 import React from 'react';
 
+import Paper from '@material-ui/core/Paper';
 import type {
   GridColDef,
 } from '@material-ui/data-grid';
@@ -105,62 +106,65 @@ function Table({
           onClose={() => setViewedContent(undefined)}
         />
       }
-      <ContentTable
-        content={content}
-        selectable={showSelection}
-        components={{
-          ActionPanel: showActionPanel ? ActionPanel : undefined,
-        }}
-        componentProps={{
-          ActionPanel: {
-            onEdit: (c: Content) => setEditedContent(c),
-            onView: (c: Content) => setViewedContent(c),
-            showEdit,
-            showDelete,
-            showView,
-          },
-        }}
-        additionalColumns={additionalColumns}
-        additionalProps={{
-          // DataGrid does not take it well when selection model includes
-          // IDs that are not within its rows, so selected must be filtered
-          // to only currently displayed content
-          selectionModel: selected.filter(id => ids.includes(id)),
-          onSelectionModelChange: params => {
-            const selectionIDs = params.selectionModel as number[];
+      <Paper>
+        <ContentTable
+          content={content}
+          selectable={showSelection}
+          components={{
+            ActionPanel: showActionPanel ? ActionPanel : undefined,
+          }}
+          componentProps={{
+            ActionPanel: {
+              onEdit: (c: Content) => setEditedContent(c),
+              onView: (c: Content) => setViewedContent(c),
+              showEdit,
+              showDelete,
+              showView,
+            },
+          }}
+          additionalColumns={additionalColumns}
+          additionalProps={{
+            // DataGrid does not take it well when selection model includes
+            // IDs that are not within its rows, so selected must be filtered
+            // to only currently displayed content
+            selectionModel: selected.filter(id => ids.includes(id)),
+            onSelectionModelChange: params => {
+              const selectionIDs = params.selectionModel as number[];
 
-            // This callback seems to fire infinitely without an
-            // equality check of some kind. Likely since array
-            // equality is almost never true between renders.
-            const isNew = selectionIDs.some(id => !selectionModel.includes(id))
-                || selectionIDs.length !== selectionModel.length;
+              // This callback seems to fire infinitely without an
+              // equality check of some kind. Likely since array
+              // equality is almost never true between renders.
+              const isNew = selectionIDs.some(
+                id => !selectionModel.includes(id)
+              ) || selectionIDs.length !== selectionModel.length;
 
-            if (isNew) {
-              dispatch(ContentActions.update_selected(
-                    params.selectionModel as number[],
-              ));
-            }
-          },
-          rowsPerPageOptions: [10, 25, 100],
-          onPageSizeChange: params => 
-            dispatch(ContentActions.update_pagination({
-              pageSize: params.pageSize,
-              page: params.page,
-            })),
-          onPageChange: params => 
-            dispatch(ContentActions.update_pagination({
-              page: params.page,
-            })),
-          paginationMode: 'server',
-          sortingMode: 'server',
-          pageSize: pageSize,
-          page: page,
-          rowCount: rowCount,
-          sortModel: sortModel,
-          onSortModelChange: params => 
-            dispatch(ContentActions.update_sortmodel(params.sortModel)),
-        }}
-      />
+              if (isNew) {
+                dispatch(ContentActions.update_selected(
+                      params.selectionModel as number[],
+                ));
+              }
+            },
+            rowsPerPageOptions: [10, 25, 100],
+            onPageSizeChange: params => 
+              dispatch(ContentActions.update_pagination({
+                pageSize: params.pageSize,
+                page: params.page,
+              })),
+            onPageChange: params => 
+              dispatch(ContentActions.update_pagination({
+                page: params.page,
+              })),
+            paginationMode: 'server',
+            sortingMode: 'server',
+            pageSize: pageSize,
+            page: page,
+            rowCount: rowCount,
+            sortModel: sortModel,
+            onSortModelChange: params => 
+              dispatch(ContentActions.update_sortmodel(params.sortModel)),
+          }}
+        />
+      </Paper>
     </>
   );
 }
