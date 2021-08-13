@@ -1,5 +1,6 @@
 import {
   contentToFormData,
+  CONTENT_FIELDS,
 } from 'js/utils/content';
 import { Status } from 'js/enums';
 import { Content } from 'js/types';
@@ -29,11 +30,16 @@ describe('content conversion to FormData', () => {
 
   test('should include all filled in fields', () => {
     expect(organizedCalls).toMatchObject({
-      title: 'Mock Content',
-      copyright_approved: 'false',
-      status: Status.REVIEW,
-      file_name: 'mock.png',
-      content_file: mockFile,
+      [CONTENT_FIELDS['title']]: 'Mock Content',
+      [CONTENT_FIELDS['copyrightApproved']]: 'false',
+      [CONTENT_FIELDS['status']]: Status.REVIEW,
+      [CONTENT_FIELDS['fileName']]: 'mock.png',
+      // file -> content_file mapping does not exist in CONTENT_FIELDS, as
+      // the content_file in the API response from Django matches fileURL.
+      // Having both file -> content_file and fileURL -> content_file could
+      // lead to some unintended side effects in the future.
+      // Hence, here, the mapping field is 'fileURL' instead of 'file'
+      [CONTENT_FIELDS['fileURL']]: mockFile,
     });
   });
 });
