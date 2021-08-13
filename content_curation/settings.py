@@ -172,6 +172,8 @@ REST_FRAMEWORK = {
 }
 
 # Logging Configuration
+LOG_ROOT = os.path.join(BASE_DIR, 'logs')
+
 LOGGING = {
     'version': 1,
     # Version of logging
@@ -187,8 +189,8 @@ LOGGING = {
     'handlers': {
         'file': {
             'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': './logs/log_file.log',
+            'class': 'backend.logging.FileHandler',
+            'filename': os.path.join(LOG_ROOT, 'log_file.log'),
             'formatter': 'Simple_Formatters',
         },
 
