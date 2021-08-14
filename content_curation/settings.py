@@ -12,13 +12,13 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 import environ
+from datetime import datetime
 
 env = environ.Env()
 env.read_env()
-
+now = datetime.now()
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -31,7 +31,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-CONTENTS_ROOT='/'
+CONTENTS_ROOT = '/'
 
 # Application definition
 
@@ -54,7 +54,11 @@ INSTALLED_APPS = [
     'backend',
     'django_filters',
     'widget_tweaks',
-    'sslserver'
+    'sslserver',
+
+    'django_crontab',
+    'dbbackup',
+
 ]
 
 MIDDLEWARE = [
@@ -87,7 +91,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'content_curation.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
@@ -95,25 +98,23 @@ DATABASES = {
     'default': env.db()
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-    'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-    'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-    'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-    'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
@@ -128,7 +129,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
@@ -137,7 +137,7 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STATICFILES_DIRS=[
+STATICFILES_DIRS = [
     BASE_DIR + "frontend/static",
 ]
 
@@ -162,7 +162,6 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-
 LOGIN_REDIRECT_URL = '/static/index.html#/profile'
 
 REST_FRAMEWORK = {
@@ -172,7 +171,7 @@ REST_FRAMEWORK = {
 }
 
 # Logging Configuration
-LOG_FILE = os.path.join(BASE_DIR, 'logs', 'log_file.log')
+LOG_FILE = os.path.join(BASE_DIR, 'logs', 'log_file{:%d_%m_%Y}.log'.format(now))
 
 LOGGING = {
     'version': 1,
@@ -203,10 +202,25 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['file', 'console'],
-            'level': 'DEBUG',
             'propagate': True,
             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO')
         },
     },
 
 }
+
+# Scheduled Database Backup
+DB_BACKUP_DIR =  BASE_DIR + '/backup/'
+DB_BACKUP_FILENAME = '{datetime}-{databasename}.psql'
+CRON_LOG_FILE = BASE_DIR + '/logs/cron_{:%d_%m_%Y}.log'.format(now)
+
+DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
+DBBACKUP_STORAGE_OPTIONS = {'location':DB_BACKUP_DIR}
+DBBACKUP_FILENAME_TEMPLATE = DB_BACKUP_FILENAME
+
+CRONJOBS = [
+    ('0 19 * * *', 'content_curation.cron.db_backup',
+     '>>' + CRON_LOG_FILE)
+]
+CRONTAB_COMMAND_SUFFIX = '2>&1'
+CRONTAB_DJANGO_PROJECT_NAME = 'content_curation'
