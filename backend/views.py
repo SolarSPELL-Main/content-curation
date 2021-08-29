@@ -257,6 +257,7 @@ def check_duplicate(request):
         )
 
 
+
 # Export content as CSV file
 @api_view(('POST',))
 @renderer_classes((JSONRenderer,))
@@ -291,6 +292,7 @@ def zipdownloadcsv(request):
         # Iterate through content objects, add CSV data to the CSV buffer and
         # the resepective files to the zip file
         content = Content.objects.filter(id__in=content_ids)
+
         with zipfile.ZipFile(
                 temp_zip, 'w', zipfile.ZIP_DEFLATED, allowZip64=True
         ) as zip_file:
@@ -353,3 +355,26 @@ def zipdownloadcsv(request):
         status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         error="Could not create temp file"
     )
+
+
+# bulk edit metdata in content
+@api_view(('POST',))
+@renderer_classes((JSONRenderer,))
+def bulk_edit_content(request):
+    print("")
+    content_ids = [
+        int(s) for s in request.POST.get("content", None)[1:-1].split(",")
+    ]
+
+    old_metadata_id = [
+        int(s) for s in
+        request.POST.get("old_metadata_id", None)[1:-1].split(",")
+    ]
+
+    new_metadata_ids = [
+        int(s) for s in
+        request.POST.get("new_metadata_id", None)[1:-1].split(",")
+    ]
+
+    #partial_update metdata
+    #bulk_update content

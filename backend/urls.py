@@ -5,7 +5,8 @@ from rest_framework import routers
 from rest_framework import routers
 
 from .views import MetadataTypeViewSet, MetadataViewSet, \
-    ContentViewSet, get_user, search, check_duplicate, zipdownloadcsv
+    ContentViewSet, get_user, search, check_duplicate, zipdownloadcsv,\
+    bulk_edit_content
 
 router = routers.DefaultRouter()
 router.register(r'metadata', MetadataViewSet, basename='metadata')
@@ -18,5 +19,6 @@ urlpatterns = [
     path(r'search', search),
     path("check_duplicate/", check_duplicate),
     path(r'export/', zipdownloadcsv),
+    path(r'bulk_edit_content/', bulk_edit_content),
     path('', include(router.urls)),
 ]
