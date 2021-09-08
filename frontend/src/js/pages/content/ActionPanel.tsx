@@ -19,11 +19,11 @@ type ActionPanelProps = {
   /** Callback on clicking the 'view' icon */
   onView: (content: Content) => void
   /** Whether to show edit icon */
-  showEdit?: boolean
+  showEdit?: boolean | ((content: Content) => boolean)
   /** Whether to show delete icon */
-  showDelete?: boolean
+  showDelete?: boolean | ((content: Content) => boolean)
   /** Whether to show view icon */
-  showView?: boolean
+  showView?: boolean | ((content: Content) => boolean)
 }
 
 /**
@@ -50,13 +50,17 @@ function ActionPanel({
   //       associated with the ActionPanelItems here and in the metadata tab.
   return (
     <SolarSPELLActionPanel>
-      {showEdit && <ActionPanelItem
+      {((showEdit instanceof Function) ?
+        showEdit(content) : showEdit) &&
+      <ActionPanelItem
         type={'button'}
         icon={Edit}
         onAction={() => onEdit(content)}
         tooltip={'Edit Content'}
       />}
-      {showDelete && <ActionPanelItem
+      {((showDelete instanceof Function) ?
+        showDelete(content) : showDelete) &&
+      <ActionPanelItem
         type={'confirm'}
         icon={Delete}
         confirmationTitle={`Delete content titled "${content.title}"?`}
@@ -71,7 +75,9 @@ function ActionPanel({
         tooltip={'Delete'}
         confirmationSize={'xs'}
       />}
-      {showView && <ActionPanelItem
+      {((showView instanceof Function) ?
+        showView(content) : showView) &&
+      <ActionPanelItem
         type={'button'}
         icon={Visibility}
         onAction={() => onView(content)}

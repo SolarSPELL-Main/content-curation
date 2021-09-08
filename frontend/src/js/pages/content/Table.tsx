@@ -12,7 +12,8 @@ import { hasPermission } from '../../utils';
 import ContentForm from './ContentForm';
 import Viewer from './Viewer';
 import ActionPanel from './ActionPanel';
-import { Content } from 'js/types';
+import { Content } from '../../types';
+import {AuthGroup} from '../../enums';
 
 /** Main props type */
 type TableProps = {
@@ -36,14 +37,14 @@ function Table({
   const selected = useCCSelector(state => state.content.selected);
   const selectionModel = useCCSelector(state => state.content.selectionModel);
   const sortModel = useCCSelector(state => state.content.sortModel);
-  const userID = useCCSelector(state => state.global.user.user_id);
+  const user = useCCSelector(state => state.global.user);
 
   // Re-fetch content everytime pagination/sorting/user changes
   React.useEffect(() => {
-      if (userID !== 0) {
+      if (user.user_id !== 0) {
           dispatch(ContentActions.fetch_content());
       }
-  }, [dispatch, page, pageSize, sortModel, userID]);
+  }, [dispatch, page, pageSize, sortModel, user]);
 
   const permissions = useCCSelector(state => state.global.user.permissions);
 
@@ -58,7 +59,9 @@ function Table({
 
   // Permissions for individual Action icons
   const showEdit = hasPermission(permissions, 'content', 'update');
-  const showDelete = hasPermission(permissions, 'content', 'delete');
+  const showDelete = user.groups.includes(AuthGroup.LIB_SPECIALIST) ?
+    true :
+    hasPermission(permissions, 'content', 'delete') && ((content: Content) => content.creator == user.username)
   const showView = hasPermission(permissions, 'content', 'read');
   
   // Only users who can delete or export content should have the option to

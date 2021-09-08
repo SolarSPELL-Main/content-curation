@@ -8,6 +8,7 @@ import ShowForPermission from '../../ShowForPermission';
 import DeleteSelected from './DeleteSelected';
 import ClearSelected from './ClearSelected';
 import ExportSelected from './ExportSelected';
+import BulkEdit from '../BulkEdit';
 
 /**
  * This is the toolbar that appears whenever the user makes a selection in
@@ -24,16 +25,21 @@ function SelectedToolbar(): React.ReactElement {
     return (
         <Collapse in={selected.length > 0}>
             <Box mb={2} mt={2} display={'flex'}>
-                <Box mr={2} >
+                <Box mr={2}>
                     <ClearSelected />
                 </Box>
                 <ShowForPermission slice={'content'} permission={'delete'}>
-                    <Box mr={2} >
+                    <Box mr={2}>
                         <DeleteSelected />
                     </Box>
                 </ShowForPermission>
+                <ShowForPermission slice={'content'} permission={'update'}>
+                    <Box mr={2}>
+                        <BulkEdit />
+                    </Box>
+                </ShowForPermission>
                 <ShowForPermission slice={"special"} permission={"export"}>
-                    <Box mr={2} >
+                    <Box mr={2}>
                         <ExportSelected />
                     </Box>
                 </ShowForPermission>
