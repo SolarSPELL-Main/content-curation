@@ -1,8 +1,8 @@
 import type {
-    BaseMetadata,
-    BaseMetadataType,
-    BaseContent
-} from "solarspell-react-lib"
+  BaseMetadata,
+  BaseMetadataType,
+  BaseContent,
+} from 'solarspell-react-lib';
 
 import type { AuthGroup, Status } from './enums';
 
@@ -142,7 +142,7 @@ type Toast = {
     /**
      * Nature of the toast
      */
-    severity: "success" | "warning" | "error"
+    severity: 'success' | 'warning' | 'error'
     /**
      * Message displayed along with the toast
      */

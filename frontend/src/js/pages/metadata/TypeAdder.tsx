@@ -13,36 +13,36 @@ import { useCCDispatch } from '../../hooks';
  * @returns A button with an accompanying dialog.
  */
 function TypeAdder(): React.ReactElement {
-    const dispatch = useCCDispatch();
-    const [dialogOpen, setDialogOpen] = React.useState(false);
+  const dispatch = useCCDispatch();
+  const [dialogOpen, setDialogOpen] = React.useState(false);
 
-    return (
-        <>
-            <TextInputDialog
-                open={dialogOpen}
-                onClose={name => {
-                    setDialogOpen(false);
-                    if (name) {
-                        dispatch(Actions.add_metadatatype({
-                            name: name,
-                        }));
-                    }
-                }}
-                title={'Enter new Metadata Type name'}
-                label={'New Metadata Type name'}
-                allowEnter
-            />
-            <Box mb={1}>
-                <Button
-                    onClick={() => setDialogOpen(true)}
-                    variant={'contained'}
-                    color={'primary'}
-                >
+  return (
+    <>
+      <TextInputDialog
+        open={dialogOpen}
+        onClose={name => {
+          setDialogOpen(false);
+          if (name) {
+            dispatch(Actions.add_metadatatype({
+              name: name,
+            }));
+          }
+        }}
+        title={'Enter new Metadata Type name'}
+        label={'New Metadata Type name'}
+        allowEnter
+      />
+      <Box mb={1}>
+        <Button
+          onClick={() => setDialogOpen(true)}
+          variant={'contained'}
+          color={'primary'}
+        >
                     Add Type
-                </Button>
-            </Box>
-        </>
-    );
+        </Button>
+      </Box>
+    </>
+  );
 }
 
 export default TypeAdder;

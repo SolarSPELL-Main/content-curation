@@ -14,36 +14,36 @@ import { Content } from 'js/types';
  * @returns A button for opening a dialog to add content.
  */
 function Add(): React.ReactElement {
-    const dispatch = useCCDispatch();
-    const [open, setOpen] = React.useState(false);
+  const dispatch = useCCDispatch();
+  const [open, setOpen] = React.useState(false);
 
-    return (
-        <>
-            <Button
-                variant={'contained'}
-                color={'primary'}
-                onClick={() => setOpen(true)}
-            >
+  return (
+    <>
+      <Button
+        variant={'contained'}
+        color={'primary'}
+        onClick={() => setOpen(true)}
+      >
                 Add Content
-            </Button>
-            <ContentForm
-                onSubmit={content => {
-                    setOpen(false);
+      </Button>
+      <ContentForm
+        onSubmit={content => {
+          setOpen(false);
 
-                    if (content) {
-                        // Cast Partial to Content since assumes validation
-                        // takes care of required fields
-                        dispatch(ContentActions.add_content(content as Content));
-                    }
+          if (content) {
+            // Cast Partial to Content since assumes validation
+            // takes care of required fields
+            dispatch(ContentActions.add_content(content as Content));
+          }
         
-                    // Clear newly added
-                    dispatch(MetadataActions.update_newly_added([]));
-                }}
-                open={open}
-                type={'add'}
-            />
-        </>
-    );
+          // Clear newly added
+          dispatch(MetadataActions.update_newly_added([]));
+        }}
+        open={open}
+        type={'add'}
+      />
+    </>
+  );
 }
 
 export default Add;

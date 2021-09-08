@@ -15,21 +15,21 @@ type LoaderProps = {
  * @returns A loading icon
  */
 function Loader({
-    open=true,
+  open=true,
 }: LoaderProps): React.ReactElement|null {
-    return open ? (
-        <Box
-            position="absolute"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            top = "50%"
-            right = "50%"
-            zIndex = "10001"
-        >
-            <CircularProgress color={'primary'} />
-        </Box>
-    ) : null;
+  return open ? (
+    <Box
+      position="absolute"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      top = "50%"
+      right = "50%"
+      zIndex = "10001"
+    >
+      <CircularProgress color={'primary'} />
+    </Box>
+  ) : null;
 }
 
 export default Loader;

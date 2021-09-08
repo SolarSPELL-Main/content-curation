@@ -3,7 +3,7 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 
 import { useCCSelector } from '../../../hooks';
-import { api, downloadFile } from '../../../utils';
+import { api, downloadFile } from '../../../utils/misc';
 import APP_URLS from '../../../urls';
 
 /**
@@ -14,24 +14,24 @@ import APP_URLS from '../../../urls';
  * @returns The export button.
  */
 function ExportSelected(): React.ReactElement {
-    const selected = useCCSelector(state => state.content.selected);
+  const selected = useCCSelector(state => state.content.selected);
 
-    return (
-        <Button
-            variant={'contained'}
-            color={'primary'}
-            onClick={() => {
-                const form = new FormData();
-                form.set("content", JSON.stringify(selected));
-                api.post(APP_URLS.EXPORT, form, {responseType: "blob"})
-                    .then(res => {
-                        downloadFile(res.data, "export.zip");
-                    });
-            }}
-        >
+  return (
+    <Button
+      variant={'contained'}
+      color={'primary'}
+      onClick={() => {
+        const form = new FormData();
+        form.set('content', JSON.stringify(selected));
+        api.post(APP_URLS.EXPORT, form, {responseType: 'blob'})
+          .then(res => {
+            downloadFile(res.data, 'export.zip');
+          });
+      }}
+    >
             Export
-        </Button>
-    )
+    </Button>
+  );
 }
 
 export default ExportSelected;

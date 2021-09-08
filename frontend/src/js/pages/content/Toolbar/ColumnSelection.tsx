@@ -30,150 +30,150 @@ type ColumnSelectionProps = {
  * @returns A button associated with a dialog for column selection.
  */
 function ColumnSelection({
-    onClose,
-    initialColumns,
+  onClose,
+  initialColumns,
 }: ColumnSelectionProps): React.ReactElement {
-    const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
-    const [open, setOpen] = React.useState(false);
+  const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
+  const [open, setOpen] = React.useState(false);
 
-    return (
-        <>
-            <Button
-                variant={'contained'}
-                color={'primary'}
-                onClick={() => setOpen(true)}
-                style={{ marginRight: "0px" }}
-            >
+  return (
+    <>
+      <Button
+        variant={'contained'}
+        color={'primary'}
+        onClick={() => setOpen(true)}
+        style={{ marginRight: '0px' }}
+      >
                 Column Select
-            </Button>
-            <ContentColumnSelection<Content, MetadataType>
-                open={open}
-                onClose={cols => {
-                    setOpen(false);
-                    onClose(cols);
-                }}
-                fields={[
-                    {
-                        field: 'creator',
-                        title: 'Created By',
-                    },
-                    {
-                        field: 'createdDate',
-                        title: 'Created On',
-                    },
-                    {
-                        field: 'copyrightApproved',
-                        title: 'Copyright Approved',
-                        column: (field, hidden) => ({
-                            field: field.field,
-                            headerName: field.title,
-                            flex: 1,
-                            disableColumnMenu: true,
-                            filterable: false,
-                            hide: hidden,
-                            renderCell: params => (
-                                <SvgIcon
-                                    htmlColor={!!params.getValue(
-                                        params.id, field.field
-                                    ) ?
-                                        'green'
-                                        :
-                                        'darkRed'
-                                    }
-                                    style={{
-                                        marginLeft: '1em',
-                                    }}
-                                >
-                                    {!!params.getValue(
-                                        params.id, field.field
-                                    ) ?
-                                        <CheckCircleOutline />
-                                        :
-                                        <HighlightOff />
-                                    }
-                                </SvgIcon>
-                            )
-                        }),
-                    },
-                    {
-                        field: 'copyrighter',
-                        title: 'Copyrighted By',
-                    },
-                    {
-                        field: 'status',
-                        title: 'Status',
-                        column: (field, hidden) => ({
-                            field: field.field,
-                            headerName: field.title,
-                            flex: 1,
-                            disableColumnMenu: true,
-                            filterable: false,
-                            hide: hidden,
-                        }),
-                    },
-                    {
-                        field: 'reviewer',
-                        title: 'Reviewed By',
-                    },
-                    {
-                        field: 'reviewedDate',
-                        title: 'Reviewed On',
-                    },
-                    {
-                        field: 'fileURL',
-                        title: 'File URL',
-                        column: (field, hidden) => ({
-                            field: field.field,
-                            headerName: field.title,
-                            flex: 1,
-                            disableColumnMenu: true,
-                            filterable: false,
-                            hide: hidden,
-                            renderCell: (params) => {
-                                const url = params.formattedValue as string;
+      </Button>
+      <ContentColumnSelection<Content, MetadataType>
+        open={open}
+        onClose={cols => {
+          setOpen(false);
+          onClose(cols);
+        }}
+        fields={[
+          {
+            field: 'creator',
+            title: 'Created By',
+          },
+          {
+            field: 'createdDate',
+            title: 'Created On',
+          },
+          {
+            field: 'copyrightApproved',
+            title: 'Copyright Approved',
+            column: (field, hidden) => ({
+              field: field.field,
+              headerName: field.title,
+              flex: 1,
+              disableColumnMenu: true,
+              filterable: false,
+              hide: hidden,
+              renderCell: params => (
+                <SvgIcon
+                  htmlColor={params.getValue(
+                    params.id, field.field
+                  ) ?
+                    'green'
+                    :
+                    'darkRed'
+                  }
+                  style={{
+                    marginLeft: '1em',
+                  }}
+                >
+                  {params.getValue(
+                    params.id, field.field
+                  ) ?
+                    <CheckCircleOutline />
+                    :
+                    <HighlightOff />
+                  }
+                </SvgIcon>
+              ),
+            }),
+          },
+          {
+            field: 'copyrighter',
+            title: 'Copyrighted By',
+          },
+          {
+            field: 'status',
+            title: 'Status',
+            column: (field, hidden) => ({
+              field: field.field,
+              headerName: field.title,
+              flex: 1,
+              disableColumnMenu: true,
+              filterable: false,
+              hide: hidden,
+            }),
+          },
+          {
+            field: 'reviewer',
+            title: 'Reviewed By',
+          },
+          {
+            field: 'reviewedDate',
+            title: 'Reviewed On',
+          },
+          {
+            field: 'fileURL',
+            title: 'File URL',
+            column: (field, hidden) => ({
+              field: field.field,
+              headerName: field.title,
+              flex: 1,
+              disableColumnMenu: true,
+              filterable: false,
+              hide: hidden,
+              renderCell: (params) => {
+                const url = params.formattedValue as string;
 
-                                if (url) {
-                                    return (
-                                        <Link href={url} target={'_blank'}>
-                                            {url}
-                                        </Link>
-                                    )
-                                } else {
-                                    return null;
-                                }
-                            },
-                        }),
-                    },
-                    {
-                        field: 'filesize',
-                        title: 'File Size',
-                        column: (field, hidden) => ({
-                            field: field.field,
-                            headerName: field.title,
-                            flex: 1,
-                            disableColumnMenu: true,
-                            filterable: false,
-                            hide: hidden,
-                            valueFormatter: (params) => {
-                                const filesize = params.getValue(
-                                    params.id,
-                                    field.field
-                                ) as number;
+                if (url) {
+                  return (
+                    <Link href={url} target={'_blank'}>
+                      {url}
+                    </Link>
+                  );
+                } else {
+                  return null;
+                }
+              },
+            }),
+          },
+          {
+            field: 'filesize',
+            title: 'File Size',
+            column: (field, hidden) => ({
+              field: field.field,
+              headerName: field.title,
+              flex: 1,
+              disableColumnMenu: true,
+              filterable: false,
+              hide: hidden,
+              valueFormatter: (params) => {
+                const filesize = params.getValue(
+                  params.id,
+                  field.field
+                ) as number;
 
-                                if (filesize != null) {
-                                    return PrettyBytes(filesize);
-                                } else {
-                                    return null;
-                                }
-                            },
-                        }),
-                    },
-                ]}
-                metadataTypes={metadataTypes}
-                initialState={initialColumns}
-            />
-        </>
-    );
+                if (filesize != null) {
+                  return PrettyBytes(filesize);
+                } else {
+                  return null;
+                }
+              },
+            }),
+          },
+        ]}
+        metadataTypes={metadataTypes}
+        initialState={initialColumns}
+      />
+    </>
+  );
 }
 
 export default ColumnSelection;

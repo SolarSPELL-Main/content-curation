@@ -12,15 +12,15 @@ import Table from './Table';
  * @returns A page through which metadata and metadata types can be managed.
  */
 function Body(): React.ReactElement {
-    return (
-        <Box p={2}>
-            <ShowForPermission slice={'metadata'} permission={'create'}>
-                <TypeAdder />
-            </ShowForPermission>
-            <div style={{marginTop: "1em"}} />
-            <Table />
-        </Box>
-    );
+  return (
+    <Box p={2}>
+      <ShowForPermission slice={'metadata'} permission={'create'}>
+        <TypeAdder />
+      </ShowForPermission>
+      <div style={{marginTop: '1em'}} />
+      <Table />
+    </Box>
+  );
 }
 
 export default Body;

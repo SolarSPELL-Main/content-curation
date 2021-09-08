@@ -11,18 +11,18 @@ import { Tabs } from '../../enums';
  * @returns The full page.
  */
 function Page(): React.ReactElement {
-    const dispatch = useCCDispatch();
+  const dispatch = useCCDispatch();
 
-    React.useEffect(() => {
-        // Avoids accidentally adding metadata added from metadata tab
-        dispatch(MetadataActions.update_newly_added([]));
-        dispatch(GlobalActions.update_current_tab(Tabs.CONTENT));
-        dispatch(MetadataActions.fetch_metadatatype());
-    }, [dispatch]);
+  React.useEffect(() => {
+    // Avoids accidentally adding metadata added from metadata tab
+    dispatch(MetadataActions.update_newly_added([]));
+    dispatch(GlobalActions.update_current_tab(Tabs.CONTENT));
+    dispatch(MetadataActions.fetch_metadatatype());
+  }, [dispatch]);
 
-    return (
-        <Body />
-    );
+  return (
+    <Body />
+  );
 }
 
 export default Page;

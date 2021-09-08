@@ -48,3 +48,8 @@ Enter `exit()` to exit the django shell.
 
 12. You can now view the content curation site at `https://127.0.0.1:8000/static/index.html/`
 
+
+
+**ORM Model**
+![image](https://user-images.githubusercontent.com/65974841/129091217-05145df2-15d2-4f11-b7a8-1494f6893135.png)
+

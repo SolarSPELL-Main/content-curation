@@ -3,8 +3,8 @@ import React from 'react';
 import { Edit, Delete } from '@material-ui/icons';
 
 import {
-    ActionPanel as SolarSPELLActionPanel,
-    ActionPanelItem,
+  ActionPanel as SolarSPELLActionPanel,
+  ActionPanelItem,
 } from 'solarspell-react-lib';
 import * as Actions from '../../state/metadata';
 import { useCCDispatch } from '../../hooks';
@@ -26,48 +26,48 @@ type ActionPanelProps = {
  * @returns An action panel containing the Edit and Delete options for metadata.
  */
 function ActionPanel({
-    metadata,
-    metadataType,
+  metadata,
+  metadataType,
 }: ActionPanelProps): React.ReactElement {
-    const dispatch = useCCDispatch();
+  const dispatch = useCCDispatch();
 
-    return (
-        <SolarSPELLActionPanel>
-            <ShowForPermission slice={'metadata'} permission={'update'}>
-                <ActionPanelItem
-                    type={'text_input'}
-                    tooltip={'Edit'}
-                    icon={Edit}
-                    onAction={name =>
-                        dispatch(Actions.edit_metadata({
-                            name: name,
-                            id: metadata.id
-                        }))
-                    }
-                    textInputTitle={`Edit Metadata ${metadata.name}`}
-                    textInputLabel={'Metadata Name'}
-                    textInputDefaultValue={metadata.name}
-                    allowEnter
-                />
-            </ShowForPermission>
-            <ShowForPermission slice={'metadata'} permission={'delete'}>
-                <ActionPanelItem
-                    type={'confirm'}
-                    tooltip={'Delete'}
-                    icon={Delete}
-                    onAction={() =>
-                        dispatch(Actions.delete_metadata({
-                            type_id: metadata.metadataType.id,
-                            id: metadata.id,
-                            name: metadata.name,
-                        }))
-                    }
-                    confirmationTitle={`Delete Metadata item ${metadata.name} of type ${metadataType.name}?`}
-                    confirmationDescription={'WARNING: Deleting a metadata will also delete each of that metadata on every content and is irreversible.'}
-                />
-            </ShowForPermission>
-        </SolarSPELLActionPanel>
-    );
+  return (
+    <SolarSPELLActionPanel>
+      <ShowForPermission slice={'metadata'} permission={'update'}>
+        <ActionPanelItem
+          type={'text_input'}
+          tooltip={'Edit'}
+          icon={Edit}
+          onAction={name =>
+            dispatch(Actions.edit_metadata({
+              name: name,
+              id: metadata.id,
+            }))
+          }
+          textInputTitle={`Edit Metadata ${metadata.name}`}
+          textInputLabel={'Metadata Name'}
+          textInputDefaultValue={metadata.name}
+          allowEnter
+        />
+      </ShowForPermission>
+      <ShowForPermission slice={'metadata'} permission={'delete'}>
+        <ActionPanelItem
+          type={'confirm'}
+          tooltip={'Delete'}
+          icon={Delete}
+          onAction={() =>
+            dispatch(Actions.delete_metadata({
+              type_id: metadata.metadataType.id,
+              id: metadata.id,
+              name: metadata.name,
+            }))
+          }
+          confirmationTitle={`Delete Metadata item ${metadata.name} of type ${metadataType.name}?`}
+          confirmationDescription={'WARNING: Deleting a metadata will also delete each of that metadata on every content and is irreversible.'}
+        />
+      </ShowForPermission>
+    </SolarSPELLActionPanel>
+  );
 }
 
 export default ActionPanel;

@@ -257,11 +257,13 @@ def check_duplicate(request):
         )
 
 
+
 # Export content as CSV file
 @api_view(('POST',))
 @renderer_classes((JSONRenderer,))
 def zipdownloadcsv(request):
     # Parse string "[a,b,c]" into array [a, b, c]
+    print("zipdownloadcsv " , request.POST.get("content"))
     content_ids = [
         int(s) for s in request.POST.get("content", None)[1:-1].split(",")
     ]
@@ -291,6 +293,7 @@ def zipdownloadcsv(request):
         # Iterate through content objects, add CSV data to the CSV buffer and
         # the resepective files to the zip file
         content = Content.objects.filter(id__in=content_ids)
+
         with zipfile.ZipFile(
                 temp_zip, 'w', zipfile.ZIP_DEFLATED, allowZip64=True
         ) as zip_file:
@@ -353,3 +356,57 @@ def zipdownloadcsv(request):
         status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         error="Could not create temp file"
     )
+
+
+# bulk edit metdata in content
+@api_view(('POST',))
+@renderer_classes((JSONRenderer,))
+def bulk_edit_content(request):
+    print("bulk_edit_content")
+    print(request.GET)
+    content_ids = request.POST.get("to_edit")
+    old_metadata_id = request.POST.get("to_remove")
+    new_metadata_ids = request.POST.get("to_add")
+    print(content_ids, old_metadata_id, new_metadata_ids)
+    #content_ids = [
+    #    int(s) for s in request.POST.get("to_edit", None)[1:-1].split(",")
+    #]
+
+    #old_metadata_id = [
+    #    int(s) for s in
+    #    request.POST.get("to_remove", None)[1:-1].split(",")
+    #]
+
+    #new_metadata_ids = [
+    #    int(s) for s in
+    #    request.POST.get("to_add", None)[1:-1].split(",")
+    #]
+    """test like this
+    content_ids = [2, 1]
+    old_metadata_id =[11,13]
+    new_metadata_ids=[8]"""
+
+    for con_id in content_ids:
+        for meta_id in old_metadata_id:
+            for con in Content.objects.filter(id=con_id,metadata__id=meta_id):
+                # Remove old metadata id
+                con.metadata.remove(meta_id)
+                # Add new metadata id
+                con.metadata.add(new_metadata_ids)
+
+        # Display New values
+        for con in Content.objects.filter(id=con_id):
+            print("After : " )
+            for x in con.metadata_info():
+                print("ID are :" ,x["id"])
+
+    return build_response(
+        status=status.HTTP_200_OK,
+    )
+
+    #except Exception as e:
+    #    error = str(e)
+    #    logger.error(error)
+    #    return build_response(
+    #        status=status.HTTP_400_BAD_REQUEST,
+    #        error=error)

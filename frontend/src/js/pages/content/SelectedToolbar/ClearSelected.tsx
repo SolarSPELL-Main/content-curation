@@ -11,17 +11,17 @@ import { useCCDispatch } from '../../../hooks';
  * @returns A button.
  */
 function ClearSelected(): React.ReactElement {
-    const dispatch = useCCDispatch();
+  const dispatch = useCCDispatch();
 
-    return (
-        <Button
-            variant={'contained'}
-            color={'primary'}
-            onClick={() => dispatch(Actions.clear_selected())}
-        >
+  return (
+    <Button
+      variant={'contained'}
+      color={'primary'}
+      onClick={() => dispatch(Actions.clear_selected())}
+    >
             Clear Selection
-        </Button>
-    );
+    </Button>
+  );
 }
 
 export default ClearSelected;

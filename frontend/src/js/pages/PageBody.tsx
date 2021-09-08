@@ -15,9 +15,9 @@ import ProfileIcon from '../../assets/icons/profile.png';
 // Add Icon assets here if you would like it to appear in the homepage
 // Key values should be corresponding paths
 const icons = {
-    '/metadata': MetadataIcon,
-    '/content': ContentIcon,
-    '/profile': ProfileIcon,
+  '/metadata': MetadataIcon,
+  '/content': ContentIcon,
+  '/profile': ProfileIcon,
 };
 
 /**
@@ -26,25 +26,25 @@ const icons = {
  * @returns The page body of the web app.
  */
 export default function PageBody(): React.ReactElement {
-    // Add route paths down here to make them accessible on the page
-    // The home path ['/'] is all-consuming, so any unmatched URLs
-    // will redirect to that Route.
-    return (
-        <Suspense fallback={<Loader />}>
-            <Switch>
-                <Route path={'/content'}>
-                    <ContentPage />
-                </Route>
-                <Route path={'/metadata'}>
-                    <MetadataPage />
-                </Route>
-                <Route path={'/profile'}>
-                    <ProfilePage />
-                </Route>
-                <Route path={['/home', '/']}>
-                    <HomePage icons={icons} />
-                </Route>
-            </Switch>
-        </Suspense>
-    );
+  // Add route paths down here to make them accessible on the page
+  // The home path ['/'] is all-consuming, so any unmatched URLs
+  // will redirect to that Route.
+  return (
+    <Suspense fallback={<Loader />}>
+      <Switch>
+        <Route path={'/content'}>
+          <ContentPage />
+        </Route>
+        <Route path={'/metadata'}>
+          <MetadataPage />
+        </Route>
+        <Route path={'/profile'}>
+          <ProfilePage />
+        </Route>
+        <Route path={['/home', '/']}>
+          <HomePage icons={icons} />
+        </Route>
+      </Switch>
+    </Suspense>
+  );
 }
