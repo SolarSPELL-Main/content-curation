@@ -25,7 +25,8 @@ export default () => {
             actions={<></>}
         >
             <Typography>Add metadata</Typography>
-            {types.map(type => <ContentTagger
+            {types.map((type, idx) => <ContentTagger
+                key={idx}
                 creatable={false}
                 metadataType={type}
                 selected={type.id in to_edit ?
@@ -38,7 +39,8 @@ export default () => {
                 })}
             />)}
             <Typography>Remove metadata</Typography>
-            {types.map(type => <ContentTagger
+            {types.map((type, idx) => <ContentTagger
+                key={idx}
                 creatable={false}
                 metadataType={type}
                 selected={type.id in to_remove ?
