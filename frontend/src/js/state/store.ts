@@ -8,6 +8,7 @@ import { createEpicMiddleware } from 'redux-observable';
 
 import globalReducer from './global';
 import metadataReducer from './metadata';
+import copyrightReducer from './copyright';
 import contentReducer, {
   // Imported for exclusion from Redux serialization check
   add_content,
@@ -20,6 +21,7 @@ const reducer = combineReducers({
   global: globalReducer,
   metadata: metadataReducer,
   content: contentReducer,
+  copyright: copyrightReducer,
 });
 
 const dependencies = {
@@ -41,7 +43,7 @@ const store = configureStore({
         ignoredActions: [
           add_content.type,
           edit_content.type,
-        ],
+        ]
       },
     }),
     epicMiddleware,

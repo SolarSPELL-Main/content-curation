@@ -240,3 +240,11 @@ type Permissions = {
      */
     special: SpecialPermissions
 }
+
+type ContentPermissions = {
+    description: string
+    organization: string
+    date: string
+    permission_granted: boolean
+    requested_by: string
+}

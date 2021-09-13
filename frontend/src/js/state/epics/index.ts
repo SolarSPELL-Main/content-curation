@@ -25,6 +25,7 @@ import {
   updateFiltersEpic,
   bulk_edit_epic,
 } from './content';
+import {} from "./copyright"
 import * as Utils from './epicUtils';
 
 const epics = combineEpics(...[
