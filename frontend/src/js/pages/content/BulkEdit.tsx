@@ -22,9 +22,27 @@ export default () => {
             open={open}
             title={`Bulk Edit ${content_selected.length} Items`}
             onClose={_ => setOpen(false)}
-            actions={<></>}
+            actions={<>
+                <Button color="secondary" onClick={() => setOpen(false)}>Cancel</Button>
+                <Button
+                    onClick={() => {
+                        setOpen(false)
+                        dispatch(bulk_edit({
+                            to_add: Object.values(to_edit).reduce((acc, current) =>
+                                acc.concat(current), []
+                            ),
+                            to_remove: Object.values(to_remove)
+                                .reduce((acc, current) =>
+                                acc.concat(current), []
+                            )
+                        }))
+                    }}
+                >
+                    Edit
+                </Button>
+            </>}
         >
-            <Typography>Add metadata</Typography>
+            <Typography style={{minWidth: "400px"}}>Metadata to Add</Typography>
             {types.map((type, idx) => <ContentTagger
                 key={idx}
                 creatable={false}
@@ -38,7 +56,7 @@ export default () => {
                     draft[type.id] = tags
                 })}
             />)}
-            <Typography>Remove metadata</Typography>
+            <Typography style={{marginTop: "2em"}}>Metadata to Remove</Typography>
             {types.map((type, idx) => <ContentTagger
                 key={idx}
                 creatable={false}
@@ -52,22 +70,6 @@ export default () => {
                     draft[type.id] = tags
                 })}
             />)}
-            <Button
-                onClick={() => {
-                    setOpen(false)
-                    dispatch(bulk_edit({
-                        to_add: Object.values(to_edit).reduce((acc, current) =>
-                            acc.concat(current), []
-                        ),
-                        to_remove: Object.values(to_remove)
-                            .reduce((acc, current) =>
-                            acc.concat(current), []
-                        )
-                    }))
-                }}
-            >
-                Edit
-            </Button>
         </GenericDialog>
     </>
 }
