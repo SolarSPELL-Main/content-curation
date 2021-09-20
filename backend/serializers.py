@@ -1,34 +1,37 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework.validators import UniqueTogetherValidator
 
-from backend.models import Metadata, MetadataType, Content, Profile
+from backend.models import Metadata, MetadataType, Content, Profile, Copyright, \
+    Organization
+
 
 class MetadataTypeSerializer(ModelSerializer):
     class Meta:
         model = MetadataType
-        #fields = '__all__'
-        fields=("id","name")
+        # fields = '__all__'
+        fields = ("id", "name")
 
 
 class MetadataSerializer(ModelSerializer):
-    #type = MetadataTypeSerializer()
+    # type = MetadataTypeSerializer()
     class Meta:
         validators = [
             UniqueTogetherValidator(
                 queryset=Metadata.objects.all(),
-                fields=["name","type"]
+                fields=["name", "type"]
             )
         ]
         model = Metadata
-        fields = ('id', 'name', 'type','metadataType')
+        fields = ('id', 'name', 'type', 'metadataType')
 
 
 class ContentSerializer(ModelSerializer):
-    #created_by = StringRelatedField()
+    # created_by = StringRelatedField()
     class Meta:
         model = Content
         fields = (
-            'id', 'file_name', 'title', 'content_file', 'description', 'metadata_info',
+            'id', 'file_name', 'title', 'content_file', 'description',
+            'metadata_info',
             'metadata', 'active', 'copyright_notes', 'rights_statement',
             'additional_notes', 'published_date', 'created_by', 'created_on',
             'reviewed_by', 'reviewed_on', 'copyright_approved',
@@ -44,3 +47,16 @@ class ProfileSerializer(ModelSerializer):
             'num_content',
         )
 
+
+class CopyrightSerializer(ModelSerializer):
+    class Meta:
+        model = Copyright
+        fields = (
+            'organization', 'copyright_source', 'date_contacted', 'response',
+            'date_of_response', 'user')
+
+
+class OrganizationSerializer(ModelSerializer):
+    class Meta:
+        model = Organization
+        fields = ('name', 'email')

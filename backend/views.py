@@ -26,9 +26,11 @@ import os
 from os.path import basename
 import tempfile
 
-from backend.models import MetadataType, Metadata, Content
+from backend.models import MetadataType, Metadata, Content, Copyright, \
+    Organization
 from backend.serializers import MetadataTypeSerializer, MetadataSerializer, \
-    ContentSerializer, ProfileSerializer
+    ContentSerializer, ProfileSerializer, CopyrightSerializer, \
+    OrganizationSerializer
 from backend.standardize_format import build_response
 
 from .filters import ContentFilter
@@ -365,13 +367,13 @@ def bulk_edit_content(request):
     content_ids = request.data.get("to_edit")
     old_metadata_id = request.data.get("to_remove")
     new_metadata_ids = request.data.get("to_add")
-
+    print(request.data.get("to_add").type)
     try:
         for con_id in content_ids:
             if (len(old_metadata_id)) > 0:
                 for meta_id in old_metadata_id:
                     for con in Content.objects.filter(
-                        id=con_id, metadata__id=meta_id
+                            id=con_id, metadata__id=meta_id
                     ):
                         # Remove old metadata id
 
@@ -395,3 +397,15 @@ def bulk_edit_content(request):
     return build_response(
         status=status.HTTP_200_OK
     )
+
+
+class CopyrightViewSet(StandardDataView, viewsets.ModelViewSet):
+    permissions_classes = [DjangoModelPermissions]
+    queryset = Copyright.objects.all()
+    serializer_class = CopyrightSerializer
+
+
+class OrganizationViewSet(StandardDataView, viewsets.ModelViewSet):
+    permissions_classes = [DjangoModelPermissions]
+    queryset = Organization.objects.all()
+    serializer_class = OrganizationSerializer

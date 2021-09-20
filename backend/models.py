@@ -1,4 +1,3 @@
-
 import datetime
 import logging
 from hashlib import sha256
@@ -11,7 +10,6 @@ from django.contrib.auth.models import User
 
 from backend.validators import validate_unique_filename
 from backend.enums import STATUS
-
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +69,7 @@ class Content(models.Model):
     # duplicatable = models.BooleanField(default=0)
     # Cataloger/Curator from loggedIn
     created_by = models.ForeignKey(
-       User, default=None, null=True, on_delete=models.SET_DEFAULT,
+        User, default=None, null=True, on_delete=models.SET_DEFAULT,
     )
     created_on = models.DateField(default=datetime.date.today, null=True)
     # further modified by curators/metadataaides/library specialist(s)to edit the filename and metadata record
@@ -85,7 +83,7 @@ class Content(models.Model):
     copyright_by = models.TextField(null=True)
     copyright_on = models.DateField(default=datetime.date.today, null=True)
     copyright_site = models.TextField(null=True)
-    original_source = models.TextField(null=True)
+    original_source = models.TextField(unique=True, null=True)
     status = models.CharField(
         max_length=32,
         choices=STATUS,
@@ -107,6 +105,9 @@ class Content(models.Model):
             "type": metadata.type.id
         } for metadata in self.metadata.all()]
 
+    def __str__(self):
+        return str(self.original_source)
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -120,6 +121,27 @@ def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
 
+
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+
+
+class Organization(models.Model):
+    name = models.CharField(max_length=200)
+    email = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class Copyright(models.Model):
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    copyright_source = models.ForeignKey(Content, on_delete=models.CASCADE )
+    date_contacted = models.DateField(default=datetime.date.today, null=True)
+    response = models.BooleanField(default=1)
+    date_of_response = models.DateField(default=datetime.date.today, null=True)
+    user = models.ForeignKey(
+        User, default=None, null=True, on_delete=models.SET_DEFAULT,
+    )
+
