@@ -1,4 +1,5 @@
 from django.db.utils import IntegrityError
+from django.db.models import Model
 from django.shortcuts import render
 from django.http.response import HttpResponse
 
@@ -362,11 +363,9 @@ def zipdownloadcsv(request):
 @api_view(('POST',))
 @renderer_classes((JSONRenderer,))
 def bulk_edit_content(request):
-    print("bulk_edit_content")
-    print(request.GET)
-    content_ids = request.POST.get("to_edit")
-    old_metadata_id = request.POST.get("to_remove")
-    new_metadata_ids = request.POST.get("to_add")
+    content_ids = request.data.get("to_edit")
+    old_metadata_id = request.data.get("to_remove")
+    new_metadata_ids = request.data.get("to_add")
     print(content_ids, old_metadata_id, new_metadata_ids)
     #content_ids = [
     #    int(s) for s in request.POST.get("to_edit", None)[1:-1].split(",")
@@ -387,12 +386,17 @@ def bulk_edit_content(request):
     new_metadata_ids=[8]"""
 
     for con_id in content_ids:
-        for meta_id in old_metadata_id:
-            for con in Content.objects.filter(id=con_id,metadata__id=meta_id):
-                # Remove old metadata id
-                con.metadata.remove(meta_id)
-                # Add new metadata id
-                con.metadata.add(new_metadata_ids)
+        try:
+            con = Content.objects.get(id=con_id)
+            # Remove old metadata id
+            con.metadata.remove(*old_metadata_id)
+            # Add new metadata id
+            con.metadata.add(*new_metadata_ids)
+        except Model.DoesNotExist:
+            return build_response(
+                status=status.HTTP_400_BAD_REQUEST,
+                error="Invalid Content ID"
+            )
 
         # Display New values
         for con in Content.objects.filter(id=con_id):

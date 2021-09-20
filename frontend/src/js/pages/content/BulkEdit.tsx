@@ -53,14 +53,18 @@ export default () => {
                 })}
             />)}
             <Button
-                onClick={() => dispatch(bulk_edit({
-                    to_add: Object.values(to_edit).reduce((acc, current) =>
-                        acc.concat(current), []
-                    ),
-                    to_remove: Object.values(to_remove).reduce((acc, current) =>
-                        acc.concat(current), []
-                    )
-                }))}
+                onClick={() => {
+                    setOpen(false)
+                    dispatch(bulk_edit({
+                        to_add: Object.values(to_edit).reduce((acc, current) =>
+                            acc.concat(current), []
+                        ),
+                        to_remove: Object.values(to_remove)
+                            .reduce((acc, current) =>
+                            acc.concat(current), []
+                        )
+                    }))
+                }}
             >
                 Edit
             </Button>

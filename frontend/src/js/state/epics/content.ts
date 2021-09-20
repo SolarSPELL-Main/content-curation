@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { from } from 'rxjs';
+import { from, merge, of } from 'rxjs';
 import { filter, map, mergeMap, mapTo, debounceTime } from 'rxjs/operators';
 
 import {
@@ -220,11 +220,19 @@ const updateFiltersEpic: MyEpic = action$ =>
 const bulk_edit_epic: MyEpic = (action$, state$, { api }) =>
     action$.pipe(
         filter(bulk_edit.match),
-        mergeMap(({ payload }) => fromWrapper(api.post(APP_URLS.BULK_EDIT, {
-            to_edit: state$.value.content.selected,
-            to_add: payload.to_add.map(meta => meta.id),
-            to_remove: payload.to_remove.map(meta => meta.id)
-        })))
+        mergeMap(({ payload }) => merge(
+            fromWrapper(api.post(APP_URLS.BULK_EDIT, {
+                to_edit: state$.value.content.selected,
+                to_add: payload.to_add.map(meta => meta.id),
+                to_remove: payload.to_remove.map(meta => meta.id)
+            })),
+            of(fetch_content()),
+            of(show_toast({
+                message: `Successfully edited content.`,
+                severity: "success",
+                key: Math.random(),
+            })),
+        ))
     )
 
 
