@@ -6,14 +6,14 @@ from rest_framework import routers
 
 from .views import MetadataTypeViewSet, MetadataViewSet, \
     ContentViewSet, get_user, search, check_duplicate, zipdownloadcsv,\
-    bulk_edit_content,CopyrightViewSet,OrganizationViewSet
+    bulk_edit_content,CopyrightPermissionViewSet,OrganizationViewSet
 
 router = routers.DefaultRouter()
 router.register(r'metadata', MetadataViewSet, basename='metadata')
 router.register(r'metadata_types', MetadataTypeViewSet,
                 basename='metadata_types')
 router.register(r'content', ContentViewSet, basename='content')
-router.register(r'copyright',CopyrightViewSet, basename ='copyright')
+router.register(r'copyright',CopyrightPermissionViewSet, basename ='copyright')
 router.register(r'organization',OrganizationViewSet, basename='organization')
 
 urlpatterns = [

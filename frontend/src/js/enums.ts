@@ -27,4 +27,5 @@ export enum Tabs {
     METADATA='metadata',
     CONTENT='content',
     PROFILE='profile',
+    COPYRIGHT='copyright',
 }

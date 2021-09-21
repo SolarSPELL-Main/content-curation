@@ -128,19 +128,20 @@ def save_user_profile(sender, instance, **kwargs):
 
 
 class Organization(models.Model):
-    name = models.CharField(max_length=200)
-    email = models.CharField(max_length=100)
+    name = models.CharField(max_length=256)
+    email = models.CharField(max_length=256)
+    website = models.CharField(max_length=2048, null=True)
 
     def __str__(self):
         return self.name
 
 
-class Copyright(models.Model):
+class CopyrightPermission(models.Model):
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    copyright_source = models.ForeignKey(Content, on_delete=models.CASCADE )
     date_contacted = models.DateField(default=datetime.date.today, null=True)
-    response = models.BooleanField(default=1)
+    granted = models.BooleanField(default=False)
     date_of_response = models.DateField(default=datetime.date.today, null=True)
+    description = models.TextField(null=True)
     user = models.ForeignKey(
         User, default=None, null=True, on_delete=models.SET_DEFAULT,
     )

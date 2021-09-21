@@ -68,6 +68,14 @@ const tabDescriptors: TabDescriptor[] = [
       value: Tabs.CONTENT,
     },
   },
+    {
+        props: {
+            component: RouterLink,
+            to: '/copyright',
+            label: 'Copyright',
+            value: Tabs.COPYRIGHT,
+        }
+    },
   {
     props: {
       component: RouterLink,

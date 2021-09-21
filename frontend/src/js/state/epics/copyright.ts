@@ -19,7 +19,9 @@ const addCopyrightEpic: MyEpic = (action$, _, { api }) =>
       const copyright = action.payload;
       const req = api.post("/api/copyrightpermission/", copyright);
       return fromWrapper(
-        from(req).pipe(map((_) => fetch_copyright())),
+        from(req).pipe(
+            map(_ => fetch_copyright())
+        ),
         show_toast({
           message: "Added copyright",
           key: Math.random(),
@@ -32,7 +34,7 @@ const addCopyrightEpic: MyEpic = (action$, _, { api }) =>
 const deleteCopyrightEpic: MyEpic = (action$, _, { api }) =>
   action$.pipe(
     filter(delete_copyright.match),
-    mergeMap((action) => {
+    mergeMap(action => {
       let payload = action.payload;
 
       // If not array, convert single content ID to array
@@ -44,9 +46,11 @@ const deleteCopyrightEpic: MyEpic = (action$, _, { api }) =>
       return fromWrapper(
         from(
           Promise.all(
-            payload.map((id) => api.delete(`/api/copyrightpermission/${id}/`))
+            payload.map(id => api.delete(`/api/copyrightpermission/${id}/`))
           )
-        ).pipe(map((_res) => fetch_copyright())),
+        ).pipe(
+            map(_res => fetch_copyright())
+        ),
         show_toast({
           message: "Deleted copyright",
           key: Math.random(),
@@ -60,7 +64,7 @@ const deleteCopyrightEpic: MyEpic = (action$, _, { api }) =>
 const fetchCopyrightEpic: MyEpic = (action$, _, { api }) =>
   action$.pipe(
     filter(fetch_copyright.match),
-    mergeMap((_) =>
+    mergeMap(_ =>
       fromWrapper(
         from(api.get("/api/copyrightpermission/")).pipe(
           map(({ data }) => update_copyright(data.data.items))
@@ -73,7 +77,7 @@ const fetchCopyrightEpic: MyEpic = (action$, _, { api }) =>
 const editCopyrightEpic: MyEpic = (action$, _, { api }) =>
   action$.pipe(
     filter(edit_copyright.match),
-    mergeMap((action) =>
+    mergeMap(action =>
       fromWrapper(
         from(
           api.patch(`/api/copyrightpermission/${action.payload.description}/`, {
@@ -83,7 +87,9 @@ const editCopyrightEpic: MyEpic = (action$, _, { api }) =>
             permission_granted: action.payload.permission_granted,
             requested_by: action.payload.requested_by,
           })
-        ).pipe(map((_res) => fetch_copyright())),
+        ).pipe(
+            map(_res => fetch_copyright())
+        ),
         show_toast({
           message: "Edited copyright",
           key: Math.random(),

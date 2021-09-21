@@ -26,10 +26,10 @@ import os
 from os.path import basename
 import tempfile
 
-from backend.models import MetadataType, Metadata, Content, Copyright, \
+from backend.models import MetadataType, Metadata, Content, CopyrightPermission, \
     Organization
 from backend.serializers import MetadataTypeSerializer, MetadataSerializer, \
-    ContentSerializer, ProfileSerializer, CopyrightSerializer, \
+    ContentSerializer, ProfileSerializer, CopyrightPermissionSerializer, \
     OrganizationSerializer
 from backend.standardize_format import build_response
 
@@ -399,10 +399,10 @@ def bulk_edit_content(request):
     )
 
 
-class CopyrightViewSet(StandardDataView, viewsets.ModelViewSet):
+class CopyrightPermissionViewSet(StandardDataView, viewsets.ModelViewSet):
     permissions_classes = [DjangoModelPermissions]
-    queryset = Copyright.objects.all()
-    serializer_class = CopyrightSerializer
+    queryset = CopyrightPermission.objects.all()
+    serializer_class = CopyrightPermissionSerializer
 
 
 class OrganizationViewSet(StandardDataView, viewsets.ModelViewSet):

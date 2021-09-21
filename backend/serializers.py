@@ -1,8 +1,8 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework.validators import UniqueTogetherValidator
 
-from backend.models import Metadata, MetadataType, Content, Profile, Copyright, \
-    Organization
+from backend.models import Metadata, MetadataType, Content, Profile, \
+    CopyrightPermission, Organization
 
 
 class MetadataTypeSerializer(ModelSerializer):
@@ -48,15 +48,15 @@ class ProfileSerializer(ModelSerializer):
         )
 
 
-class CopyrightSerializer(ModelSerializer):
+class CopyrightPermissionSerializer(ModelSerializer):
     class Meta:
-        model = Copyright
+        model = CopyrightPermission
         fields = (
-            'organization', 'copyright_source', 'date_contacted', 'response',
+            'organization', 'description', 'date_contacted', 'granted',
             'date_of_response', 'user')
 
 
 class OrganizationSerializer(ModelSerializer):
     class Meta:
         model = Organization
-        fields = ('name', 'email')
+        fields = ('name', 'email', 'website')
