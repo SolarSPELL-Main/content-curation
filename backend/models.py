@@ -102,7 +102,9 @@ class Content(models.Model):
     copyright_by = models.TextField(null=True)
     copyright_on = models.DateField(default=datetime.date.today, null=True)
     copyright_site = models.TextField(null=True)
-    copyright = models.ForeignKey(CopyrightPermission, on_delete=models.CASCADE)
+    copyright = models.ForeignKey(
+        CopyrightPermission, on_delete=models.CASCADE, null=True
+    )
     original_source = models.TextField(unique=True, null=True)
     status = models.CharField(
         max_length=32,
