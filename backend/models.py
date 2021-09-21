@@ -36,6 +36,25 @@ class Metadata(models.Model):
     def __str__(self):
         return f'[{self.type}]{self.name}'
 
+class Organization(models.Model):
+    name = models.CharField(max_length=256)
+    email = models.CharField(max_length=256)
+    website = models.CharField(max_length=2048, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class CopyrightPermission(models.Model):
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    date_contacted = models.DateField(default=datetime.date.today, null=True)
+    granted = models.BooleanField(default=False)
+    date_of_response = models.DateField(default=datetime.date.today, null=True)
+    description = models.TextField(null=True)
+    user = models.ForeignKey(
+        User, default=None, null=True, on_delete=models.SET_DEFAULT,
+    )
+
 
 class Content(models.Model):
     def set_file_name(self, file_name):
@@ -83,6 +102,7 @@ class Content(models.Model):
     copyright_by = models.TextField(null=True)
     copyright_on = models.DateField(default=datetime.date.today, null=True)
     copyright_site = models.TextField(null=True)
+    copyright = models.ForeignKey(CopyrightPermission, on_delete=models.CASCADE)
     original_source = models.TextField(unique=True, null=True)
     status = models.CharField(
         max_length=32,
@@ -126,23 +146,4 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
 
-
-class Organization(models.Model):
-    name = models.CharField(max_length=256)
-    email = models.CharField(max_length=256)
-    website = models.CharField(max_length=2048, null=True)
-
-    def __str__(self):
-        return self.name
-
-
-class CopyrightPermission(models.Model):
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    date_contacted = models.DateField(default=datetime.date.today, null=True)
-    granted = models.BooleanField(default=False)
-    date_of_response = models.DateField(default=datetime.date.today, null=True)
-    description = models.TextField(null=True)
-    user = models.ForeignKey(
-        User, default=None, null=True, on_delete=models.SET_DEFAULT,
-    )
 
