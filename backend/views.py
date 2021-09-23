@@ -33,7 +33,7 @@ from backend.serializers import MetadataTypeSerializer, MetadataSerializer, \
     OrganizationSerializer
 from backend.standardize_format import build_response
 
-from .filters import ContentFilter
+from .filters import ContentFilter, CopyrightPermissionFilter
 import logging
 
 logger = logging.getLogger(__name__)
@@ -400,6 +400,8 @@ class CopyrightPermissionViewSet(StandardDataView, viewsets.ModelViewSet):
     permissions_classes = [DjangoModelPermissions]
     queryset = CopyrightPermission.objects.all()
     serializer_class = CopyrightPermissionSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = CopyrightPermissionFilter
 
 
 class OrganizationViewSet(StandardDataView, viewsets.ModelViewSet):
