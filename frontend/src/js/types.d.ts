@@ -238,14 +238,18 @@ type Permissions = {
 };
 
 type ContentPermissions = {
+  id: number,
   description: string;
   organization: Organization;
-  date: string;
-  permission_granted: boolean;
-  requested_by: string;
+  date_contacted: string;
+  date_of_response: string;
+  granted: boolean;
+  user: string;
 };
 
 type Organization = {
+  id: number;
   name: string;
   email: string;
+  website: string;
 };

@@ -80,12 +80,14 @@ const editCopyrightEpic: MyEpic = (action$, _, { api }) =>
     mergeMap(action =>
       fromWrapper(
         from(
-          api.patch(`/api/copyrightpermission/${action.payload.description}/`, {
+          api.patch(`/api/copyrightpermission/${action.payload.id}/`, {
+            id: action.payload.id,
             description: action.payload.description,
             organization: action.payload.organization,
-            date: action.payload.date,
-            permission_granted: action.payload.permission_granted,
-            requested_by: action.payload.requested_by,
+            date_contacted: action.payload.date_contacted,
+            date_of_response: action.payload.date_of_response,
+            granted: action.payload.granted,
+            user: action.payload.user,
           })
         ).pipe(
             map(_res => fetch_copyright())

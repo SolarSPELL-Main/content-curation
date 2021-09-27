@@ -76,9 +76,11 @@ const editOrganizationEpic: MyEpic = (action$, _, { api }) =>
     mergeMap((action) =>
       fromWrapper(
         from(
-          api.patch(`/api/organization/${action.payload.name}/`, {
+          api.patch(`/api/organization/${action.payload.id}/`, {
+            id: action.payload.id,
             name: action.payload.name,
             email: action.payload.email,
+            website: action.payload.website,
           })
         ).pipe(map((_res) => fetch_organization())),
         show_toast({
