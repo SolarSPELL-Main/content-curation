@@ -33,7 +33,7 @@ from backend.serializers import MetadataTypeSerializer, MetadataSerializer, \
     OrganizationSerializer
 from backend.standardize_format import build_response
 
-from .filters import ContentFilter
+from .filters import ContentFilter, CopyrightPermissionFilter
 import logging
 
 logger = logging.getLogger(__name__)
@@ -367,7 +367,7 @@ def bulk_edit_content(request):
     content_ids = request.data.get("to_edit")
     old_metadata_id = request.data.get("to_remove")
     new_metadata_ids = request.data.get("to_add")
-    print(request.data.get("to_add").type)
+
     try:
         for con_id in content_ids:
             if (len(old_metadata_id)) > 0:
@@ -376,16 +376,13 @@ def bulk_edit_content(request):
                             id=con_id, metadata__id=meta_id
                     ):
                         # Remove old metadata id
-
                         con.metadata.remove(meta_id)
-                        for new_meta_id in new_metadata_ids:
-                            # Add new metadata id
-                            con.metadata.add(new_meta_id)
+                        # Add new metadata id
+                        con.metadata.add(*new_metadata_ids)
+
             else:
                 for con in Content.objects.filter(id=con_id):
-                    for new_meta_id in new_metadata_ids:
-                        # Add ONLY new metadata id in bulk edit
-                        con.metadata.add(new_meta_id)
+                    con.metadata.add(*new_metadata_ids)
 
     except Exception as e:
         error = str(e)
@@ -403,6 +400,8 @@ class CopyrightPermissionViewSet(StandardDataView, viewsets.ModelViewSet):
     permissions_classes = [DjangoModelPermissions]
     queryset = CopyrightPermission.objects.all()
     serializer_class = CopyrightPermissionSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = CopyrightPermissionFilter
 
 
 class OrganizationViewSet(StandardDataView, viewsets.ModelViewSet):

@@ -1,4 +1,4 @@
-from .models import Content, Metadata
+from .models import Content, Metadata, CopyrightPermission, Organization
 from .enums import STATUS
 
 from django_filters import rest_framework as filters
@@ -57,4 +57,44 @@ class ContentFilter(filters.FilterSet):
             'metadata', 'created_on', 'created_by', 'modified_on',
             'modified_by', 'reviewed_on', 'reviewed_by', 'status',
             'published_date', 'active', 'copyright_approved',
+        ]
+
+
+class CopyrightPermissionFilter(filters.FilterSet):
+    organization = filters.ModelMultipleChoiceFilter(
+        queryset=Organization.objects.all(),
+        method="filter_organization",
+        widget=forms.CheckboxSelectMultiple)
+
+    date_contacted = filters.DateFromToRangeFilter(
+        widget=RangeWidget(attrs={'type': 'date'}))
+
+    granted = filters.BooleanFilter(
+        widget=BooleanWidget())
+
+    date_of_response = filters.DateFromToRangeFilter(
+        widget=RangeWidget(attrs={'type': 'date'}))
+
+    description = filters.CharFilter(lookup_expr='icontains')
+
+    user = filters.ModelChoiceFilter(
+        queryset=get_user_model().objects.all()
+    )
+
+    def filter_organization(self, queryset, name, value):
+        if not value:
+            return queryset
+
+        organization_list = self.data.getlist('organization')
+
+        for m in organization_list:
+            queryset = queryset.filter(organization__pk=m)
+
+        return queryset
+
+    class Meta:
+        model = CopyrightPermission
+        fields = [
+            'organization', 'description', 'date_contacted', 'granted',
+            'date_of_response', 'user'
         ]
