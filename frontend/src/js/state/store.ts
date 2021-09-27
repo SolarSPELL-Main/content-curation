@@ -3,25 +3,27 @@ import {
   getDefaultMiddleware,
   combineReducers,
   AnyAction,
-} from '@reduxjs/toolkit';
-import { createEpicMiddleware } from 'redux-observable';
+} from "@reduxjs/toolkit";
+import { createEpicMiddleware } from "redux-observable";
 
-import globalReducer from './global';
-import metadataReducer from './metadata';
-import copyrightReducer from './copyright';
+import globalReducer from "./global";
+import metadataReducer from "./metadata";
+import copyrightReducer from "./copyright";
+import organizationReducer from "./organization";
 import contentReducer, {
   // Imported for exclusion from Redux serialization check
   add_content,
   edit_content,
-} from './content';
-import epics from './epics';
-import { api } from '../utils/misc';
+} from "./content";
+import epics from "./epics";
+import { api } from "../utils/misc";
 
 const reducer = combineReducers({
   global: globalReducer,
   metadata: metadataReducer,
   content: contentReducer,
   copyright: copyrightReducer,
+  organization: organizationReducer,
 });
 
 const dependencies = {
@@ -40,10 +42,7 @@ const store = configureStore({
       serializableCheck: {
         // May include Files, hence serialization check
         // should be ignored for these actions
-        ignoredActions: [
-          add_content.type,
-          edit_content.type,
-        ]
+        ignoredActions: [add_content.type, edit_content.type],
       },
     }),
     epicMiddleware,
@@ -53,7 +52,7 @@ const store = configureStore({
 epicMiddleware.run(epics);
 
 export default store;
-export type RootState = ReturnType<typeof store.getState>
-export type MyState = ReturnType<typeof reducer>
-export type Dispatch = typeof store.dispatch
-export type Dependencies = typeof dependencies
+export type RootState = ReturnType<typeof store.getState>;
+export type MyState = ReturnType<typeof reducer>;
+export type Dispatch = typeof store.dispatch;
+export type Dependencies = typeof dependencies;

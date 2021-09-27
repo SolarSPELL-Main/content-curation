@@ -27,6 +27,12 @@ import {
   fetchCopyrightEpic,
   editCopyrightEpic,
 } from "./copyright";
+import {
+  addOrganizationEpic,
+  deleteOrganizationEpic,
+  fetchOrganizationEpic,
+  editOrganizationEpic,
+} from "./organization";
 import * as Utils from "./epicUtils";
 
 const epics = combineEpics(
@@ -54,6 +60,10 @@ const epics = combineEpics(
     deleteCopyrightEpic,
     fetchCopyrightEpic,
     editCopyrightEpic,
+    addOrganizationEpic,
+    deleteOrganizationEpic,
+    fetchOrganizationEpic,
+    editOrganizationEpic,
   ].map(Utils.errorCatcher)
 );
 

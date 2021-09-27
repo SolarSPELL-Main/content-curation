@@ -28,4 +28,5 @@ export enum Tabs {
     CONTENT='content',
     PROFILE='profile',
     COPYRIGHT='copyright',
+    ORGANIZATIONS='organizations',
 }
