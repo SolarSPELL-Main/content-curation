@@ -241,10 +241,19 @@ type Permissions = {
     special: SpecialPermissions
 }
 
+type Organization = {
+    name: string,
+    website: string, 
+    email: string | null,
+}
+
 type ContentPermissions = {
+    id: number
     description: string
-    organization: string
-    date: string
-    permission_granted: boolean
-    requested_by: string
+    organization: number
+    date_contacted: string
+    granted: boolean
+    date_of_response: string
+    user: number
+    organization_info: Organization
 }

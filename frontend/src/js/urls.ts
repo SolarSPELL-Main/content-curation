@@ -3,6 +3,8 @@ export default {
   BUG_REPORT: 'https://docs.google.com/forms/d/e/'
         + '1FAIpQLScdPbE0AGVuNCvhy2gnTvmVNyQcQtd4vt6zBjjBgAwprb4VKg/viewform',
   BULK_EDIT: '/api/bulk_edit_content/',
+  COPYRIGHT_LIST: '/api/copyright/',
+  COPYRIGHT: (id: number) => `/api/copyright/${id}/`,
   EXPORT: '/api/export/',
   LOGIN_GOOGLE: '/accounts/google/login/',
   LOGOUT: '/accounts/logout/',
@@ -18,6 +20,8 @@ export default {
   METADATA_TYPE: (id: number): string => `/api/metadata_types/${id}/`,
   METADATA_TYPE_EXPORT: (id: number): string =>
     `/api/metadata_types/${id}/downloadAsCSV/`,
+  ORGANIZATION_LIST: '/api/organization/',
+  ORGANIZATION: (id: number) => `/api/organization/${id}/`,
   CONTENT_LIST: (queryString?: string): string => queryString ?
     '/api/content/?'.concat(queryString)
     :

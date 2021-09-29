@@ -53,7 +53,7 @@ class CopyrightPermissionSerializer(ModelSerializer):
         model = CopyrightPermission
         fields = (
             'organization', 'description', 'date_contacted', 'granted',
-            'date_of_response', 'user')
+            'date_of_response', 'user', 'id', "organization_info")
 
 
 class OrganizationSerializer(ModelSerializer):
