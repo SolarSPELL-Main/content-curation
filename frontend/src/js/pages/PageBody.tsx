@@ -7,7 +7,6 @@ const HomePage = lazy(() => import('./home'));
 const MetadataPage = lazy(() => import('./metadata'));
 const ContentPage = lazy(() => import('./content'));
 const CopyrightPage = lazy(() => import('./copyright'));
-const OrganizationsPage = lazy(() => import('./organizations'));
 const ProfilePage = lazy(() => import('./profile'));
 
 import MetadataIcon from '../../assets/icons/metadata.png';
@@ -44,9 +43,6 @@ export default function PageBody(): React.ReactElement {
         </Route>
         <Route path={'/copyright'}>
           <CopyrightPage />
-        </Route>
-        <Route path={'/organizations'}>
-          <OrganizationsPage />
         </Route>
         <Route path={'/profile'}>
           <ProfilePage />

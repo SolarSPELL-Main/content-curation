@@ -76,14 +76,6 @@ const tabDescriptors: TabDescriptor[] = [
             value: Tabs.COPYRIGHT,
         }
     },
-    {
-      props: {
-          component: RouterLink,
-          to: '/organizations',
-          label: 'Organizations',
-          value: Tabs.ORGANIZATIONS,
-      }
-  },
   {
     props: {
       component: RouterLink,

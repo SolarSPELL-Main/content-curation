@@ -84,7 +84,8 @@ const editCopyrightEpic: MyEpic = (action$, _, { api }) =>
           api.patch(APP_URLS.COPYRIGHT(action.payload.id), {
             description: action.payload.description,
             organization: action.payload.organization,
-            date: action.payload.date_contacted,
+            date_contacted: action.payload.date_contacted,
+            date_of_response: action.payload.date_of_response,
             granted: action.payload.granted,
             user: action.payload.user,
           })
