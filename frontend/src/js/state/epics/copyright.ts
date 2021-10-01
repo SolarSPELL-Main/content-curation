@@ -11,13 +11,14 @@ import {
   edit_copyright,
 } from "../copyright";
 import { show_toast } from "../global";
+import APP_URLS from "../../urls"
 
 const addCopyrightEpic: MyEpic = (action$, _, { api }) =>
   action$.pipe(
     filter(add_copyright.match),
     mergeMap((action) => {
       const copyright = action.payload;
-      const req = api.post("/api/copyrightpermission/", copyright);
+      const req = api.post(APP_URLS.COPYRIGHT_LIST, copyright);
       return fromWrapper(
         from(req).pipe(
             map(_ => fetch_copyright())
@@ -46,7 +47,7 @@ const deleteCopyrightEpic: MyEpic = (action$, _, { api }) =>
       return fromWrapper(
         from(
           Promise.all(
-            payload.map(id => api.delete(`/api/copyrightpermission/${id}/`))
+            payload.map(id => api.delete(APP_URLS.COPYRIGHT(id)))
           )
         ).pipe(
             map(_res => fetch_copyright())
@@ -66,7 +67,7 @@ const fetchCopyrightEpic: MyEpic = (action$, _, { api }) =>
     filter(fetch_copyright.match),
     mergeMap(_ =>
       fromWrapper(
-        from(api.get("/api/copyrightpermission/")).pipe(
+        from(api.get(APP_URLS.COPYRIGHT_LIST)).pipe(
           map(({ data }) => update_copyright(data.data.items))
         )
       )
@@ -80,12 +81,10 @@ const editCopyrightEpic: MyEpic = (action$, _, { api }) =>
     mergeMap(action =>
       fromWrapper(
         from(
-          api.patch(`/api/copyrightpermission/${action.payload.id}/`, {
-            id: action.payload.id,
+          api.patch(APP_URLS.COPYRIGHT(action.payload.id), {
             description: action.payload.description,
             organization: action.payload.organization,
-            date_contacted: action.payload.date_contacted,
-            date_of_response: action.payload.date_of_response,
+            date: action.payload.date_contacted,
             granted: action.payload.granted,
             user: action.payload.user,
           })

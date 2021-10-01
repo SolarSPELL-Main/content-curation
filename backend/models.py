@@ -54,6 +54,13 @@ class CopyrightPermission(models.Model):
     user = models.ForeignKey(
         User, default=None, null=True, on_delete=models.SET_DEFAULT,
     )
+    
+    def organization_info(self):
+        return {
+            "name": self.organization.name,
+            "email": self.organization.email,
+            "website": self.organization.website,
+        }
 
 
 class Content(models.Model):

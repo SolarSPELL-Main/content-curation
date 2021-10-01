@@ -237,6 +237,13 @@ type Permissions = {
   special: SpecialPermissions;
 };
 
+type Organization = {
+    id: number,
+    name: string,
+    website: string, 
+    email: string | null,
+}
+
 type ContentPermissions = {
   id: number,
   description: string;
@@ -247,9 +254,3 @@ type ContentPermissions = {
   user: string;
 };
 
-type Organization = {
-  id: number;
-  name: string;
-  email: string;
-  website: string;
-};
