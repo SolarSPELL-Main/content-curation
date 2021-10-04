@@ -247,10 +247,10 @@ type Organization = {
 type ContentPermissions = {
   id: number,
   description: string;
-  organization: Organization;
+  organization: number;
   date_contacted: string;
   date_of_response: string;
   granted: boolean;
-  user: string;
+  user: number;
 };
 
