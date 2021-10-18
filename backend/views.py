@@ -106,6 +106,17 @@ class MetadataTypeViewSet(StandardDataView, viewsets.ModelViewSet):
     @action(detail=True, methods=["GET"])
     def metadata(self, request, pk=None):
         queryset = Metadata.objects.filter(type_id=pk).order_by('name')
+        page = request.GET.get('page')
+        if page != None:
+            paginator = QuerySetPaginator(
+                queryset,
+                per_page=request.GET.get('page_size')
+            )
+            serializer = MetadataSerializer(paginator.page(page), many=True)
+            return build_response({
+                'total': queryset.count(),
+                'items': serializer.data,
+            })
         return build_response({
             'total': queryset.count(),
             'items': MetadataSerializer(
