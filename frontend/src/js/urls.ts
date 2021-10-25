@@ -12,7 +12,9 @@ export default {
   //api endpoint `/api/metadata_types/{type_id}/metadata/ ` returns all 
   // metadata of that type
   //to make it easier to support pagination later down the road
-  METADATA_BY_TYPE: (id: number): string =>
+  METADATA_BY_TYPE: (id: number, page: number, pageSize: number): string => (page && pageSize) ?
+    `/api/metadata_types/${id}/metadata/?` + 'page_size=' + pageSize + '&page=' + page
+    :
     `/api/metadata_types/${id}/metadata/`,
   METADATA_LIST: '/api/metadata/',
   // To ensure relatively consistent ordering, sort query param included
