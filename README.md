@@ -50,6 +50,7 @@ Enter `exit()` to exit the django shell.
 
 
 
-**ORM Model**
-![image](https://user-images.githubusercontent.com/65974841/129091217-05145df2-15d2-4f11-b7a8-1494f6893135.png)
+**ER Model**
+![image](https://user-images.githubusercontent.com/65974841/145308475-fd9fa50a-021e-40f3-af7c-4be6cbb70097.png)
+
 
