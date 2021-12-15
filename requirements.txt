@@ -2,10 +2,13 @@ asgiref==3.2.5
 certifi==2021.5.30
 cffi==1.14.5
 chardet==4.0.0
+ClamAV==0.103.2
+ClamAV-daemon==0.103.2
 cryptography==3.4.7
 defusedxml==0.7.1
 Django==3.0.4
 django-allauth==0.44.0
+django-clamd==0.4.0
 django-crontab==0.7.1
 django-dbbackup==3.3.0
 django-environ==0.4.5
