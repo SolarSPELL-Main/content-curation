@@ -3,6 +3,9 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Metadata, MetadataType } from 'js/types';
 
 type MetadataByType = Record<number, Metadata[]>
+type MetadataPage = Record<number, number>
+type MetadataPageSize = Record<number, number>
+type MetadataTotal = Record<number, number>
 
 export const metadataSlice = createSlice({
   name: 'metadata',
@@ -16,6 +19,9 @@ export const metadataSlice = createSlice({
          * Metadata associated with above metadata types
          */
     metadata: {} as MetadataByType,
+    metadata_page: {} as MetadataPage,
+    metadata_pagesize: {} as MetadataPageSize,
+    metadata_total: {} as MetadataTotal,
     /**
          * The newest metadata added by the current user. Used for the metadata
          * creation in the metadata tagger of the content forms
@@ -67,8 +73,16 @@ export const metadataSlice = createSlice({
          * @param action.payload Record mapping metadata types to replace to
          *                              their new metadata array values
          */
-    update_metadata: (state, action: PayloadAction<MetadataByType>) => {
-      state.metadata = Object.assign({}, state.metadata, action.payload);
+    update_metadata: (state, action: PayloadAction<{
+        metadata: MetadataByType,
+        page: MetadataPage,
+        pageSize: MetadataPageSize,
+        total: MetadataTotal,
+      }>) => {
+        state.metadata = Object.assign({}, state.metadata, action.payload.metadata);
+        state.metadata_page = Object.assign({}, state.metadata_page, action.payload.page);
+        state.metadata_pagesize = Object.assign({}, state.metadata_pagesize, action.payload.pageSize);
+        state.metadata_total = Object.assign({}, state.metadata_total, action.payload.total);
     },
 
     /**
@@ -157,6 +171,24 @@ export const metadataSlice = createSlice({
         }>) => {
       // Triggers corresponding epic
     },
+    /**
+         * Updates pagination in current state
+         * @param state The current state
+         * @param action.payload The new page size or new page for display
+         */
+     update_pagination: (state, action: PayloadAction<{
+            id: number
+            pageSize?: number
+            page?: number
+        }>) => {
+      if (action.payload.pageSize != null) {
+        state.metadata_pagesize[action.payload.id] = action.payload.pageSize;
+      }
+
+      if (action.payload.page != null) {
+        state.metadata_page[action.payload.id] = action.payload.page;
+        }
+      },
   },
 });
 
@@ -173,5 +205,6 @@ export const {
   update_newly_added,
   edit_metadatatype,
   preload_all_metadata,
+  update_pagination,
 } = metadataSlice.actions;
 export default metadataSlice.reducer;
