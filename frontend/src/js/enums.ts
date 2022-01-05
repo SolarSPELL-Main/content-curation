@@ -30,3 +30,4 @@ export enum Tabs {
     COPYRIGHT='copyright',
     ORGANIZATIONS='organizations',
 }
+

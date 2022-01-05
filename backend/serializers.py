@@ -31,12 +31,13 @@ class ContentSerializer(ModelSerializer):
         model = Content
         fields = (
             'id', 'file_name', 'title', 'content_file', 'description',
-            'metadata_info',
+            'metadata_info', 'display_title',
             'metadata', 'active', 'copyright_notes', 'rights_statement',
             'additional_notes', 'published_date', 'created_by', 'created_on',
             'reviewed_by', 'reviewed_on', 'copyright_approved',
             'copyright_by', 'published_year', 'hash', 'original_source',
             'copyright_site', 'status', 'filesize', 'created_by_name',
+            'copyright'
         )
 
 
@@ -53,10 +54,10 @@ class CopyrightPermissionSerializer(ModelSerializer):
         model = CopyrightPermission
         fields = (
             'organization', 'description', 'date_contacted', 'granted',
-            'date_of_response', 'user', 'id', "organization_info")
+            'date_of_response', 'user', 'id', "organization_info", "user_name")
 
 
 class OrganizationSerializer(ModelSerializer):
     class Meta:
         model = Organization
-        fields = ('name', 'email', 'website')
+        fields = ('name', 'email', 'website', 'id')

@@ -3,9 +3,6 @@ import React from 'react';
 import { GridColDef } from '@material-ui/data-grid';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
-import SvgIcon from '@material-ui/core/SvgIcon';
-import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
-import HighlightOff from '@material-ui/icons/HighlightOff';
 
 import PrettyBytes from 'pretty-bytes';
 
@@ -34,6 +31,7 @@ function ColumnSelection({
   initialColumns,
 }: ColumnSelectionProps): React.ReactElement {
   const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
+  const copyrightPermissions = useCCSelector(state => state.copyright.copyright)
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -54,50 +52,16 @@ function ColumnSelection({
         }}
         fields={[
           {
+            field: 'display_title',
+            title: "Display Title",
+          },
+          {
             field: 'creator',
             title: 'Created By',
           },
           {
             field: 'createdDate',
             title: 'Created On',
-          },
-          {
-            field: 'copyrightApproved',
-            title: 'Copyright Approved',
-            column: (field, hidden) => ({
-              field: field.field,
-              headerName: field.title,
-              flex: 1,
-              disableColumnMenu: true,
-              filterable: false,
-              hide: hidden,
-              renderCell: params => (
-                <SvgIcon
-                  htmlColor={params.getValue(
-                    params.id, field.field
-                  ) ?
-                    'green'
-                    :
-                    'darkRed'
-                  }
-                  style={{
-                    marginLeft: '1em',
-                  }}
-                >
-                  {params.getValue(
-                    params.id, field.field
-                  ) ?
-                    <CheckCircleOutline />
-                    :
-                    <HighlightOff />
-                  }
-                </SvgIcon>
-              ),
-            }),
-          },
-          {
-            field: 'copyrighter',
-            title: 'Copyrighted By',
           },
           {
             field: 'status',
@@ -143,6 +107,20 @@ function ColumnSelection({
                 }
               },
             }),
+          },
+          {
+            field: "copyright",
+              title: "Copyright",
+            column: (field, hidden) => ({
+                field: field.field,
+                headerName: field.title,
+                flex: 1,
+                disableColumnMenu: true,
+                filterable: false,
+                hide: hidden,
+                renderCell: params => copyrightPermissions
+                    .find(perm => perm.id == params.formattedValue)?.description
+            })
           },
           {
             field: 'filesize',

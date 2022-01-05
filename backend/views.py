@@ -91,15 +91,20 @@ class StandardDataView:
             'items': serializer.data,
         })
 
+class NeedsViewPermissions(DjangoModelPermissions):
+    perms_map = dict(
+        DjangoModelPermissions.perms_map,
+        GET=["%(app_label)s.view_%(model_name)s"]
+    )
 
 class MetadataViewSet(StandardDataView, viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissions]
+    permission_classes = [DjangoModelPermissions, NeedsViewPermissions]
     queryset = Metadata.objects.all()
     serializer_class = MetadataSerializer
 
 
 class MetadataTypeViewSet(StandardDataView, viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissions]
+    permission_classes = [DjangoModelPermissions, NeedsViewPermissions]
     queryset = MetadataType.objects.all()
     serializer_class = MetadataTypeSerializer
 
@@ -178,12 +183,11 @@ class ContentOwnerPermissions(permissions.BasePermission):
             return True
         else:
             return request.user == obj.created_by or \
-                   request.user.groups.filter(
-                       name="Library Specialist").exists()
+                request.user.groups.filter(name="Library Specialist").exists()
 
 
 class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissions, ContentOwnerPermissions]
+    permission_classes = [NeedsViewPermissions, ContentOwnerPermissions]
     queryset = Content.objects.all()
     serializer_class = ContentSerializer
     filter_backends = (filters.DjangoFilterBackend,)
@@ -397,7 +401,7 @@ def bulk_edit_content(request):
 
 
 class CopyrightPermissionViewSet(StandardDataView, viewsets.ModelViewSet):
-    permissions_classes = [DjangoModelPermissions]
+    permissions_classes = [DjangoModelPermissions, NeedsViewPermissions]
     queryset = CopyrightPermission.objects.all()
     serializer_class = CopyrightPermissionSerializer
     filter_backends = (filters.DjangoFilterBackend,)
@@ -405,6 +409,6 @@ class CopyrightPermissionViewSet(StandardDataView, viewsets.ModelViewSet):
 
 
 class OrganizationViewSet(StandardDataView, viewsets.ModelViewSet):
-    permissions_classes = [DjangoModelPermissions]
+    permissions_classes = [DjangoModelPermissions, NeedsViewPermissions]
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer

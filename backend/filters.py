@@ -1,5 +1,5 @@
 from .models import Content, Metadata, CopyrightPermission, Organization
-from .enums import STATUS
+from .enums import STATUS, COPYRIGHT_APPROVED
 
 from django_filters import rest_framework as filters
 from django_filters import widgets
@@ -36,8 +36,11 @@ class ContentFilter(filters.FilterSet):
         widget=RangeWidget(attrs={'type': 'date'}))
     active = filters.BooleanFilter(
         widget=BooleanWidget())
-    copyright_approved = filters.BooleanFilter(
-        widget=BooleanWidget())
+    copyright = filters.ChoiceFilter(
+        choices=COPYRIGHT_APPROVED,
+        method="filter_copyright_approved"
+    )
+    
 
     def filter_metadata(self, queryset, name, value):
         if not value:
@@ -47,6 +50,17 @@ class ContentFilter(filters.FilterSet):
 
         for m in metadata_list:
             queryset = queryset.filter(metadata__pk=m)
+
+        return queryset
+
+    def filter_copyright_approved(self, queryset, name, value):
+        if not value:
+            return queryset
+        
+        if self.data["copyright"] == "unapproved":
+            return queryset.filter(copyright__granted=False)
+        elif self.data["copyright"] == "approved":
+            return queryset.filter(copyright__granted=True)
 
         return queryset
 

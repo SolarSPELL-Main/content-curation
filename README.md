@@ -26,7 +26,7 @@ As well as with `pip`, `python3` may be replaced with `python` depending on your
 
 6. Edit the newly created `content_curation/.env` file, setting SECRET_KEY to a new random string, DATABASE_URL to the connection string of the database you created in step 4. If in a production environment, change DEBUG to False
 
-7. Run `python4 manage.py migrate`. This updates the django database to initialize it with the right schema.
+7. Run `python3 manage.py migrate`. This updates the django database to initialize it with the right schema.
 
 8. Open a django shell using `python3 manage.py shell`. Enter the following commands. If you aren't running this on localhost, replace 127.0.0.1 with your domain name (ex. example.com)
 
@@ -52,4 +52,3 @@ Enter `exit()` to exit the django shell.
 
 **ORM Model**
 ![image](https://user-images.githubusercontent.com/65974841/129091217-05145df2-15d2-4f11-b7a8-1494f6893135.png)
-

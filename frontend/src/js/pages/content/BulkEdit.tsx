@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react"
 import {Button, Typography} from "@material-ui/core"
-import {BaseMetadata, BaseMetadataType, ContentTagger, GenericDialog} from "solarspell-react-lib"
+import {
+    BaseMetadata, BaseMetadataType, ContentTagger, GenericDialog
+} from "solarspell-react-lib"
 import {useCCDispatch, useCCSelector} from "../../hooks"
 
 import {useImmer} from "use-immer"

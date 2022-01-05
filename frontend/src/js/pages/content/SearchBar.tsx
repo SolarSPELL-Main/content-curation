@@ -115,6 +115,27 @@ function SearchBar(): React.ReactElement {
           initialValue: 'true',
         },
         {
+            field: "copyright",
+            title: "Copyright Status",
+            type: "enum",
+            width: 2,
+            options: [
+                {
+                    value: "all",
+                    title: "All",
+                },
+                {
+                    value: "approved",
+                    title: "Approved",
+                },
+                {
+                    value: "unapproved",
+                    title: "Unapproved",
+                }
+            ],
+            initialValue: "all"
+        },
+        {
           field: 'metadata',
           title: 'Metadata',
           type: 'custom',

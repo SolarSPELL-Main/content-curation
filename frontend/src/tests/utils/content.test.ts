@@ -8,7 +8,6 @@ import { Content } from 'js/types';
 const mockFile = new File(['mock file contents'], 'mock.png');
 const mockContent: Content = {
   title: 'Mock Content',
-  copyrightApproved: false,
   creator: 'User',
   status: Status.REVIEW,
   createdDate: '2021-08-07',

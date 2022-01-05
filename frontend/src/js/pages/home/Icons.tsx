@@ -30,7 +30,7 @@ function Icons({
     <Box p={2} style={{paddingTop: '10vh'}}>
       <Grid container justify={'center'}>
         {Object.entries(icons).map(([href, icon], idx: number) => (
-          <Grid item key={idx} xs={4}>
+          <Grid item key={idx} xs={6} lg={3} style={{padding: "2em"}}>
             <Link to={href} style={iconStyle}>
               <img src={icon} style={iconStyle} />
             </Link>

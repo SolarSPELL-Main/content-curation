@@ -24,18 +24,6 @@ type Metadata = {} & BaseMetadata<MetadataType>;
  */
 type Content = {
   /**
-   * Who approved the copyright of this content
-   */
-  copyrighter?: string;
-  /**
-   * Site pointing to copyright holder
-   */
-  copyrightSite?: string;
-  /**
-   * Whether content has been approved for use
-   */
-  copyrightApproved: boolean;
-  /**
    * Who created this content
    */
   creator: string;
@@ -78,6 +66,14 @@ type Content = {
    * Additional misc. notes about this content
    */
   notes?: string;
+  /**
+   * Information about specific copyright associated with this content
+   */
+  copyright_permissions?: ContentPermissions
+  /*
+   * Title that is actually displayed on the Library UI
+   */
+  display_title?: string
 } & BaseContent<Metadata>;
 
 /**

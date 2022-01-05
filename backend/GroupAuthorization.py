@@ -13,19 +13,24 @@ GROUPS = {
         "user": ["add", "delete", "change", "view"],
         "content type": ["add", "delete", "change", "view"],
         "session": ["add", "delete", "change", "view"],
+        "copyright permission": ["add", "delete", "change", "view"],
+        "organization": ["add", "delete", "change", "view"],
     },
 
     "Library Specialist": {
         "metadata type": ["add", "delete", "change", "view"],
         "metadata": ["add", "delete", "change", "view"],
         "content": ["add", "delete", "change", "view"],
+        "copyright permission": ["add", "delete", "change", "view"],
+        "organization": ["add", "delete", "change", "view"],
     },
 
     "Student": {
-
         "metadata type": ["add", "delete", "change", "view"],
         "metadata": ["add", "delete", "change", "view"],
         "content": ["add", "delete", "change", "view"],
+        "copyright permission": ["add", "view"],
+        "organization": ["add", "view"],
     },
 }
 
