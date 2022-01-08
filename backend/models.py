@@ -11,6 +11,9 @@ from django.contrib.auth.models import User
 from backend.validators import validate_unique_filename
 from backend.enums import STATUS
 
+from django_clamd.validators import validate_file_infection
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -83,7 +86,7 @@ class Content(models.Model):
         upload_to=set_file_name,
         max_length=500,
         validators=[
-            validate_unique_filename
+            validate_unique_filename, validate_file_infection
         ])
     filesize = models.FloatField(null=True, editable=True)
     file_name = models.CharField(max_length=500, null=True)
@@ -161,5 +164,3 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
-
-

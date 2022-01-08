@@ -59,6 +59,8 @@ INSTALLED_APPS = [
     'django_crontab',
     'dbbackup',
 
+    'django_clamd',
+
 ]
 
 MIDDLEWARE = [
@@ -224,3 +226,10 @@ CRONJOBS = [
 ]
 CRONTAB_COMMAND_SUFFIX = '2>&1'
 CRONTAB_DJANGO_PROJECT_NAME = 'content_curation'
+
+#Clamav Content File Virus Validation
+CLAMD_SOCKET = '/var/run/clamav/clamd.ctl'
+CLAMD_USE_TCP = False
+CLAMD_TCP_SOCKET = 3310
+CLAMD_TCP_ADDR = '127.0.0.1'
+CLAMD_ENABLED = True
