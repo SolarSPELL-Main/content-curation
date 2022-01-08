@@ -26,6 +26,7 @@ function Body(): React.ReactElement {
       expires: 365,
     });
   }, [cols]);
+    
 
   const [initialColumns] = useState<Record<string, boolean>>(
     JSON.parse(Cookies.get('columns') ?? '{}')

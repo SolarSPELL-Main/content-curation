@@ -11,6 +11,7 @@ const ProfilePage = lazy(() => import('./profile'));
 
 import MetadataIcon from '../../assets/icons/metadata.png';
 import ContentIcon from '../../assets/icons/content.png';
+import CopyrightIcon from '../../assets/icons/copyright.png';
 import ProfileIcon from '../../assets/icons/profile.png';
 
 // Add Icon assets here if you would like it to appear in the homepage
@@ -18,7 +19,7 @@ import ProfileIcon from '../../assets/icons/profile.png';
 const icons = {
   '/metadata': MetadataIcon,
   '/content': ContentIcon,
-  '/copyright': ProfileIcon,
+  '/copyright': CopyrightIcon,
   '/profile': ProfileIcon,
 };
 

@@ -143,7 +143,7 @@ function Table({
 
               if (isNew) {
                 dispatch(ContentActions.update_selected(
-                      params.selectionModel as number[],
+                  params.selectionModel as number[],
                 ));
               }
             },
@@ -164,7 +164,7 @@ function Table({
             rowCount: rowCount,
             sortModel: sortModel,
             onSortModelChange: params => 
-              dispatch(ContentActions.update_sortmodel(params.sortModel)),
+                  dispatch(ContentActions.update_sortmodel(params.sortModel)),
           }}
         />
       </Paper>

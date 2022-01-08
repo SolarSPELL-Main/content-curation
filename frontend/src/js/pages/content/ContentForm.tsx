@@ -4,7 +4,6 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import Checkbox from '@material-ui/core/Checkbox';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { KeyboardDatePicker } from '@material-ui/pickers';
@@ -23,6 +22,8 @@ import { Metadata, MetadataType, Content } from 'js/types';
 import APP_URLS from '../../urls';
 import { hasPermission } from '../../utils/permissions';
 import { api } from '../../utils/misc';
+import {Autocomplete, AutocompleteProps, createFilterOptions} from '@material-ui/lab';
+import {isString} from 'lodash';
 
 type UploadFileProps = {
   onChange: (e: React.SyntheticEvent<HTMLLabelElement>) => void
@@ -85,6 +86,7 @@ function ContentForm({
   const metadata = useCCSelector(state => state.metadata.metadata);
   const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
   const permissions = useCCSelector(state => state.global.user.permissions);
+  const copyright_permissions = useCCSelector(state => state.copyright.copyright)
   const canReview = hasPermission(permissions, 'special', 'review');
 
   let dialogStyle: any = { title: '' };
@@ -104,6 +106,15 @@ function ContentForm({
       confirmText: 'Save',
     };
   }
+
+    const initial_permission: {
+        description: string,
+        id: number,
+    } = {
+        description: "",
+        id: 0,
+    }
+    const filter = createFilterOptions<typeof initial_permission>()
 
   const fields: FormFieldDescriptor<Content>[] = [
     {
@@ -131,6 +142,21 @@ function ContentForm({
           return null;
         }
       },
+    },
+    {
+      component: TextField,
+        propFactory: (state, reason, setter) => ({
+            fullWidth: true,
+            label: "Display Title",
+            onChange: (e: React.SyntheticEvent<HTMLInputElement>) => {
+                setter(e.currentTarget.value)
+            },
+            error: !!reason['display_title'],
+            helperText: reason['display_title'],
+            value: state['display_title']
+        }),
+      field: "display_title",
+      initialValue: "",
     },
     {
       component: TextField,
@@ -293,21 +319,31 @@ function ContentForm({
       },
     },
     {
-      component: TextField,
-      propFactory: (state, _r, setter) => {
-        return {
-          fullWidth: true,
-          label: 'Copyright Site',
-          onChange: (
-            e: React.SyntheticEvent<HTMLInputElement>
-          ) => {
-            setter(e.currentTarget.value);
-          },
-          value: state['copyrightSite'] ?? '',
-        };
-      },
-      field: 'copyrightSite',
-      initialValue: '',
+        component: Autocomplete,
+        propFactory: (state, _reasons, setter): AutocompleteProps<
+            typeof initial_permission, false, false, true
+        > => ({
+            freeSolo: true,
+            renderInput: params => <TextField
+                {...params}
+                placeholder="Copyright Permission"
+            />,
+            value: state.copyright_permissions ?? initial_permission,
+            options: copyright_permissions,
+            filterOptions: (options, params) => {
+                return filter(options, params)
+            },
+            getOptionSelected: (option, value) => option.id == value.id,
+            getOptionLabel: option => option.description ?? "",
+            onChange: (_evt, value) => {
+                if (!isString(value)) {
+                    console.log("set", value)
+                    setter(value)
+                }
+            },
+        }),
+        field: "copyright_permissions",
+        initialValue: initial_permission,
     },
     {
       component: TextField,
@@ -325,28 +361,6 @@ function ContentForm({
       },
       field: 'copyright',
       initialValue: '',
-    },
-    {
-      component: (props) => (
-        <>
-          <Typography>Copyright Approved</Typography>
-          <Checkbox {...props} />
-        </>
-      ),
-      propFactory: (state, _r, setter) => {
-        return {
-          checked: state['copyrightApproved'] ?? false,
-          onChange: (
-            _e: React.SyntheticEvent,
-            checked: boolean,
-          ) => {
-            setter(checked);
-          },
-        };
-      },
-      field: 'copyrightApproved',
-      initialValue: false,
-      mb: 0,
     },
     {
       component: TextField,

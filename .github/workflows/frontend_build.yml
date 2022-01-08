@@ -56,6 +56,5 @@ jobs:
       run: |
         cd frontend
         npm install
-        npm run lint
         npm test
         npm run build:prod

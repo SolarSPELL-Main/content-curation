@@ -65,6 +65,12 @@ class CopyrightPermission(models.Model):
             "website": self.organization.website,
         }
 
+    def user_name(self):
+        return self.user.username
+
+    def __str__(self):
+        return f'[{self.organization}]{self.description}'
+
 
 class Content(models.Model):
     def set_file_name(self, file_name):
@@ -85,6 +91,7 @@ class Content(models.Model):
     filesize = models.FloatField(null=True, editable=True)
     file_name = models.CharField(max_length=500, null=True)
     title = models.CharField(max_length=300)
+    display_title = models.CharField(max_length=300, null=True)
     description = models.TextField(null=True)
     hash = models.CharField(max_length=128, null=True)
     # modified_on = models.DateTimeField(default=datetime.now)

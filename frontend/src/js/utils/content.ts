@@ -20,7 +20,8 @@ export const CONTENT_FIELDS: Record<string,string> = {
   originalSource: 'original_source',
   copyrighter: 'copyright_by',
   copyrightSite: 'copyright_site',
-  copyright: 'copyright_notes',
+  copyright_notes: 'copyright_notes',
+  copyright: 'copyright',
   copyrightApproved: 'copyright_approved',
   creator: 'created_by',
   createdDate: 'created_on',
@@ -45,6 +46,7 @@ export const contentToFormData = (content: Content): FormData => {
   const data = new FormData();
   data.append('file_name', content.fileName);
   data.append('title', content.title);
+  data.append('display_title', content.display_title ?? '');
 
   if (content.file) {
     // Note: If content_file not present in post request, error will be thrown
@@ -60,9 +62,11 @@ export const contentToFormData = (content: Content): FormData => {
       data.append('metadata', metadata.id.toString());
     })
   );
-    
+
+  if ((content.copyright_permissions?.id ?? 0) !== 0) {
+      data.append('copyright', content.copyright_permissions?.id.toString() ?? "")
+  }
   data.append('copyright_notes', content.copyright ?? '');
-  data.append('copyright_approved', content.copyrightApproved.toString());
   data.append('rights_statement', content.rightsStatement ?? '');
   data.append('additional_notes', content.notes ?? '');
 
@@ -79,7 +83,6 @@ export const contentToFormData = (content: Content): FormData => {
   }
 
   data.append('original_source', content.originalSource ?? '');
-  data.append('copyright_site', content.copyrightSite ?? '');
   data.append('status', content.status);
 
   return data;

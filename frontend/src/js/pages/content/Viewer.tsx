@@ -23,6 +23,7 @@ type ViewerProps = {
  */
 function Viewer(props: ViewerProps): React.ReactElement {
   const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
+  const copyrights = useCCSelector(state => state.copyright.copyright);
 
   return (
     <ContentViewer
@@ -75,17 +76,10 @@ function Viewer(props: ViewerProps): React.ReactElement {
           field: 'reviewer',
         },
         {
-          title: 'Copyright Site',
-          field: 'copyrightSite',
-        },
-        {
-          title: 'Copyright Approved',
-          field: 'copyrightApproved',
-          formatter: (b: boolean) => b ? 'Yes' : 'No',
-        },
-        {
-          title: 'Copyright Notes',
+          title: 'Copyright',
           field: 'copyright',
+            formatter: (val: number) => copyrights
+                .find(copy => copy.id === val)?.description || val
         },
         {
           title: 'Rights Statement',
