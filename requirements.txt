@@ -2,8 +2,6 @@ asgiref==3.2.5
 certifi==2021.5.30
 cffi==1.14.5
 chardet==4.0.0
-ClamAV==0.103.2
-ClamAV-daemon==0.103.2
 cryptography==3.4.7
 defusedxml==0.7.1
 Django==3.0.4
