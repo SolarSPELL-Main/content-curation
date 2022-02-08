@@ -115,7 +115,7 @@ function SearchBar(): React.ReactElement {
           initialValue: 'true',
         },
         {
-            field: "copyright",
+            field: "copyright_status",
             title: "Copyright Status",
             type: "enum",
             width: 2,
