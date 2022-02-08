@@ -83,6 +83,11 @@
         </div>
 
         <div class="form-group col-sm-4 col-md-3">
+          {{ filter.form.copyright.label_tag }}
+          {% render_field filter.form.copyright class="form-control" %}
+        </div>
+
+        <div class="form-group col-sm-4 col-md-3">
           {{ filter.form.status.label_tag }}
           {% render_field filter.form.status class="form-control" %}
         </div>
@@ -111,6 +116,7 @@
         <th>Published Date</th>
         <th>Active</th>
         <th>Copyright Approved</th>
+        <th>Copyright Permission</th>
 
         <th>Status</th>
       </tr>
@@ -141,6 +147,7 @@
           <td>{{ content.published_date }}</td>
           <td>{{ content.active }}</td>
           <td>{{ content.copyright_approved }}</td>
+          <td>{{ content.copyright }}</td>
           <td>{{ content.status }}</td>
 
         </tr>
