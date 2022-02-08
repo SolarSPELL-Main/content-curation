@@ -43,7 +43,6 @@ class ContentFilter(filters.FilterSet):
     copyright = filters.ModelChoiceFilter(
         queryset=CopyrightPermission.objects.all(),
         method="filter_copyright_permission",
-        # widget=forms.CheckboxSelectMultiple,
         )
 
     def filter_metadata(self, queryset, name, value):
