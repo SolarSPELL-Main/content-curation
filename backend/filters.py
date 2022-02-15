@@ -71,10 +71,10 @@ class ContentFilter(filters.FilterSet):
         if not value:
             return queryset
 
-        copyright_list = self.data.getlist(copyright)
+        copyright_list = self.data.getlist('copyright')
 
         for m in copyright_list:
-            queryset = queryset.filter(organization__pk=m)
+            queryset = queryset.filter(copyright__pk=m)
 
         return queryset
 
