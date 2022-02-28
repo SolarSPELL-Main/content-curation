@@ -192,6 +192,13 @@ const queryToParams = (
       return true;
     },
     (key, val, params) => {
+      if (key !== 'copyright') {
+        return false;
+      }
+      params.push(`${key}=${val.id}`);
+      return true;
+    },
+    (key, val, params) => {
       // Simplest case, search value is a string
       // Excludes empty string by checking val is truthy
       if (isString(val) && val) {
