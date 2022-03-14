@@ -187,7 +187,7 @@ function SearchBar(): React.ReactElement {
               freeSolo: true,
               renderInput: params => <TextField
                   {...params}
-                  placeholder="Copyright Permission"
+                  label="Copyright Permission"
               />,
               value: state.copyright ?? initial_permission,
               options: copyright_permissions,
