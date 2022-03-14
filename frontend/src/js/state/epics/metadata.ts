@@ -29,8 +29,10 @@ import type { MyEpic } from './types';
 //state and updates the MetadataByType with metadata of that type
 const preloadMetadataEpic: MyEpic = (action$, state$, { api }) => action$.pipe(
   filter(preload_all_metadata.match),
-  mergeMap(_ =>
-    fromWrapper(from(state$.value.metadata.metadata_types).pipe(
+  //filter(() => state$.value.global.user.user_id !== 0),
+  //debounceTime(100),
+  mergeMap(_ => 
+     fromWrapper(from(state$.value.metadata.metadata_types).pipe(
       mergeMap(type => from(api.get(APP_URLS.METADATA_BY_TYPE(type.id,
          state$.value.metadata.metadata_page[type.id] + 1,
          state$.value.metadata.metadata_pagesize[type.id]))).pipe(
@@ -39,6 +41,8 @@ const preloadMetadataEpic: MyEpic = (action$, state$, { api }) => action$.pipe(
           page: { [type.id]: 0 },
           pageSize: { [type.id]: 5 },
           total: { [type.id]: data.data.total },
+          paginationMode:'server',
+          timestamp: Date.now(),
         }))
       ))
     ))
@@ -104,9 +108,9 @@ const deleteMetadataEpic: MyEpic = (action$, _, { api }) =>
 //Fetch metadata stored in the current application state so it can shown on the 
 //screen
 const fetchMetadataEpic: MyEpic = (action$, state$, { api }) =>
-  action$.pipe(
+  action$.pipe( 
     filter(fetch_metadata.match),
-    mergeMap(action =>
+    mergeMap(action => 
       fromWrapper(
         from(api.get(APP_URLS.METADATA_BY_TYPE(action.payload.type_id, state$.value.metadata.metadata_page[action.payload.type_id] + 1, state$.value.metadata.metadata_pagesize[action.payload.type_id]))).pipe(
           map(({ data }) => update_metadata({
@@ -114,6 +118,8 @@ const fetchMetadataEpic: MyEpic = (action$, state$, { api }) =>
             page: { [action.payload.type_id] : state$.value.metadata.metadata_page[action.payload.type_id]} ,
             pageSize: { [action.payload.type_id]: state$.value.metadata.metadata_pagesize[action.payload.type_id] },
             total: { [action.payload.type_id]: data.data.total },
+            paginationMode : 'server',
+            timestamp: Date.now(),
           }))
         )
       )

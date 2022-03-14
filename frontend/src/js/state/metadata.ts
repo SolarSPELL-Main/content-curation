@@ -6,6 +6,7 @@ type MetadataByType = Record<number, Metadata[]>
 type MetadataPage = Record<number, number>
 type MetadataPageSize = Record<number, number>
 type MetadataTotal = Record<number, number>
+type MetadataPaginationMode = String
 
 export const metadataSlice = createSlice({
   name: 'metadata',
@@ -22,6 +23,8 @@ export const metadataSlice = createSlice({
     metadata_page: {} as MetadataPage,
     metadata_pagesize: {} as MetadataPageSize,
     metadata_total: {} as MetadataTotal,
+    metadata_paginationMode :{} as MetadataPaginationMode,
+    timestamp: -1,
     /**
          * The newest metadata added by the current user. Used for the metadata
          * creation in the metadata tagger of the content forms
@@ -78,11 +81,27 @@ export const metadataSlice = createSlice({
         page: MetadataPage,
         pageSize: MetadataPageSize,
         total: MetadataTotal,
+        paginationMode:MetadataPaginationMode,
+        timestamp: number
       }>) => {
-        state.metadata = Object.assign({}, state.metadata, action.payload.metadata);
-        state.metadata_page = Object.assign({}, state.metadata_page, action.payload.page);
-        state.metadata_pagesize = Object.assign({}, state.metadata_pagesize, action.payload.pageSize);
-        state.metadata_total = Object.assign({}, state.metadata_total, action.payload.total);
+        // console.log("state/metadata.ts update_metdata " + state.timestamp)
+        // state.metadata = Object.assign({}, state.metadata, action.payload.metadata);
+        // state.metadata_page = Object.assign({}, state.metadata_page, action.payload.page);
+        // state.metadata_pagesize = Object.assign({}, state.metadata_pagesize, action.payload.pageSize);
+        // state.metadata_total = Object.assign({}, state.metadata_total, action.payload.total);
+        // state.metadata_paginationMode = Object.assign({},state.metadata_paginationMode,action.payload.paginationMode);
+
+        if (action.payload.timestamp > state.timestamp) {
+          console.log("state/metadata.ts update_metdata/ifstatement ", state.timestamp)
+          state.metadata = Object.assign({}, state.metadata, action.payload.metadata);
+          state.metadata_page = Object.assign({}, state.metadata_page, action.payload.page);
+          state.metadata_pagesize = Object.assign({}, state.metadata_pagesize, action.payload.pageSize);
+          state.metadata_total = Object.assign({}, state.metadata_total, action.payload.total);
+          state.metadata_paginationMode = Object.assign({},state.metadata_paginationMode,action.payload.paginationMode);
+          state.timestamp = action.payload.timestamp;
+
+        }
+       
     },
 
     /**
@@ -180,13 +199,14 @@ export const metadataSlice = createSlice({
             id: number
             pageSize?: number
             page?: number
+            type_id:number
         }>) => {
-      if (action.payload.pageSize != null) {
+       if (action.payload.pageSize != null) {
         state.metadata_pagesize[action.payload.id] = action.payload.pageSize;
       }
 
       if (action.payload.page != null) {
-        state.metadata_page[action.payload.id] = action.payload.page;
+       state.metadata_page[action.payload.id] = action.payload.page;
         }
       },
   },
