@@ -7,6 +7,7 @@ import type {
   Metadata,
   Query,
   Range,
+  ContentPermissions,
 } from 'js/types';
 
 /**
@@ -189,6 +190,13 @@ const queryToParams = (
         params.push(`${key}=${creator}`);
       }
 
+      return true;
+    },
+    (key, val, params) => {
+      if (key !== 'copyright') {
+        return false;
+      }
+      params.push(`${key}=${(val as ContentPermissions).id}`);
       return true;
     },
     (key, val, params) => {
