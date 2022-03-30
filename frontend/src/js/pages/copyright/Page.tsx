@@ -319,44 +319,8 @@ export default () => {
                             add_copy.description = e.target.value
                         })}
                     />
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                  
-                    <KeyboardDatePicker InputLabelProps={{ shrink: true }}
-                            style={{marginTop: "1em"}}
-                            inputVariant="standard"
-                            format={"yyyy-MM-dd"}
-                            fullWidth
-                            placeholder={"yyyy-mm-dd"}
-                            autoOk={true}
-                            label="Date Contacted"
-                            error={false}
-                            helperText={null}
-                            value={add_copy.date_contacted || ''}
-                            onChange={e => update_add_copy(add_copy => {    
-                               console.log(' date '+e?.getFullYear()+'-'+ e?.getMonth()+'-'+e?.getDate())
-                                add_copy.date_contacted = e?.getFullYear()+'-'+ e?.getMonth()+'-'+e?.getDate() ?? ""
-                            })}    
-                    />
-                </MuiPickersUtilsProvider>  
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>  
-                <KeyboardDatePicker InputLabelProps={{ shrink: true }}
-                    style={{marginTop: "1em"}}
-                    inputVariant="standard"
-                    format={"yyyy-MM-dd"}
-                    fullWidth
-                    placeholder={"yyyy-mm-dd"}
-                    autoOk={true}
-                    label="Date of Response"
-                    error={false}
-                    helperText={null}
-                    value={add_copy.date_of_response || ''}
-                    onChange={e => update_add_copy(add_copy => {
-                        add_copy.date_of_response = e?.getFullYear()+'-'+ e?.getMonth()+'-'+e?.getDate() ?? ""
-                            })}        
-                            
-                    />
-                </MuiPickersUtilsProvider>    
-{/*                        
+             
+                       
                     <TextField
                         style={{marginTop: "1em"}}
                         fullWidth
@@ -374,7 +338,7 @@ export default () => {
                         onChange={e => update_add_copy(add_copy => {
                             add_copy.date_of_response = e.target.value
                         })}
-                    />*/}
+                    />
                     <Typography
                         style={{marginTop: "1em"}}
                     >
