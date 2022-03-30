@@ -137,6 +137,7 @@ function ContentForm({
       initialValue: '',
       validator: (state) => {
         if (!state['title']) {
+          console.log("Title issue")
           return 'Title is required';
         } else {
           return null;
@@ -234,6 +235,7 @@ function ContentForm({
       field: 'file',
       initialValue: undefined,
       validator: async (state) => {
+        console.log(state['file'])
         if (!state['file'] && !state['fileURL']) {
           return 'A file must be uploaded';
         } else if (state['file']) {
@@ -248,9 +250,11 @@ function ContentForm({
           return res.data.data ?
             'File is already in the system.' :
             '';
-        } else {
+        }else {
           return null;
         }
+
+
       },
       mb: 0,
     },

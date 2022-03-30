@@ -169,7 +169,8 @@ LOGIN_REDIRECT_URL = '/static/index.html#/profile'
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",
-    )
+    ),
+     'EXCEPTION_HANDLER': 'backend.standardize_format.standard_exception_handler'
 }
 
 # Logging Configuration
@@ -189,24 +190,27 @@ LOGGING = {
 
     'handlers': {
         'file': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'backend.logging.FileHandler',
             'filename': LOG_FILE,
             'formatter': 'Simple_Formatters',
         },
 
         'console': {
-            'level': 'INFO',
+            'level':'INFO',
             'class': 'logging.StreamHandler',
         },
     },
-
+ 'root': {
+        'handlers': ['console','file'],
+        'level': 'INFO',
+    },
     'loggers': {
         'django': {
             'handlers': ['file', 'console'],
             'propagate': True,
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO')
-        },
+             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO')    
+             },
     },
 
 }

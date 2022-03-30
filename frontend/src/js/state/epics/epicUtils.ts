@@ -19,7 +19,7 @@ import type { MyEpic } from './types';
 const errorCatcher = (epic: MyEpic): MyEpic => (...args: Parameters<MyEpic>) =>
   epic(...args).pipe(
     catchError((error, source) => {
-      console.error(error);
+    //  console.error(error);
       return concat(
         of(show_toast({
           message: `${error.name} - ${error.message}`,

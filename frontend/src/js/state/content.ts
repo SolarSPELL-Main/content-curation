@@ -60,6 +60,7 @@ export const contentSlice = createSlice({
          */
     fetch_content: () => {
       // Triggers corresponding epic
+      console.log( "state/content fetch_content" );
     },
 
     /**
@@ -73,9 +74,11 @@ export const contentSlice = createSlice({
             total: number
             timestamp: number
         }>) => {
+          console.log( "state/update_content"+ state.timestamp );
       // If request was made earlier than when the current content's
       // request was made, then ignore
       if (action.payload.timestamp > state.timestamp) {
+        console.log( "state/update_content if statem");
         state.content = action.payload.content;
         state.total = action.payload.total;
         state.timestamp = action.payload.timestamp;
@@ -128,6 +131,7 @@ export const contentSlice = createSlice({
             pageSize?: number
             page?: number
         }>) => {
+      console.log("content.ts update_pagination");
       if (action.payload.pageSize != null) {
         state.pageSize = action.payload.pageSize;
       }
@@ -180,6 +184,7 @@ export const contentSlice = createSlice({
       state,
       action: PayloadAction<Query>,
     ) => {
+      console.log("state/content update_filters");
       state.filters = action.payload;
     },
 
@@ -189,6 +194,7 @@ export const contentSlice = createSlice({
          * @param action The new sort model to use
          */
     update_sortmodel: (state, action: PayloadAction<GridSortModel>) => {
+      console.log("state/content update_sortmodel")
       state.sortModel = action.payload;
     },
 

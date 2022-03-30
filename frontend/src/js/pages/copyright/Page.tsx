@@ -23,6 +23,13 @@ import {isEqual} from 'lodash';
 //{...props} ref={ref}
 //>{props.children}</div>)
 
+import {
+    MuiPickersUtilsProvider,
+    KeyboardDatePicker,
+  } from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+//import MomentUtils from "@date-io/moment";
+  
 export default () => {
     const dispatch = useCCDispatch()
     useEffect(() => {
@@ -77,7 +84,7 @@ export default () => {
                 type="button"
                 icon={EditIcon}
                 onAction={() => {
-                    update_add_copy({
+                    update_add_copy({   
                         id: row.id,
                         description: row.description,
                         granted: row.granted,
@@ -86,7 +93,7 @@ export default () => {
                         date_of_response: row.date_of_response,
                         user: row.user,
                     });
-                    console.log(organizations);
+                 //   console.log(organizations);
                     ((org => {
                         console.log(organizations)
                         if (org !== undefined) {
@@ -125,7 +132,7 @@ export default () => {
 
     const copyright = useCCSelector(state => state.copyright.copyright)
     const organizations = useCCSelector(state => state.organization.organizations)
-    console.log(organizations)
+  //  console.log(organizations)
     const user_id = useCCSelector(state => state.global.user.user_id)
     useEffect(() => {
         dispatch(update_current_tab(Tabs.COPYRIGHT));
@@ -151,7 +158,7 @@ export default () => {
         user: user_id,
     })
 
-
+    
     return <>
         <Grid container spacing={4} style={{
             maxWidth: "100%",
@@ -165,6 +172,8 @@ export default () => {
                             marginLeft: "auto"
                         }}
                         onClick={_ => update_is_open(s => {
+                            console.log('Add Copyright')
+                            update_add_copy(s => {s.id=0,s.description='',s.date_contacted='',s.date_of_response='',s.granted=false,s.organization=0})
                             s.add_copyright = true
                         })}
                     >Add Copyright</Button>
@@ -181,12 +190,16 @@ export default () => {
                     open={is_open.add_organization}
                     title={`${add_org.id == 0 ? "Add" : "Edit"} Organization`}
                     onClose={_ => update_is_open(s => {
+                       console.log(' onclose '+ add_org.id);
+                       update_add_org({id: 0,name: "",website: "", email: ""})
                         s.add_organization = false
                     })}
                     actions={<>
                         <Button
                             color="secondary"
                             onClick={_ => update_is_open(s => {
+                                console.log('Close')
+                                update_add_org(s =>{s.id =0,s.name='',s.email='',s.website='';})
                                 s.add_organization = false
                             })}
                         >
@@ -246,6 +259,7 @@ export default () => {
                     <Button
                         style={{marginLeft: "auto"}}
                         onClick={_ => update_is_open(s => {
+                            update_add_org(s =>{s.id =0,s.name='',s.email='',s.website='';})
                             s.add_organization = true
                         })}
                     >Add Organization</Button>
@@ -305,6 +319,44 @@ export default () => {
                             add_copy.description = e.target.value
                         })}
                     />
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  
+                    <KeyboardDatePicker InputLabelProps={{ shrink: true }}
+                            style={{marginTop: "1em"}}
+                            inputVariant="standard"
+                            format={"yyyy-MM-dd"}
+                            fullWidth
+                            placeholder={"yyyy-mm-dd"}
+                            autoOk={true}
+                            label="Date Contacted"
+                            error={false}
+                            helperText={null}
+                            value={add_copy.date_contacted || ''}
+                            onChange={e => update_add_copy(add_copy => {    
+                               console.log(' date '+e?.getFullYear()+'-'+ e?.getMonth()+'-'+e?.getDate())
+                                add_copy.date_contacted = e?.getFullYear()+'-'+ e?.getMonth()+'-'+e?.getDate() ?? ""
+                            })}    
+                    />
+                </MuiPickersUtilsProvider>  
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>  
+                <KeyboardDatePicker InputLabelProps={{ shrink: true }}
+                    style={{marginTop: "1em"}}
+                    inputVariant="standard"
+                    format={"yyyy-MM-dd"}
+                    fullWidth
+                    placeholder={"yyyy-mm-dd"}
+                    autoOk={true}
+                    label="Date of Response"
+                    error={false}
+                    helperText={null}
+                    value={add_copy.date_of_response || ''}
+                    onChange={e => update_add_copy(add_copy => {
+                        add_copy.date_of_response = e?.getFullYear()+'-'+ e?.getMonth()+'-'+e?.getDate() ?? ""
+                            })}        
+                            
+                    />
+                </MuiPickersUtilsProvider>    
+{/*                        
                     <TextField
                         style={{marginTop: "1em"}}
                         fullWidth
@@ -313,7 +365,7 @@ export default () => {
                         onChange={e => update_add_copy(add_copy => {
                             add_copy.date_contacted = e.target.value
                         })}
-                    />
+                    /> 
                     <TextField
                         style={{marginTop: "1em"}}
                         fullWidth
@@ -322,7 +374,7 @@ export default () => {
                         onChange={e => update_add_copy(add_copy => {
                             add_copy.date_of_response = e.target.value
                         })}
-                    />
+                    />*/}
                     <Typography
                         style={{marginTop: "1em"}}
                     >
@@ -335,12 +387,15 @@ export default () => {
                         })}
                     />
                     <Autocomplete
+                        id='organizationList'
                         style={{marginTop: "1em"}}
-                        value={add_org}
+                       // value={add_copy.id == 0 ? "" : add_org}
+                       value={add_org}
                         options={organizations}
                         renderInput={params => <TextField
                             {...params} label="Organization"
                         />}
+                        disableClearable={false}
                         getOptionLabel={option => option.name}
                         getOptionSelected={(
                             input: Organization,

@@ -43,6 +43,7 @@ function Table({
   // Re-fetch content everytime pagination/sorting/user changes
   React.useEffect(() => {
       if (user.user_id !== 0) {
+        console.log("useEffect of content/table.tsx");
           dispatch(ContentActions.fetch_content());
       }
   }, [dispatch, page, pageSize, sortModel, user]);
