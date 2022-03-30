@@ -97,7 +97,6 @@ class Content(models.Model):
     # modified_on = models.DateTimeField(default=datetime.now)
     metadata = models.ManyToManyField(Metadata, blank=True)
     copyright_notes = models.TextField(null=True)
-    rights_statement = models.TextField(null=True)
     additional_notes = models.TextField(null=True)
     published_date = models.DateField(default=None, null=True)
     # reviewed_on = models.DateField(null=True)
@@ -105,14 +104,16 @@ class Content(models.Model):
     # duplicatable = models.BooleanField(default=0)
     # Cataloger/Curator from loggedIn
     created_by = models.ForeignKey(
-        User, default=None, null=True, on_delete=models.SET_DEFAULT,
+        User, related_name='content_created_by', default=None, null=True, on_delete=models.SET_DEFAULT,
     )
     created_on = models.DateField(default=datetime.date.today, null=True)
     # further modified by curators/metadataaides/library specialist(s)to edit the filename and metadata record
     modified_by = models.TextField(null=True)
     modified_on = models.DateField(default=datetime.date.today, null=True)
     # Sara Team -> Reviews it
-    reviewed_by = models.TextField(null=True)
+    reviewed_by = models.ForeignKey(
+        User, related_name='content_reviewed_by', default=None, null=True, on_delete=models.SET_DEFAULT,
+    )
     reviewed_on = models.DateField(default=datetime.date.today, null=True)
     # CopyRight Permission for curator's content
     copyright_approved = models.BooleanField(default=1)
@@ -131,6 +132,9 @@ class Content(models.Model):
 
     def created_by_name(self):
         return self.created_by.username if self.created_by else ""
+
+    def reviewed_by_name(self):
+        return self.reviewed_by.username if self.reviewed_by else ""
 
     def published_year(self):
         return None if self.published_date == None else str(
