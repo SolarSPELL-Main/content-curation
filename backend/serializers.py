@@ -32,12 +32,12 @@ class ContentSerializer(ModelSerializer):
         fields = (
             'id', 'file_name', 'title', 'content_file', 'description',
             'metadata_info', 'display_title',
-            'metadata', 'active', 'copyright_notes', 'rights_statement',
+            'metadata', 'active', 'copyright_notes',
             'additional_notes', 'published_date', 'created_by', 'created_on',
             'reviewed_by', 'reviewed_on', 'copyright_approved',
             'copyright_by', 'published_year', 'hash', 'original_source',
             'copyright_site', 'status', 'filesize', 'created_by_name',
-            'copyright'
+            'copyright', 'reviewed_by_name',
         )
 
 
