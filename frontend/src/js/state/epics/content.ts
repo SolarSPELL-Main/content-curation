@@ -68,7 +68,7 @@ const fetchContentEpic: MyEpic = (action$, state$, { api }) =>
                   reviewer: val.status === Status.REVIEW ?
                     null
                     :
-                    val.reviewed_by,
+                    val.reviewed_by_name,
                   reviewedDate: val.status === Status.REVIEW ?
                     null
                     :
