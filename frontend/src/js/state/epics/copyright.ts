@@ -18,6 +18,7 @@ const addCopyrightEpic: MyEpic = (action$, _, { api }) =>
     filter(add_copyright.match),
     mergeMap((action) => {
       const copyright = action.payload;
+      console.log('addCopyrightEPIC')
       const req = api.post(APP_URLS.COPYRIGHT_LIST, copyright);
       return fromWrapper(
         from(req).pipe(

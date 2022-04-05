@@ -32,10 +32,10 @@ import DateFnsUtils from "@date-io/date-fns";
   
 export default () => {
     const dispatch = useCCDispatch()
-    useEffect(() => {
-        dispatch(fetch_copyright());
-        dispatch(fetch_organization());
-    }, [dispatch])
+     useEffect(() => {
+         dispatch(fetch_copyright());
+         dispatch(fetch_organization());
+     }, [dispatch])
 
     const [organization_columns] = useState<GridColDef[]>([
         { field: 'actions', headerName: "Actions", renderCell: ({ row }) => <>
@@ -84,6 +84,12 @@ export default () => {
                 type="button"
                 icon={EditIcon}
                 onAction={() => {
+                    update_add_org({
+                        id: row.organization,
+                        name:row.organization_info.name,
+                        email:row.organization_info.email,
+                        website:row.organization_info.website,
+                    });
                     update_add_copy({   
                         id: row.id,
                         description: row.description,
@@ -93,14 +99,12 @@ export default () => {
                         date_of_response: row.date_of_response,
                         user: row.user,
                     });
-                 //   console.log(organizations);
                     ((org => {
-                        console.log(organizations)
-                        if (org !== undefined) {
+                       if (org !== undefined) {
                             console.log("not undefined")
                             update_add_org(org)
                         }
-                    })(organizations.find(o => o.id == row.organization)))
+                        })(organizations.find(o => o.id == row.organization)))
                     update_is_open(is_open => {
                         is_open.add_copyright = true
                     })
@@ -132,7 +136,7 @@ export default () => {
 
     const copyright = useCCSelector(state => state.copyright.copyright)
     const organizations = useCCSelector(state => state.organization.organizations)
-  //  console.log(organizations)
+    //console.log(organizations);
     const user_id = useCCSelector(state => state.global.user.user_id)
     useEffect(() => {
         dispatch(update_current_tab(Tabs.COPYRIGHT));
@@ -158,7 +162,7 @@ export default () => {
         user: user_id,
     })
 
-    
+
     return <>
         <Grid container spacing={4} style={{
             maxWidth: "100%",
@@ -172,8 +176,8 @@ export default () => {
                             marginLeft: "auto"
                         }}
                         onClick={_ => update_is_open(s => {
-                            console.log('Add Copyright')
-                            update_add_copy(s => {s.id=0,s.description='',s.date_contacted='',s.date_of_response='',s.granted=false,s.organization=0})
+                            update_add_org({id: 0,name: "",website: "", email: ""})
+                            update_add_copy(s => {s.id=0,s.description='',s.date_contacted='',s.date_of_response='',s.granted=false,s.organization=0});
                             s.add_copyright = true
                         })}
                     >Add Copyright</Button>
@@ -191,7 +195,7 @@ export default () => {
                     title={`${add_org.id == 0 ? "Add" : "Edit"} Organization`}
                     onClose={_ => update_is_open(s => {
                        console.log(' onclose '+ add_org.id);
-                       update_add_org({id: 0,name: "",website: "", email: ""})
+                       update_add_org({id: 0,name: "",website: "",email: ""})
                         s.add_organization = false
                     })}
                     actions={<>
@@ -275,7 +279,7 @@ export default () => {
                 <GenericDialog
                     open={is_open.add_copyright}
                     title={`${add_copy.id == 0 ? "Add" : "Edit"} Copyright Permission`}
-                    onClose={_ => update_is_open(s => {
+                    onClose={_ => update_is_open(s => {                      
                         s.add_copyright = false
                     })}
                     actions={<>
@@ -299,8 +303,9 @@ export default () => {
                                     date_of_response: "",
                                     granted: false,
                                     organization: 0,
-                                    user: 0,
+                                    user: user_id,
                                 })
+                                update_add_org( o=> { o.id=0,o.name=''});       
                                 update_is_open(is_open => {
                                     is_open.add_copyright = false
                                 })
@@ -319,8 +324,6 @@ export default () => {
                             add_copy.description = e.target.value
                         })}
                     />
-             
-                       
                     <TextField
                         style={{marginTop: "1em"}}
                         fullWidth
@@ -353,7 +356,6 @@ export default () => {
                     <Autocomplete
                         id='organizationList'
                         style={{marginTop: "1em"}}
-                       // value={add_copy.id == 0 ? "" : add_org}
                        value={add_org}
                         options={organizations}
                         renderInput={params => <TextField

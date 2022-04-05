@@ -9,6 +9,7 @@ export const copyrightSlice = createSlice({
   },
   reducers: {
     add_copyright: (_state, _action: PayloadAction<ContentPermissions>) => {
+      console.log('addCopyrightEPIC');
       // Triggers corresponding epic
     },
 
