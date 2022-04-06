@@ -76,7 +76,6 @@ const fetchContentEpic: MyEpic = (action$, state$, { api }) =>
                   description: val.description,
                   fileName: val.file_name,
                   datePublished: val.published_year,
-                  rightsStatement: val.rights_statement,
                   filesize: val.filesize,
                   status: val.status,
                   title: val.title,
