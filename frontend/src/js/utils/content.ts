@@ -31,7 +31,6 @@ export const CONTENT_FIELDS: Record<string,string> = {
   description: 'description',
   fileName: 'file_name',
   datePublished: 'published_date',
-  rightsStatement: 'rights_statement',
   filesize: 'filesize',
   status: 'status',
   title: 'title',
@@ -68,7 +67,6 @@ export const contentToFormData = (content: Content): FormData => {
       data.append('copyright', content.copyright_permissions?.id.toString() ?? "")
   }
   data.append('copyright_notes', content.copyright ?? '');
-  data.append('rights_statement', content.rightsStatement ?? '');
   data.append('additional_notes', content.notes ?? '');
 
   // Same format as DLMS, default to Jan. 1st
