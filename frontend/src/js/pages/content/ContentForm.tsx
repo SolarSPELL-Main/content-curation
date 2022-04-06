@@ -367,23 +367,6 @@ function ContentForm({
       initialValue: '',
     },
     {
-      component: TextField,
-      propFactory: (state, _r, setter) => {
-        return {
-          fullWidth: true,
-          label: 'Rights Statement',
-          onChange: (
-            e: React.SyntheticEvent<HTMLInputElement>
-          ) => {
-            setter(e.currentTarget.value);
-          },
-          value: state['rightsStatement'] ?? '',
-        };
-      },
-      field: 'rightsStatement',
-      initialValue: '',
-    },
-    {
       component: ContentMetadataDisplay,
       propFactory: (state, _r, setter) => {
         return {
