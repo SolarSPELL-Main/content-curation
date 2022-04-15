@@ -279,6 +279,119 @@ def check_duplicate(request):
 @api_view(('POST',))
 @renderer_classes((JSONRenderer,))
 def zipdownloadcsv(request):
+  
+        # Parse string "[a,b,c]" into array [a, b, c]
+        logger.info("zipdownloadcsv ", request.POST.get("content"))
+        content_ids = [
+               int(s) for s in request.POST.get("content", None)[1:-1].split(",")
+           ]
+        
+        #testing 
+        #content_ids = [1,2,3,4,5,6]
+        
+         # Iterate through content objects, add CSV data to the CSV buffer and
+        # the resepective files to the zip file
+        content = Content.objects.filter(id__in=content_ids)
+        #metadatatype as headername
+        metadataType_set = set()
+        content_dict={}
+        for c in content:
+            metadata_dict = {}
+            temp_dict = {}
+            for info in c.metadata_info():
+                
+                metadataType_set.add(str(info['type_name']))
+                # dict of metadata based on types types 
+                if str(info['type_name']) in metadata_dict:
+                    if not isinstance(metadata_dict[str(info['type_name'])], list):
+                        metadata_dict[str(info['type_name'])] = [metadata_dict[str(info['type_name'])]]
+                    metadata_dict[str(info['type_name'])].append(str(info['name']))
+                else:
+                    metadata_dict[str(info['type_name'])] = str(info['name'])
+            #format metadata with '|' symbol
+            for k,v in metadata_dict.items():
+                metadata_dict.update({k: str(v).replace("[","").replace(',',' |').replace(']','').replace("'","").strip()})
+            temp_dict = {'file_name':c.file_name, 'title':c.title, 'description':c.description,'active':c.status,
+                'copyright_notes':c.copyright_notes, 'rights_statement':c.rights_statement, 'additional_notes' : c.additional_notes,
+                'published_date':c.published_date, 'created_by':c.created_by, 'created_on':c.created_on, 'reviewed_by':c.reviewed_by,
+                'reviewed_on':c.reviewed_on, 'copyright_approved':c.copyright_approved, 'copyright_by':c.copyright_by,
+                'published_year':c.published_year(),'original_source': c.original_source,
+                        'copyright_site': c.copyright_site,'status': c.status,'filesize': c.filesize}
+            content_dict[c.id]= dict(list(temp_dict.items()) +list(metadata_dict.items()))
+     
+        # SpooledTemporaryFile represents a temp file in memory that only uses disk
+        # if it runs out of ram, kind of like swap space
+        with tempfile.SpooledTemporaryFile() as temp_zip:
+            # path to look for content
+            zip_subdir = settings.MEDIA_ROOT
+            csvfilename = 'content-curation_webapp_Content-{}.csv'.format(
+                datetime.datetime.now().strftime("%m-%d-%Y")
+            )
+
+            field_names = [
+                 'file_name', 'title', 'description', 'active',
+                'copyright_notes', 'rights_statement', 'additional_notes',
+                'published_date', 'created_by', 'created_on', 'reviewed_by',
+                'reviewed_on', 'copyright_approved', 'copyright_by',
+                'published_year', 'original_source', 'copyright_site', 'status',
+                'filesize']
+         
+            for type_head in metadataType_set:
+                field_names.append(type_head)
+
+            string_buffer = io.StringIO()
+            writer = csv.DictWriter(string_buffer, fieldnames=field_names)
+            writer.writeheader()
+       
+           
+            with zipfile.ZipFile(
+                    temp_zip, 'w', zipfile.ZIP_DEFLATED, allowZip64=True
+            ) as zip_file:
+                for con_key,con_data in content_dict.items():
+                    temp_dict = con_data
+                
+                    writer.writerow(temp_dict)
+                    #writer.writerows({field: str(con_data[str(key)]).get(field) or str(key) for field in field_names})
+                    try:
+                       
+                        for folder_name, subfolders, filenames in os.walk(
+                                zip_subdir):
+                            for filename in filenames:
+                                if filename == str(temp_dict['file_name']):
+                                    file_path = os.path.join(folder_name, filename)
+                                    zip_file.write(file_path, basename(file_path))
+
+                    except zipfile.BadZipfile:
+                        error = "Bad Zip File"
+                        logger.error(error)
+                        return build_response(
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            error=error
+                        )
+                    except zipfile.LargeZipFile:
+                        error = "Large Zip File"
+                        logger.error(error)
+                        return build_response(
+                            status=status.HTTP_400_BAD_REQUEST,
+                            error=error
+                        )
+                # Write the csv buffer to the zip file
+                zip_file.writestr(csvfilename, string_buffer.getvalue())
+            # Needed to keep the file open
+            temp_zip.seek(0)
+            return HttpResponse(
+                temp_zip.read(),
+                content_type="application/x-zip-compressed"
+            )
+            return build_response(
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            error="Could not create temp file"
+        )
+
+# Export content as CSV file
+@api_view(('POST',))
+@renderer_classes((JSONRenderer,))
+def zipdownloadcsv_backup(request):
     # Parse string "[a,b,c]" into array [a, b, c]
     print("zipdownloadcsv ", request.POST.get("content"))
     content_ids = [
