@@ -116,6 +116,10 @@ function ContentForm({
     }
     const filter = createFilterOptions<typeof initial_permission>()
 
+    const getToday = () => {
+      return format(new Date(), "yyyy-MM-dd")
+    }
+
   const fields: FormFieldDescriptor<Content>[] = [
     {
       component: TextField,
@@ -363,23 +367,6 @@ function ContentForm({
       initialValue: '',
     },
     {
-      component: TextField,
-      propFactory: (state, _r, setter) => {
-        return {
-          fullWidth: true,
-          label: 'Rights Statement',
-          onChange: (
-            e: React.SyntheticEvent<HTMLInputElement>
-          ) => {
-            setter(e.currentTarget.value);
-          },
-          value: state['rightsStatement'] ?? '',
-        };
-      },
-      field: 'rightsStatement',
-      initialValue: '',
-    },
-    {
       component: ContentMetadataDisplay,
       propFactory: (state, _r, setter) => {
         return {
@@ -471,17 +458,17 @@ function ContentForm({
         const state = state_ as Partial<Content> & {
                     rawReviewedDate?: string
                 };
+        state.reviewedDate = state.reviewedDate ?? getToday();
         const genericSetter = genericSetter_ as (
                     field: string,
                     val: any,
                 ) => void;
-
         return {
           reviewed: state['status'] !== Status.REVIEW,
           datePicker: {
             disableToolbar: true,
             variant: 'inline',
-            format: 'MM/dd/yyyy',
+            format: 'yyyy-MM-dd',
             label: 'Reviewed On',
             onChange: (date: Date, val?: string) => {
               setter(
@@ -507,16 +494,13 @@ function ContentForm({
 
               genericSetter('rawReviewedDate', val);
             },
-            value: state['reviewedDate'] ?
-              parseISO(state['reviewedDate'])
-              :
-              Date.now(),
+            value: state['reviewedDate'] ? parseISO(state['reviewedDate']): parseISO(getToday()),
             inputValue: state['rawReviewedDate'] ?? '',
           },
         };
       },
       field: 'reviewedDate',
-      initialValue: null,
+      initialValue: getToday(),
       mb: 0,
     } : {
       field: 'reviewedDate',
