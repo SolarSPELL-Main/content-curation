@@ -69,7 +69,7 @@ type Content = {
   /**
    * Information about specific copyright associated with this content
    */
-  copyright_permissions?: ContentPermissions
+  copyright_permissions?: ContentPermissions;
   /*
    * Title that is actually displayed on the Library UI
    */
@@ -113,6 +113,10 @@ type Query = Partial<{
    * Backend checks for full, not partial inclusion
    */
   metadata: Record<number, Metadata[]>;
+  /**
+   * Information about specific copyright associated with this content
+   */
+  copyright: ContentPermissions;
 }>;
 
 /**
@@ -249,4 +253,3 @@ type ContentPermissions = {
   granted: boolean;
   user: number;
 };
-

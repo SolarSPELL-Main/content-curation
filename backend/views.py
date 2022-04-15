@@ -241,6 +241,7 @@ class ContentViewSet(StandardDataView, viewsets.ModelViewSet):
         if "status" in data and data["status"] == "Review":
             data["reviewed_on"] = None
 
+        data["reviewed_by"] = request.user.id
         serializer = self.get_serializer(instance,
                                          data=data,
                                          many=isinstance(data, list),
@@ -409,7 +410,7 @@ def zipdownloadcsv_backup(request):
 
         field_names = [
             'file_name', 'title', 'description', 'metadata_info', 'active',
-            'copyright_notes', 'rights_statement', 'additional_notes',
+            'copyright_notes', 'additional_notes',
             'published_date', 'created_by', 'created_on', 'reviewed_by',
             'reviewed_on', 'copyright_approved', 'copyright_by',
             'published_year', 'original_source', 'copyright_site', 'status',
@@ -436,7 +437,6 @@ def zipdownloadcsv_backup(request):
                         str(obj["name"]) for obj in con.metadata_info()),
                     'active': con.active,
                     'copyright_notes': con.copyright_notes,
-                    'rights_statement': con.rights_statement,
                     'additional_notes': con.additional_notes,
                     'published_date': con.published_date,
                     'created_by': con.created_by,

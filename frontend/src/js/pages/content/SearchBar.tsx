@@ -12,6 +12,10 @@ import { useCCDispatch, useCCSelector } from '../../hooks';
 import { Status } from '../../enums';
 import { Metadata, MetadataType, Query } from 'js/types';
 
+import TextField from '@material-ui/core/TextField';
+import {Autocomplete, AutocompleteProps, createFilterOptions} from '@material-ui/lab';
+import {isString} from 'lodash';
+
 /**
  * Boilerplate implementation of search bar for content.
  * @returns A search bar for content.
@@ -20,6 +24,16 @@ function SearchBar(): React.ReactElement {
   const dispatch = useCCDispatch();
   const metadata = useCCSelector(state => state.metadata.metadata);
   const metadataTypes = useCCSelector(state => state.metadata.metadata_types);
+  const copyright_permissions = useCCSelector(state => state.copyright.copyright);
+
+  const initial_permission: {
+        description: string,
+        id: number,
+    } = {
+        description: "",
+        id: 0,
+    }
+  const filter = createFilterOptions<typeof initial_permission>()
 
   return (
     <ContentSearch
@@ -115,7 +129,7 @@ function SearchBar(): React.ReactElement {
           initialValue: 'true',
         },
         {
-            field: "copyright",
+            field: "copyright_status",
             title: "Copyright Status",
             type: "enum",
             width: 2,
@@ -159,6 +173,34 @@ function SearchBar(): React.ReactElement {
             width: 6,
             spacing: 2,
             mb: 0,
+          }),
+        },
+        {
+          field: 'copyright',
+          title: 'Copyright',
+          type: 'custom',
+          width: 6,
+          component: Autocomplete,
+          propFactory: (setter, state): AutocompleteProps<
+              typeof initial_permission, false, false, true
+          > => ({
+              freeSolo: true,
+              renderInput: params => <TextField
+                  {...params}
+                  label="Copyright Permission"
+              />,
+              value: state.copyright ?? initial_permission,
+              options: copyright_permissions,
+              filterOptions: (options, params) => {
+                  return filter(options, params)
+              },
+              getOptionSelected: (option, value) => option.id == value.id,
+              getOptionLabel: option => option.description ?? "",
+              onChange: (_evt, value) => {
+                if (!isString(value)) {
+                    setter(value)
+                }
+              },
           }),
         },
       ]}

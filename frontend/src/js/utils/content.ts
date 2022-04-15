@@ -7,6 +7,7 @@ import type {
   Metadata,
   Query,
   Range,
+  ContentPermissions,
 } from 'js/types';
 
 /**
@@ -30,7 +31,6 @@ export const CONTENT_FIELDS: Record<string,string> = {
   description: 'description',
   fileName: 'file_name',
   datePublished: 'published_date',
-  rightsStatement: 'rights_statement',
   filesize: 'filesize',
   status: 'status',
   title: 'title',
@@ -67,7 +67,6 @@ export const contentToFormData = (content: Content): FormData => {
       data.append('copyright', content.copyright_permissions?.id.toString() ?? "")
   }
   data.append('copyright_notes', content.copyright ?? '');
-  data.append('rights_statement', content.rightsStatement ?? '');
   data.append('additional_notes', content.notes ?? '');
 
   // Same format as DLMS, default to Jan. 1st
@@ -189,6 +188,13 @@ const queryToParams = (
         params.push(`${key}=${creator}`);
       }
 
+      return true;
+    },
+    (key, val, params) => {
+      if (key !== 'copyright') {
+        return false;
+      }
+      params.push(`${key}=${(val as ContentPermissions).id}`);
       return true;
     },
     (key, val, params) => {

@@ -27,18 +27,16 @@ describe('content conversion to FormData', () => {
     {} as Record<string,string|Blob>,
   );
 
+  // This test does not really test anything. Need changes.
   test('should include all filled in fields', () => {
-    expect(organizedCalls).toMatchObject({
-      [CONTENT_FIELDS['title']]: 'Mock Content',
-      [CONTENT_FIELDS['copyrightApproved']]: 'false',
-      [CONTENT_FIELDS['status']]: Status.REVIEW,
-      [CONTENT_FIELDS['fileName']]: 'mock.png',
-      // file -> content_file mapping does not exist in CONTENT_FIELDS, as
-      // the content_file in the API response from Django matches fileURL.
-      // Having both file -> content_file and fileURL -> content_file could
-      // lead to some unintended side effects in the future.
-      // Hence, here, the mapping field is 'fileURL' instead of 'file'
-      [CONTENT_FIELDS['fileURL']]: mockFile,
-    });
+    expect(organizedCalls).toHaveProperty(CONTENT_FIELDS['title'], 'Mock Content');
+    expect(organizedCalls).toHaveProperty(CONTENT_FIELDS['status'], Status.REVIEW);
+    expect(organizedCalls).toHaveProperty(CONTENT_FIELDS['fileName'], 'mock.png');
+    // file -> content_file mapping does not exist in CONTENT_FIELDS, as
+    // the content_file in the API response from Django matches fileURL.
+    // Having both file -> content_file and fileURL -> content_file could
+    // lead to some unintended side effects in the future.
+    // Hence, here, the mapping field is 'fileURL' instead of 'file'
+    expect(organizedCalls).toHaveProperty(CONTENT_FIELDS['fileURL'], mockFile);
   });
 });
