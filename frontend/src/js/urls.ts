@@ -1,7 +1,6 @@
 // All hardcoded end-points live in this file
 export default {
-  BUG_REPORT: 'https://docs.google.com/forms/d/e/'
-        + '1FAIpQLScdPbE0AGVuNCvhy2gnTvmVNyQcQtd4vt6zBjjBgAwprb4VKg/viewform',
+  BUG_REPORT: 'https://airtable.com/shrkYlVOrTaBToG4v',
   BULK_EDIT: '/api/bulk_edit_content/',
   COPYRIGHT_LIST: '/api/copyright/',
   COPYRIGHT: (id: number) => `/api/copyright/${id}/`,
