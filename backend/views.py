@@ -313,7 +313,7 @@ def zipdownloadcsv(request):
             for k,v in metadata_dict.items():
                 metadata_dict.update({k: str(v).replace("[","").replace(',',' |').replace(']','').replace("'","").strip()})
             temp_dict = {'file_name':c.file_name, 'title':c.title, 'description':c.description,'active':c.status,
-                'copyright_notes':c.copyright_notes, 'additional_notes' : c.additional_notes,
+                'copyright_notes':c.copyright_notes, 'rights_statement':c.rights_statement, 'additional_notes' : c.additional_notes,
                 'published_date':c.published_date, 'created_by':c.created_by, 'created_on':c.created_on, 'reviewed_by':c.reviewed_by,
                 'reviewed_on':c.reviewed_on, 'copyright_approved':c.copyright_approved, 'copyright_by':c.copyright_by,
                 'published_year':c.published_year(),'original_source': c.original_source,
@@ -331,7 +331,7 @@ def zipdownloadcsv(request):
 
             field_names = [
                  'file_name', 'title', 'description', 'active',
-                'copyright_notes', 'additional_notes',
+                'copyright_notes', 'rights_statement', 'additional_notes',
                 'published_date', 'created_by', 'created_on', 'reviewed_by',
                 'reviewed_on', 'copyright_approved', 'copyright_by',
                 'published_year', 'original_source', 'copyright_site', 'status',
