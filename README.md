@@ -49,7 +49,9 @@ Enter `exit()` to exit the django shell.
 12. You can now view the content curation site at `https://127.0.0.1:8000/static/index.html/`
 
 
-
+__Hot Reloading__:
+- cd frontend && npm run watch
+- cd .. && python manage.py runserver 0.0.0.0:8000
 
 **ER Model**
 ![image](https://user-images.githubusercontent.com/65974841/145308475-fd9fa50a-021e-40f3-af7c-4be6cbb70097.png)
