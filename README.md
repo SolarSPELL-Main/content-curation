@@ -56,7 +56,9 @@ This docker setup allows you to automate a few installation steps.
 - Install [Docker](https://docs.docker.com/get-docker/)
 - Create a file `content_curation/.env`, same as Step 5, 6 above, except modify the `DATABASE_URL=postgres://postgres:postgres@db:5432/db`. It is necessary because the DB will be running in a docker container, not the host machine.
 - Run `docker-compose up` in the repo root directory. It will take care of Step 3-4, 7-10 automatically for you.
-- Wait until the log shows the app is running. Set up Google OAuth and start developing as described in Step 11-12.
+- Wait until the log shows the app is running. Set up Google OAuth and start developing as described in Step 11-12, except you should use `localhost` instead of `127.0.0.1` in the URL, because that's how it's set up in [start.sh](start.sh). Also use `http` in place of `https`, for SSL is not set up for local development.
+    - Admin site: [http://localhost:8000/admin/](http://localhost:8000/admin/)
+    - App site: [http://localhost:8000/static/index.html/](http://localhost:8000/static/index.html/)
 
 **ER Model**
 ![image](https://user-images.githubusercontent.com/65974841/145308475-fd9fa50a-021e-40f3-af7c-4be6cbb70097.png)
