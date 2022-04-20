@@ -59,6 +59,8 @@ This docker setup allows you to automate a few installation steps.
 - Wait until the log shows the app is running. Set up Google OAuth and start developing as described in Step 11-12, except you should use `localhost` instead of `127.0.0.1` in the URL, because that's how it's set up in [start.sh](start.sh). Also use `http` in place of `https`, for SSL is not set up for local development.
     - Admin site: [http://localhost:8000/admin/](http://localhost:8000/admin/)
     - App site: [http://localhost:8000/static/index.html/](http://localhost:8000/static/index.html/)
+- You can navigate to __pgAdmin__ `http://localhost:5051/` to view the data in the DB. The pgAdmin's login credentials are specified in the `pgadmin` container definition in [docker-compose.yml](docker-compose.yml). After successful login, create a server connection to the DB using the information in the `db` container definition.
+
 
 The API will automatically reload every time the code changes. However, if you wish to do data migration on the existing API docker container `web`, you need to execute the migrate commands in the container, instead of directly in the host. That means, you need to log into the container and execute those commands. In fact, any `python manage.py` commands should be executed in the container.
 
