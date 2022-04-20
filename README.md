@@ -10,7 +10,7 @@ SolarSPELL Content Curation service (CC). The Content Curation service provides 
 
 # Installation Instructions
 
-Install the latest versions of Git, npm, Python, and Postgresql.
+Install the latest versions of Git, npm, Python, and Postgresql. If you would like to set up your local environment using Docker, navigate to the [docker section](#docker-setup).
 
 1. Using git, clone the project into a new directory `git clone https://github.com/SolarSPELL-Main/content-curation.git`.
 
@@ -48,8 +48,15 @@ Enter `exit()` to exit the django shell.
 
 12. You can now view the content curation site at `https://127.0.0.1:8000/static/index.html/`
 
+# Docker Setup
+This is for setting up a local development environment using docker. It is optional. If you have already installed the app by following the above installation instructions, feel free to skip this section.
 
-
+This docker setup allows you to automate a few installation steps.
+- Clone the repo and build the frontend app same as Step 1, 2 above)
+- Install [Docker](https://docs.docker.com/get-docker/)
+- Create a file `content_curation/.env`, same as Step 5, 6 above, except modify the `DATABASE_URL=postgres://postgres:postgres@db:5432/db`. It is necessary because the DB will be running in a docker container, not the host machine.
+- Run `docker-compose up` in the repo root directory. It will take care of Step 3-4, 7-10 automatically for you.
+- Wait until the log shows the app is running. Set up Google OAuth and start developing as described in Step 11-12.
 
 **ER Model**
 ![image](https://user-images.githubusercontent.com/65974841/145308475-fd9fa50a-021e-40f3-af7c-4be6cbb70097.png)
