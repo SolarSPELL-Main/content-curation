@@ -60,5 +60,13 @@ This docker setup allows you to automate a few installation steps.
     - Admin site: [http://localhost:8000/admin/](http://localhost:8000/admin/)
     - App site: [http://localhost:8000/static/index.html/](http://localhost:8000/static/index.html/)
 
+The API will automatically reload every time the code changes. However, if you wish to do data migration on the existing API docker container `web`, you need to execute the migrate commands in the container, instead of directly in the host. That means, you need to log into the container and execute those commands. In fact, any `python manage.py` commands should be executed in the container.
+
+You may use `docker ps` to get the ID of the running container and use `docker exec -it <CONTAINER_ID> bash` to log into it.
+
+__Resources__:
+- [Django Migrations](https://realpython.com/django-migrations-a-primer/)
+- [docker exec](https://docs.docker.com/engine/reference/commandline/exec/)
+
 **ER Model**
 ![image](https://user-images.githubusercontent.com/65974841/145308475-fd9fa50a-021e-40f3-af7c-4be6cbb70097.png)
