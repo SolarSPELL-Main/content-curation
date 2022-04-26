@@ -48,6 +48,10 @@ Enter `exit()` to exit the django shell.
 
 12. You can now view the content curation site at `https://127.0.0.1:8000/static/index.html/`
 
+__Hot Reloading__:
+- `cd frontend && npm run watch`
+- Open up another terminal and run `cd .. && python manage.py runserver 0.0.0.0:8000`
+
 # Docker Setup
 This is for setting up a local development environment using docker. It is optional. If you have already installed the app by following the above installation instructions, feel free to skip this section.
 
@@ -55,15 +59,12 @@ This docker setup allows you to automate a few installation steps.
 - Clone the repo and build the frontend app same as Step 1, 2 above)
 - Install [Docker](https://docs.docker.com/get-docker/)
 - Create a file `content_curation/.env`, same as Step 5, 6 above, except modify the `DATABASE_URL=postgres://postgres:postgres@db:5432/db`. It is necessary because the DB will be running in a docker container, not the host machine.
-- Run `docker-compose up` in the repo root directory. It will take care of Step 3-4, 7-10 automatically for you.
+- Run `cd frontend && npm run watch` to automatically rebuild the frontend files on change.
+- Open up another terminal, navigate to the root directory of the repo, and run `docker-compose up`. It will take care of Step 3-4, 7-10 automatically for you.
 - Wait until the log shows the app is running. Set up Google OAuth and start developing as described in Step 11-12, except you should use `localhost` instead of `127.0.0.1` in the URL, because that's how it's set up in [start.sh](start.sh). Also use `http` in place of `https`, for SSL is not set up for local development.
     - Admin site: [http://localhost:8000/admin/](http://localhost:8000/admin/)
     - App site: [http://localhost:8000/static/index.html/](http://localhost:8000/static/index.html/)
 - You can navigate to __pgAdmin__ `http://localhost:5051/` to view the data in the DB. The pgAdmin's login credentials are specified in the `pgadmin` container definition in [docker-compose.yml](docker-compose.yml). After successful login, create a server connection to the DB using the information in the `db` container definition.
-
-__Hot Reloading__:
-- cd frontend && npm run watch
-- cd .. && python manage.py runserver 0.0.0.0:8000
 
 The API will automatically reload every time the code changes. However, if you wish to do data migration on the existing API docker container `web`, you need to execute the migrate commands in the container, instead of directly in the host. That means, you need to log into the container and execute those commands. In fact, any `python manage.py` commands should be executed in the container.
 
