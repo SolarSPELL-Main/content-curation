@@ -110,7 +110,7 @@ function ColumnSelection({
           },
           {
             field: "copyright",
-              title: "Copyright",
+            title: "Copyright",
             column: (field, hidden) => ({
                 field: field.field,
                 headerName: field.title,
@@ -121,6 +121,10 @@ function ColumnSelection({
                 renderCell: params => copyrightPermissions
                     .find(perm => perm.id == params.formattedValue)?.description
             })
+          },
+          {
+            field: "copyright_notes",
+            title: "Copyright Notes",
           },
           {
             field: 'filesize',

@@ -61,6 +61,9 @@ This docker setup allows you to automate a few installation steps.
     - App site: [http://localhost:8000/static/index.html/](http://localhost:8000/static/index.html/)
 - You can navigate to __pgAdmin__ `http://localhost:5051/` to view the data in the DB. The pgAdmin's login credentials are specified in the `pgadmin` container definition in [docker-compose.yml](docker-compose.yml). After successful login, create a server connection to the DB using the information in the `db` container definition.
 
+__Hot Reloading__:
+- cd frontend && npm run watch
+- cd .. && python manage.py runserver 0.0.0.0:8000
 
 The API will automatically reload every time the code changes. However, if you wish to do data migration on the existing API docker container `web`, you need to execute the migrate commands in the container, instead of directly in the host. That means, you need to log into the container and execute those commands. In fact, any `python manage.py` commands should be executed in the container.
 

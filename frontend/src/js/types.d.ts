@@ -67,6 +67,10 @@ type Content = {
    */
   notes?: string;
   /**
+   * Notes about copyright
+   */
+  copyright_notes?: string;
+  /**
    * Information about specific copyright associated with this content
    */
   copyright_permissions?: ContentPermissions;

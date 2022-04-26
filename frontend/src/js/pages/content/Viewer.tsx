@@ -82,6 +82,10 @@ function Viewer(props: ViewerProps): React.ReactElement {
                 .find(copy => copy.id === val)?.description || val
         },
         {
+          title: 'Copyright Notes',
+          field: 'copyright_notes',
+        },
+        {
           title: 'Additional Notes',
           field: 'notes',
         },
