@@ -1,5 +1,5 @@
 import React, { useEffect, useState, } from 'react';
-import {Box, Button, Checkbox, Paper, TextField, Tooltip, Typography} from '@material-ui/core';
+import {Box, Button, Checkbox, Paper, TextField, TextFieldProps, Tooltip, Typography} from '@material-ui/core';
 import {useCCDispatch, useCCSelector} from '../../hooks';
 import {update_current_tab} from '../../state/global';
 import {add_copyright, delete_copyright, edit_copyright, fetch_copyright} from '../../state/copyright';
@@ -17,6 +17,8 @@ import EditIcon from "@material-ui/icons/Edit"
 import {ContentPermissions, Organization} from '../../types';
 import {Autocomplete} from '@material-ui/lab';
 import {isEqual} from 'lodash';
+import { DatePicker } from '@material-ui/pickers';
+import { format, parseISO } from 'date-fns';
 
 
 //const TitlePopup = React.forwardRef((props, ref: any) => <div
@@ -144,8 +146,8 @@ export default () => {
     const [add_copy, update_add_copy] = useImmer<ContentPermissions>({
         id: 0,
         description: "",
-        date_contacted: "",
-        date_of_response: "",
+        date_contacted: new Date().toISOString().split('T')[0].toString(),
+        date_of_response: new Date().toISOString().split('T')[0].toString(),
         granted: false,
         organization: 0,
         user: user_id,
@@ -281,11 +283,11 @@ export default () => {
                                 update_add_copy({
                                     id: 0,
                                     description: "",
-                                    date_contacted: "",
-                                    date_of_response: "",
+                                    date_contacted: new Date().toISOString().split('T')[0].toString(),
+                                    date_of_response: new Date().toISOString().split('T')[0].toString(),
                                     granted: false,
                                     organization: 0,
-                                    user: 0,
+                                    user: user_id,
                                 })
                                 update_is_open(is_open => {
                                     is_open.add_copyright = false
@@ -305,23 +307,40 @@ export default () => {
                             add_copy.description = e.target.value
                         })}
                     />
-                    <TextField
-                        style={{marginTop: "1em"}}
-                        fullWidth
+                    <DatePicker
+                        format="yyyy-MM-dd"
                         label="Date Contacted"
-                        value={add_copy.date_contacted}
-                        onChange={e => update_add_copy(add_copy => {
-                            add_copy.date_contacted = e.target.value
+                        value={parseISO(add_copy.date_contacted)}
+                        onChange={ selectedDate => update_add_copy(add_copy => {
+                            
+                            // Checks if date parsed from user input
+                            // is valid
+                            const isValidDate = selectedDate
+                                        && !isNaN(selectedDate.getTime())
+                                    
+                            if (isValidDate && selectedDate != null) {
+                                add_copy.date_contacted = format(selectedDate, 'yyyy-MM-dd')
+                            }
+                            
                         })}
                     />
-                    <TextField
-                        style={{marginTop: "1em"}}
-                        fullWidth
+                    <DatePicker
+                        format="yyyy-MM-dd"
                         label="Date of Response"
-                        value={add_copy.date_of_response}
-                        onChange={e => update_add_copy(add_copy => {
-                            add_copy.date_of_response = e.target.value
+                        value={ parseISO(add_copy.date_of_response)}
+                        onChange={ selectedDate => update_add_copy(add_copy => {
+                            
+                            // Checks if date parsed from user input
+                            // is valid
+                            const isValidDate = selectedDate 
+                                        && !isNaN(selectedDate.getTime())
+                                    
+                            if (isValidDate && selectedDate != null) {
+                                add_copy.date_of_response = format(selectedDate, 'yyyy-MM-dd')
+                            }
+                            
                         })}
+
                     />
                     <Typography
                         style={{marginTop: "1em"}}
