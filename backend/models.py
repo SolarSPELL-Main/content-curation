@@ -123,7 +123,7 @@ class Content(models.Model):
     copyright = models.ForeignKey(
         CopyrightPermission, on_delete=models.CASCADE, null=True
     )
-    original_source = models.TextField(unique=True, null=True)
+    original_source = models.TextField(null=True)
     status = models.CharField(
         max_length=32,
         choices=STATUS,
