@@ -319,7 +319,7 @@ def zipdownloadcsv(request):
                 'published_year':c.published_year(),'original_source': c.original_source,
                         'copyright_site': c.copyright_site,'status': c.status,'filesize': c.filesize}
             content_dict[c.id]= dict(list(temp_dict.items()) +list(metadata_dict.items()))
-     
+    
         # SpooledTemporaryFile represents a temp file in memory that only uses disk
         # if it runs out of ram, kind of like swap space
         with tempfile.SpooledTemporaryFile() as temp_zip:
@@ -336,17 +336,15 @@ def zipdownloadcsv(request):
                 'reviewed_on', 'copyright_approved', 'copyright_by',
                 'published_year', 'original_source', 'copyright_site', 'status',
                 'filesize']
-         
             for type_head in metadataType_set:
                 field_names.append(type_head)
 
             string_buffer = io.StringIO()
             writer = csv.DictWriter(string_buffer, fieldnames=field_names)
             writer.writeheader()
-       
-           
+    
             with zipfile.ZipFile(
-                    temp_zip, 'w', zipfile.ZIP_DEFLATED, allowZip64=True
+                    temp_zip, 'w', zipfile.ZIP_DEFLATED,compresslevel=9 ,allowZip64=True
             ) as zip_file:
                 for con_key,con_data in content_dict.items():
                     temp_dict = con_data
@@ -354,7 +352,7 @@ def zipdownloadcsv(request):
                     writer.writerow(temp_dict)
                     #writer.writerows({field: str(con_data[str(key)]).get(field) or str(key) for field in field_names})
                     try:
-                       
+
                         for folder_name, subfolders, filenames in os.walk(
                                 zip_subdir):
                             for filename in filenames:
