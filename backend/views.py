@@ -376,14 +376,21 @@ def zipdownloadcsv(request):
                             status=status.HTTP_400_BAD_REQUEST,
                             error=error
                         )
+                    except zipfile.OverflowError:
+                        error ="Exceeds 2.1GB"
+                        logger.error(error)
+                        return build_response(
+                            status=status.HTTP_400_BAD_REQUEST,
+                            error=error
+                        )
                 # Write the csv buffer to the zip file
                 zip_file.writestr(csvfilename, string_buffer.getvalue())
             # Needed to keep the file open
             temp_zip.seek(0)
-            return HttpResponse(
-                temp_zip.read(),
-                content_type="application/x-zip-compressed"
-            )
+            response = HttpResponse(temp_zip.read())
+            response['content_type'] = "application/x-zip-compressed"
+            response['Content-Length'] = temp_zip.tell()
+            return response
             return build_response(
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             error="Could not create temp file"
