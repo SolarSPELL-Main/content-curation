@@ -24,3 +24,11 @@ def validate_unique_file(value):
             if sha256(open(f, "rb")) == sha256(value.file):
                 raise ValidationError('File already exists with name ' + 
                                         os.path.basename(f))
+
+def validate_file_size(value):
+        filesize= value.size
+        # 500 MB in bytes
+        if filesize > 524288000:
+            raise ValidationError("The maximum file size that can be uploaded is 500MB")
+        else:
+            return value

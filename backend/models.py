@@ -8,7 +8,7 @@ from django.db.models.signals import post_save
 from django.utils.text import get_valid_filename
 from django.contrib.auth.models import User
 
-from backend.validators import validate_unique_filename
+from backend.validators import validate_unique_filename,validate_file_size
 from backend.enums import STATUS
 
 from django_clamd.validators import validate_file_infection
@@ -86,7 +86,7 @@ class Content(models.Model):
         upload_to=set_file_name,
         max_length=500,
         validators=[
-            validate_unique_filename, validate_file_infection
+            validate_unique_filename, validate_file_infection,validate_file_size
         ])
     filesize = models.FloatField(null=True, editable=True)
     file_name = models.CharField(max_length=500, null=True)
