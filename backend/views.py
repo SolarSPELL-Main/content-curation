@@ -312,7 +312,7 @@ def zipdownloadcsv(request):
             #format metadata with '|' symbol
             for k,v in metadata_dict.items():
                 metadata_dict.update({k: str(v).replace("[","").replace(',',' |').replace(']','').replace("'","").strip()})
-            temp_dict = {'file_name':c.file_name, 'title':c.title, 'description':c.description,'active':c.status,
+            temp_dict = {'file_name':c.file_name, 'title':c.title,'display_title':c.display_title ,'description':c.description,'active':c.status,
                 'copyright_notes':c.copyright_notes, 'additional_notes' : c.additional_notes,
                 'published_date':c.published_date, 'created_by':c.created_by, 'created_on':c.created_on, 'reviewed_by':c.reviewed_by,
                 'reviewed_on':c.reviewed_on, 'copyright_approved':c.copyright_approved, 'copyright_by':c.copyright_by,
@@ -330,7 +330,7 @@ def zipdownloadcsv(request):
             )
 
             field_names = [
-                 'file_name', 'title', 'description', 'active',
+                 'file_name', 'title','display_title' ,'description', 'active',
                 'copyright_notes', 'additional_notes',
                 'published_date', 'created_by', 'created_on', 'reviewed_by',
                 'reviewed_on', 'copyright_approved', 'copyright_by',
@@ -352,7 +352,6 @@ def zipdownloadcsv(request):
                     writer.writerow(temp_dict)
                     #writer.writerows({field: str(con_data[str(key)]).get(field) or str(key) for field in field_names})
                     try:
-
                         for folder_name, subfolders, filenames in os.walk(
                                 zip_subdir):
                             for filename in filenames:

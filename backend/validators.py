@@ -27,8 +27,8 @@ def validate_unique_file(value):
 
 def validate_file_size(value):
         filesize= value.size
-        # 500 MB in bytes
-        if filesize > 524288000:
-            raise ValidationError("The maximum file size that can be uploaded is 500MB")
+        # 250 MB in bytes
+        if filesize > 262144000:
+            raise ValidationError("The maximum file size that can be uploaded is 250MB")
         else:
             return value
