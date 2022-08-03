@@ -128,7 +128,7 @@ function SearchBar(): React.ReactElement {
           ],
           initialValue: 'true',
         },
-        {
+/*        {
             field: "copyright_status",
             title: "Copyright Status",
             type: "enum",
@@ -148,7 +148,7 @@ function SearchBar(): React.ReactElement {
                 }
             ],
             initialValue: "all"
-        },
+                  },*/
         {
           field: 'metadata',
           title: 'Metadata',

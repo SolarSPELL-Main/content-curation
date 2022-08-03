@@ -315,7 +315,7 @@ def zipdownloadcsv(request):
             temp_dict = {'file_name':c.file_name, 'title':c.title,'display_title':c.display_title ,'description':c.description,'active':c.status,
                 'copyright_notes':c.copyright_notes, 'additional_notes' : c.additional_notes,
                 'published_date':c.published_date, 'created_by':c.created_by, 'created_on':c.created_on, 'reviewed_by':c.reviewed_by,
-                'reviewed_on':c.reviewed_on, 'copyright_approved':c.copyright_approved, 'copyright_by':c.copyright_by,
+                'reviewed_on':c.reviewed_on, 'copyright_by':c.copyright_by,
                 'published_year':c.published_year(),'original_source': c.original_source,
                         'copyright_site': c.copyright_site,'status': c.status,'filesize': c.filesize}
             content_dict[c.id]= dict(list(temp_dict.items()) +list(metadata_dict.items()))
@@ -333,7 +333,7 @@ def zipdownloadcsv(request):
                  'file_name', 'title','display_title' ,'description', 'active',
                 'copyright_notes', 'additional_notes',
                 'published_date', 'created_by', 'created_on', 'reviewed_by',
-                'reviewed_on', 'copyright_approved', 'copyright_by',
+                'reviewed_on', 'copyright_by',
                 'published_year', 'original_source', 'copyright_site', 'status',
                 'filesize']
             for type_head in metadataType_set:
