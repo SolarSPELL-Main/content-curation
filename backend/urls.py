@@ -22,5 +22,7 @@ urlpatterns = [
     path("check_duplicate/", check_duplicate),
     path(r'export/', zipdownloadcsv),
     path(r'bulk_edit_content/', bulk_edit_content),
+    path(r'bulk_edit_content_status/', bulk_edit_content_status),
+
     path('', include(router.urls)),
 ]

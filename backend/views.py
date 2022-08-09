@@ -527,6 +527,33 @@ def bulk_edit_content(request):
         status=status.HTTP_200_OK
     )
 
+# bulk edit content status
+@api_view(('POST', 'GET'))
+@renderer_classes((JSONRenderer,))
+def bulk_edit_content_status(request):    
+    content_ids = request.data.get("to_edit")
+    status_id = request.data.get("content_status_id")
+
+    try:
+        for con_id in content_ids:
+            if (len(status_id)) > 0:
+                
+                for con in Content.objects.filter(
+                            id=con_id
+                    ):
+                    # Update content_status
+                    con.status.update(status_id)
+
+    except Exception as e:
+        error = str(e)
+        logger.error(error)
+        return build_response(
+            status=status.HTTP_400_BAD_REQUEST,
+            error=error)
+
+    return build_response(
+        status=status.HTTP_200_OK
+    )
 
 class CopyrightPermissionViewSet(StandardDataView, viewsets.ModelViewSet):
     permissions_classes = [DjangoModelPermissions, NeedsViewPermissions]
