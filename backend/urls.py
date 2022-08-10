@@ -6,7 +6,7 @@ from rest_framework import routers
 
 from .views import MetadataTypeViewSet, MetadataViewSet, \
     ContentViewSet, get_user, search, check_duplicate, zipdownloadcsv,\
-    bulk_edit_content,CopyrightPermissionViewSet,OrganizationViewSet
+    bulk_edit_content,CopyrightPermissionViewSet,OrganizationViewSet,bulk_edit_content_status
 
 router = routers.DefaultRouter()
 router.register(r'metadata', MetadataViewSet, basename='metadata')
